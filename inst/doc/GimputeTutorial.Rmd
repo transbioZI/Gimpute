@@ -1,0 +1,765 @@
+---
+title: "Gimpute: An efficient genetic data imputation pipeline"
+author:
+- name: Junfang Chen, Dietmar Lippold and Emanuel Schwarz
+  affiliation: Central Institute of Mental Health, Heidelberg University, Germany  
+date: 31 January 2018 
+output: BiocStyle::html_document 
+vignette: >
+  %\VignetteIndexEntry{Gimpute in detail}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r style, echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+library("BiocStyle")
+library("knitr")
+library("rmarkdown")
+## options(width = 70)  
+opts_chunk$set(message = FALSE, error = FALSE, warning = FALSE,
+               cache = FALSE, fig.width = 5, fig.height = 5)
+```
+
+# About Gimpute
+## Background
+Genome-wide association studies (GWAS) have become an essential tool to assist the improvement of drug discovery and understanding of neuropathology of the disease. The imputation of genotyping data with missing information is able to enhance the power of GWAS by using haplotype relationships between genetic variants. In the meantime, the imputation can substantially reduce the cost of genotyping large number of samples. Furthermore, the comparison of significant findings across different cohorts and genotyping platforms is also achievable. Currently large amounts of genotyping data are produced at an unprecedented rate to be analyzed; however, the preparation of ready-to-use data sets needs to be of high quality, thus the implementation of an efficient and reliable genetic data pre-processing and imputation pipeline is desirable.   
+
+## Scope of the pipeline 
+In order to ensure the reliability and reproducibility of genome-wide association study (GWAS) data, 
+we set up an efficient, automatic and comprehensive genotype data processing and imputation pipeline termed __Gimpute__.
+which consists of pre-processing (genetic variant information updating/matching/liftOver,
+quality control of genetic variants and study samples, the alignment of variants to the imputation references), 
+imputation and post-imputation quality control in this vignette, which is easy-to-follow and user-friendly. 
+
+Gimpute in a nutshell:
+
+# Getting started  
+## Prerequisites
+Gimpute runs in any 64-bit x86 Linux distribution and it requires the following tools:
+
+* [R](https://www.r-project.org/) 
+* [PLINK](https://www.cog-genomics.org/plink2) 
+* [GCTA64](http://cnsgenomics.com/software/gcta/download.html) 
+* [SHAPEIT](http://www.shapeit.fr/) 
+* [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
+* [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
+
+## Installation 
+Development version from Github:
+```{r eval=FALSE}
+library("devtools")
+install_github("Junfang/Gimpute")
+```
+This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
+ 
+## Experimental data
+Since sharing of genetic genotyping data is strictly prohibited, we do not upload any genotyping data for demonstration. 
+However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.
+nlm.nih.gov/aa/wga.cgi?page=login). As the input genotyping data for our pipeline, PLINK format files (PED/MAP or BED/BIM/FAM) are required.
+
+## Get it Setup 
+### File and directory naming conventions
+The files processed and generated are named in a consistent way across all datasets as follows:
+
+* filename.# represents a set of the three plink files, i.e. the .bed, .fam and .bim file. 
+Binary plink files are recommended due to the smaller file size and fast processing.
+
+* filename.txt denotes a file with additionally information, like SNP names, in pure text format.
+The names of the output files begin with the number of the step which produces the respective file.
+
+* the following directories and sub-directories should be made in advance.
+
+```{r eval=FALSE} 
+## Start an R session in a directory where your data processing and imputation results will be stored.
+## Then make the following sub-directories: 
+system('mkdir 0-rawData')
+system('mkdir 1-conversion')
+system('mkdir 2-QC')
+system('mkdir 3-lifting')
+system('mkdir 4-imputation')
+system('mkdir 5-reductAndExpand')
+system('mkdir 6-finalResults')
+
+## go to ./0-rawData
+setwd('0-rawData')
+system('mkdir plinkFiles') ## Original plink files 
+system('mkdir sampleInfo') ## Meta data information
+## Here you want to put the necessary PLINK files and meta data in the above two folders.
+setwd('..')
+```
+
+
+```{r eval=FALSE} 
+## Examples
+## Define the directory where you place the required/downloaded tools and additional scripts (perl scripts).
+GimputeDIR = "/home/yourname/Gimpute/"
+
+## required tools and R packages
+plink = paste0(GimputeDIR,"tools/plink")
+gcta = paste0(GimputeDIR,"tools/gcta64") 
+shapeit = paste0(GimputeDIR,"tools/shapeit") 
+impute2 = paste0(GimputeDIR,"tools/impute2")
+gtool = paste0(GimputeDIR,"tools/gtool")
+
+library(Gimpute)  
+library(doParallel) ## parallel computing
+library(lattice)    ## PCA plot
+
+## required perl scripts which are provided in the Github 
+perl4snpsWithSamePos = paste0(GimputeDIR,"extdata/inst/snpsWithSamePos.pl")
+alignScript4compareName = paste0(GimputeDIR,"extdata/inst/dataSetImpRefCompareName.pl ")
+alignScript = paste0(GimputeDIR,"extdata/inst/dataSetImpRefComparePos.pl ")
+```
+
+### Configuration files
+* Imputation reference files
+Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference), such as haplotypes from [1000 genome project](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz). 
+
+```{r eval=FALSE} 
+## Example: the directory where you place the imputation reference files
+impRefdir = paste0(GimputeDIR,"imputeRef/1000Gphase1/")
+```  
+* Genotyping chip annotation file 
+Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
+These files are particularly important for strand checking and genomic information of genotypes on a variety of genome builds.
+```{r eval=FALSE} 
+## In this example the Illumina chip annotation file is located in a new directory './config'  
+chipAnnoFile= paste0(GimputeDIR,"/config/Illumina/Human1M-Duov3_B-b37.Illmn.strand")
+``` 
+* Self-defined configuration files
+```{r eval=FALSE} 
+## if it's not NULL, then the file stores the duplicated sample IDs should be placed in this directory.
+dupSampleIDFile = NULL 
+## if it's not NULL, then the file stores the probes which have to be excluded should be placed in this directory.
+excludedProbeIdsFile = NULL 
+```
+ 
+### Global parameters/variables
+
+```{r eval=FALSE} 
+## If the data set contains case and control subjects
+ancestrySymbol = NULL
+caseControl = FALSE #  
+```
+
+# Running pipeline
+## Genotyping data conversion
+
+All files named in this subsection are in the directory 1-conversion/.
+
+Input files:
+* Raw genotype data in PLINK format: ../0-rawData/plinkFiles/*.#
+* Meta-data information file about the instances: ../0-rawData/sampleInfo/*.txt
+* Chip annotation file for genotype information mapping and strand check (see section 2.4.2).
+* The file with the IDs of the excluded instances (see section 2.4.2).
+* The file with the IDs of the excluded probes of the chip (see section 2.4.2).
+
+Processing steps:
+
+1. Use the raw genotype data and meta-data information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. EA or AA), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained.
++ Output file: 1_01_metaData.txt
+
+```{r eval=FALSE} 
+## copy PLINK files and meta information file
+rawPlinkFiles = 'snp270'
+system(paste0("scp ./0-rawData/plinkFiles/", rawPlinkFiles, ".*  ./1-conversion/")) 
+system(paste0("scp ./0-rawData/sampleInfo/1_01_metaData.txt ./1-conversion/")) 
+setwd("./1-conversion/") 
+```
+
+2. From the raw chip data remove all excluded instances.
++ Output files: 1_02_removedExclInst.#
+```{r eval=FALSE} 
+dupSampleIDFile = NULL
+inputPrefix = rawPlinkFiles
+outputPrefix = "1_02_removedExclInst" 
+removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix)
+```
+3. Replace all values for affection (phenotype, group) and sex in the plink fam file by those values in the file 1_01_metaData.txt. For that the missing value for sex is represented by the value 0 (zero), the missing value for affection (group) is represented by the value -9.
++ Output files: 1_03_replacedGroupAndSex.#
+```{r eval=FALSE} 
+metaDataFile = "1_01_metaData.txt"
+inputPrefix = "1_02_removedExclInst"
+outputPrefix = "1_03_replacedGroupAndSex"
+replaceGroupId(plink, inputPrefix, metaDataFile, outputPrefix)
+```
+4. Remove instances which have the missing affection value (i.e. the value -9).
++ Output files: 1_04_removedNoGroupId.#
+```{r eval=FALSE} 
+metaDataFile = "1_01_metaData.txt"
+inputPrefix = "1_03_replacedGroupAndSex"
+outputPrefix = "1_04_removedNoGroupId"
+removeNoGroupId(plink, inputPrefix, outputPrefix)
+```
+5. Remove instances which have a value for ance (self identified ancestry) in the file 1_01_metaData.txt which is excluded from the dataset (for the excluded ancestry values see section 1.1.3).
++ Output files: 1_05_removedWrongAnceInst.#
+```{r eval=FALSE} 
+metaDataFile = "1_01_metaData.txt" 
+inputPrefix = "1_04_removedNoGroupId"
+outputPrefix = "1_05_removedWrongAnceInst"
+removedWrongAnceInst(plink, inputPrefix, metaDataFile, ancestrySymbol, outputPrefix)
+```
+6. Remove the excluded probes of the chip and check that there are not two probes with the same name afterwards (if there is a name which is contained twice no output file is generated).
++ Output files: 1_06_removedExclProbe.#
+```{r eval=FALSE} 
+inputPrefix = "1_05_removedWrongAnceInst"
+excludedProbeIdsFile = excludedProbeIdsFile  ## excludedProbeIds is defined in svn
+outputPrefix = "1_06_removedExclProbe" ## 
+removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix) 
+```
+7. Remove probes which are not contained in the annotation file or which have missing values in the annotation file.
++ Primary output files: 1_07_removedUnmapProbes.#
++ Output file with the removed probes:1_07_probesUnmapped2ChipRef.txt
+```{r eval=FALSE} 
+inputPrefix = "1_06_removedExclProbe"
+chipAnnoFile = chipAnnoFile ## defined in SVN
+chipType = 'illumina'
+outputPrefix = "1_07_removedUnmapProbes"   
+outputSNPunmapFile = "1_07_probesUnmapped2ChipRef.txt"
+removedUnmapProbes(plink, inputPrefix, chipAnnoFile, outputPrefix, outputSNPunmapFile)
+```
+8. Remove probes which belong to a SNP or have a position (i.e. a base pair position and chromosome) in the annotation file which is the same as that of at least one other probe.
++ Primary output files: 1_08_removedDoubleProbes.#
++ Output file with the removed probes:1_08_probesDouble.txt
+```{r eval=FALSE} 
+inputPrefix = "1_07_removedUnmapProbes" 
+chipAnnoFile = chipAnnoFile ## defined in SVN
+chipType = 'illumina'
+outputSNPdupFile = "1_08_probesDouble.txt"
+outputPrefix = "1_08_removedDoubleProbes"   
+removedDoubleProbes(plink, inputPrefix, chipAnnoFile, chipType, outputSNPdupFile, outputPrefix)
+```
+9. Use the annotation file to replace the probe names by SNP names, to update the SNP chromosomal location and the SNP base pair position and to convert all alleles to the positive strand. For that use the following mapping form chromosome names to numbers: X ! 23, Y !24, XY (pseudo-autosomal region of X) ! 25, MT (mitochondrial) !26.
++ Output files: 1_09_updatedSnpInfo.#
+
+```{r eval=FALSE} 
+inputPrefix = "1_08_removedDoubleProbes" 
+chipAnnoFile = chipAnnoFile  
+chipType = 'illumina'
+
+outputPrefix = "1_09_updatedSnpInfo"   
+updatedSnpInfo(plink, inputPrefix,  chipAnnoFile, chipType, outputPrefix)
+```
+10. Correct the chromosome of the SNPs in the pseudoautosomal region by using the plink option --split-x with the name of the genome build of the annotation file.
++ Output files: 1_10_changedXyChr.#
+
+```{r eval=FALSE} 
+inputPrefix = "1_09_updatedSnpInfo"
+outputPrefix = "1_10_changedXyChr"
+changedXyChr(plink, inputPrefix, outputPrefix)
+```
+11. Remove the SNPs of the chromosomes 24 (Y) and 26 (MT).
++ Output files: 1_11_removedYMtSnp.#
+
+```{r eval=FALSE} 
+inputPrefix = "1_10_changedXyChr"
+outputPrefix = "1_11_removedYMtSnp"
+removedYMtSnp(plink, inputPrefix, outputPrefix)
+```
+
+
+```{r eval=FALSE} 
+## remove unwanted files
+system( paste0("rm  *.log *.hh") ) 
+## change dir to the main directory
+setwd("..")   
+```
+
+
+
+
+## Quality control
+
+All files named in this subsection are in the directory 2-QC/.
+
+Input files:
+
+* Genotype data after converting to the targeted genome build:../1-conversion/1_11_removedYMtSnp.#
+
+Processing steps:
+
+1. Determine for each SNP of the chromosome 23 from the genotype data the number of male instances which have the value one as the minor allele count for that SNP and remove all SNPs which number is higher than 0.5 % of the number of male instances.
++ Primary output files: 2_01_removedSnpHetX.#
++ Output file with the number of instances with heterozygous alleles for each SNP of the chromosome 23 before SNP removal (each line contains a SNP name and the respective number, lines are sorted descending by number): 2_01_snpHetXInstNumberBefore.txt
++ Output file with the number of instances with heterozygous alleles for each SNP of the chromosome 23 after SNP removal:2_01_snpHetXInstNumberAfter.txt
+```{r eval=FALSE} 
+## copy the last output plink files from 1-conversion
+inputPrefix4QC = "1_11_removedYMtSnp"
+system( paste0("scp ./1-conversion/", inputPrefix4QC, ".*", " ./2-QC/") )
+setwd("./2-QC/")
+
+## step 1 
+inputPrefix = inputPrefix4QC
+hhCutOff = 0.005 ##  
+outputPrefix = "2_01_removedSnpHetX" 
+outputFile_SNPhhFreqAll = "2_01_snpHHfreqAll.txt"
+outputFile_SNPhhFreqRetained = "2_01_snpHHfreqRetained.txt"
+removedSnpHetX(plink, inputPrefix, hhCutOff, outputPrefix, outputFile_SNPhhFreqAll, outputFile_SNPhhFreqRetained)
+```
+2. Determine for each male instance the number of SNPs of the chromosome 23 which have the value one as the minor allele count for that instance and remove all instances which number is higher than 15.
++ Primary output files: 2_02_removedInstHetX.#
++ Output file with the number of SNPs of the chromosome 23 with heterozygous alleles for each instance before instance removal (each line contains an instance ID and the respective number, lines are sorted descending by number): 2_02_instHetXSnpNumberBefore.txt
++ Output file with the number of SNPs of the chromosome 23 with heterozygous alleles for each instance after instance removal: 2_02_instHetXSnpNumberAfter.txt
++ Output file with the number of instances with heterozygous alleles for each SNP of the chromosome 23 after instance removal: 2_02_snpHetXInstNumberAfter.txt
+
+```{r eval=FALSE} 
+inputPrefix = "2_01_removedSnpHetX"
+hhSubjCutOff = 15
+outputPrefix = "2_02_removedInstHetX"
+outputFile_subjHetFreqAll = "2_02_instHetXfreqAll.txt" 
+outputFile_subjHetFreqRetained = "2_02_instHetXfreqRetained.txt"  
+outputFile_SNPhhFreqAll = "2_02_snpHHfreqAll.txt"
+removedMaleHetX(plink, inputPrefix, hhSubjCutOff, outputPrefix, outputFile_subjHetFreqAll, outputFile_subjHetFreqRetained, outputFile_SNPhhFreqAll) 
+```
+
+3. Set all heterozygous alleles of SNPs of the chromosome 23 for males (i.e. when the SNP has the value one as the minor allele count) as missing. 
++ Output files: 2_03_setHeteroHaploMissing.#
+```{r eval=FALSE} 
+inputPrefix = "2_02_removedInstHetX" 
+outputPrefix = "2_03_setHeteroHaploMissing" 
+setHeteroHaploMissing(plink, inputPrefix, outputPrefix)
+```
+4. Remove SNPs with missingness >= 0.05 (before instance removal).
++ Output files: 2_04_removedSnpMissPre.#
+```{r eval=FALSE} 
+inputPrefix = "2_03_setHeteroHaploMissing" 
+snpMissCutOff = 0.05 #
+outputPrefix = "2_04_removedSnpMissPre" 
+removedSnpMiss(plink, snpMissCutOff, inputPrefix, outputPrefix) 
+```
+5. Remove instances with missingness  >= 0.02.
++ Output files: 2_05_removedInstMiss.#
+```{r eval=FALSE} 
+inputPrefix = "2_04_removedSnpMissPre" 
+sampleMissCutOff = 0.02
+outputPrefix = "2_05_removedInstMiss" 
+removedInstMiss(plink, sampleMissCutOff, inputPrefix, outputPrefix)
+```
+6. Remove instances with great autosomal heterozygosity deviation, i.e. with |Fhet| >= 0.2
++ Output files: 2_06_removedInstFhet.#
+```{r eval=FALSE} 
+inputPrefix = "2_05_removedInstMiss" 
+Fhet = 0.2 #
+outputPrefix = "2_06_removedInstFhet" 
+removedInstFhet(plink, Fhet, inputPrefix, outputPrefix)
+```
+7. Replace the paternal ID and maternal ID of instances (childs) by the value zero if the paternal ID and the maternal ID do not belong to any instance (parent) with the same family ID as the child.
++ Output files: 2_08_removedParentIdsMiss.#
+```{r eval=FALSE} 
+inputPrefix = "2_06_removedInstFhet"  
+outputPrefix = "2_07_removedParentIdsMiss" 
+removedParentIdsMiss(plink, inputPrefix, outputPrefix)
+```
+8. Remove SNPs with missingness >= 0.02 (after instance removal).
++ Output files: 2_09_removedSnpMissPost.#
+```{r eval=FALSE} 
+snpMissCutOff = 0.02
+inputPrefix = "2_07_removedParentIdsMiss"  
+outputPrefix = "2_08_removedSnpMissPost" 
+removedSnpMiss(plink, snpMissCutOff, inputPrefix, outputPrefix)
+```
+9. Remove SNPs with difference >= 0.02 of SNP missingness between cases and controls.
++ Output files: 2_10_removedSnpMissDiff.#
+```{r eval=FALSE} 
+inputPrefix = "2_08_removedSnpMissPost"  
+outputPrefix = "2_09_removedSnpMissDiff" 
+snpMissDifCutOff = 0.02 
+caseControl = FALSE #  global variable
+removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, outputPrefix, caseControl) 
+```
+10. Remove chrX SNPs with missingness  >= 0.05 in females
++ Output files: 2_11_removedSnpMissAllo.#
+```{r eval=FALSE} 
+femaleChrXmissCutoff = 0.05
+inputPrefix = "2_09_removedSnpMissDiff"  
+outputPrefix = "2_10_removedSnpFemaleChrXmiss" 
+removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, inputPrefix, outputPrefix)
+```
+11. Remove autosomal SNPs with Hardy-Weinberg equilibrium p < 10-6 in controls.
++ Primary output files: 2_12_removedSnpHweAutoCt.#
++ Output file with HWE p-value for the autosomal SNPs before removing, sorted ascending by the p-values: 2_12_snpHweValuesAutoCt.txt
++ Output file with the removed SNP names: 2_12_snpRemovedHweAutoCt.txt
+```{r eval=FALSE} 
+pval = 0.000001
+inputPrefix = "2_10_removedSnpFemaleChrXmiss"  
+outputFile_pVal = "2_11_snpHwePvalAutoCt.txt" 
+outputSNPfile =  "2_11_snpRemovedHweAutoCt.txt" 
+outputPrefix = "2_11_removedSnpHweAutoCt" 
+
+removedSnpHWEautoControl(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
+```
+12. Remove chrX SNPs with HWE p < 10-6 in female controls.
++ Primary output files: 2_13_removedSnpHweAlloCt.#
++ Output file with HWE p-value for the female chrX SNPs before removing, sorted ascending by the p-values:2_13_snpHweValuesAlloCt.txt
++ Output file with the removed SNP names:2_13_snpRemovedHweAlloCt.txt
+```{r eval=FALSE} 
+pval = 0.000001
+inputPrefix = "2_11_removedSnpHweAutoCt"   
+outputFile_pVal = "2_12_snpHwePvalfemaleXct.txt" 
+outputSNPfile = "2_12_snpRemovedHweFemaleXct.txt" 
+outputPrefix = "2_12_removedSnpHweFemaleXct" 
+removedSnpFemaleChrXhweControl(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
+```
+13. From the files 2_12_removedSnpHweAutoCt.# (not from the output of the last step) remove chrX SNPs with HWE p < 10-6 in all female instances.
++ Primary output files: 2_14_removedSnpHweAlloAll.#
++ Output file with HWE p-value for the females chrX SNPs before removing, sorted ascending by the p-values: 2_14_snpHweValuesAlloAll.txt
++ Output file with the removed SNP names: 2_14_snpRemovedHweAlloAll.txt
+```{r eval=FALSE} 
+pval = 0.000001
+inputPrefix = "2_11_removedSnpHweAutoCt"   ## the output from the step before last step. 
+outputFile_pVal = "2_13_snpHwePvalfemaleXall.txt" 
+outputSNPfile = "2_13_snpRemovedHweFemaleXall.txt" 
+outputPrefix = "2_13_removedSnpHweFemaleXall" 
+removedSnpFemaleChrXhweAll(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
+```
+14. For 2_13_removedSnpHweAlloCt.# calculate the PCA (with plots) and remove the outliers from that dataset (for the definition of the outliers see section 1.1.3).
++ Primary output files: 2_17_removedOutliersWithinHwe.#
++ Output file with the IDs of the instances and the values of their eigenvectors from the PCA before removal of instances: 2_17_eigenvecWithinHwe-beforeRm.txt
++ Output file with the plot of the first two PCs from the PCA before removal of instances: 2_17_eigenvecWithinHwe-beforeRm.pdf
++ Output file with the plot of the first two PCs from the PCA after removal of instances: 2_17_eigenvecWithinHwe-afterRm.pdf
++ Output file with the IDs of the removed instances and the values of their eigenvectors, sorted ascending by the PC values: 2_17_eigenvecWithinHwe-removed.pdf
+```{r eval=FALSE} 
+## in order to get the ethnic group info
+setwd('..')
+metaDataFile = "1_01_metaData.txt"
+system( paste0("scp ./1-conversion/", metaDataFile, " ./2-QC/") )
+setwd("./2-QC/")
+################################################ 
+
+## step 14  
+
+inputPrefix = "2_13_removedSnpHweFemaleXall" ## the output from step 12
+outputPC4subjFile = "2_14_eigenvalAfterQC.txt"
+outputPCplotFile = "2_14_eigenvalAfterQC.png"
+plotPCA4plink(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile)
+## remove outliers
+inputPrefix = "2_13_removedSnpHweFemaleXall"
+cutoff =  NULL 
+cutoffSign = 'greater' ## not used if cutoff==NULL
+
+
+inputPC4subjFile = "2_14_eigenvalAfterQC.txt"
+outputPC4outlierFile = "2_14_eigenval4outliers.txt"
+outputPCplotFile = "2_14_removedOutliers.png"
+outputPrefix = "2_14_removedOutliers" 
+
+removeOutlierByPCs(plink, gcta, inputPrefix, cutoff, cutoffSign, inputPC4subjFile, outputPC4outlierFile, outputPCplotFile, outputPrefix)
+
+## remove unwanted files
+## remove meta file and metaDataFile+AA.txt
+system( paste0("rm  ", metaDataFile) ) 
+system( paste0("rm  *.log *.hh") )
+## change dir 
+setwd("..") 
+```
+
+ 
+  
+## Alignment with the reference
+
+All files named in this subsection are in the directory 3-lifting/.  
+
+Input files:
+
+* PLINK files after quality control and population outlier detection: 2_14_removedOutliers.#
+* Imputation reference files (see section 2.4.2).
+
+Processing steps:
+1. If the genome build of already QC-ed is different from the genome build of the imputation reference files, lift the data from the first genome build to the second. If the genome build is the same just copy the input files.
+ 
++ Output files: 3_1_liftedDataset.#
+
+2. Remove SNPs for which the name has a different position (i.e. combination of base pair position and chromosome) in the imputation reference files.
+
++ Primary output files: 3_2_removedSnpDiffNamePos.#
++ Output file with the SNPs names for which a different position is contained in the imputation reference files: 3_2_snpDiffNamePos.txt
+
+
+```{r eval=FALSE} 
+inputPrefix = "3_1_liftedDataset" 
+out2.snp = "3_2_snpDiffNamePos"
+out2 = "3_2_removedSnpDiffNamePos"
+ 
+inputBIMfn = paste0(inputPrefix, ".bim ") ## bim file from step1 
+system( paste0(alignScript4compareName, inputBIMfn, impRefDIR, " pos > ", out2.snp, ".txt"))
+system( paste0(plink, " --bfile ",  inputPrefix, " --exclude ", out2.snp, ".txt --make-bed --out ", out2) )  
+```  
+
+
+3. Remove SNPs for which the combination of base pair position and chromosome is not contained in the imputation reference files (ignoring the SNP name).
++ Primary output files: 3_3_removedSnpMissPos.#
++ Output file with the SNPs names for which the combination of base pair position and chromosome is not contained in the imputation reference files: 3_3_snpMissPos.txt
+
+
+```{r eval=FALSE} 
+out3 = "3_3_removedSnpMissPos"
+out3.snp = "3_3_snpMissPos"
+
+bim2fn = paste0(out2, ".bim ")  
+system( paste0(alignScript, bim2fn, impRefDIR, " pos > ", out3.snp, ".txt"))
+system( paste0(plink, " --bfile ",  out2, " --exclude ", paste0(out3.snp, ".txt"), " --make-bed --out ", out3) ) 
+```  
+
+4. Remove SNPs for which the combination of base pair position and chromosome (ignoring the SNP name) has an allele which is not in the
+imputation reference files for that combination of base pair position and chromosome.
+
++ Primary output files: 3_4_removedSnpDiffAlleles.#
++ Output file with the removed SNP names: 3_4_snpDiffAlleles.txt
++ Output file with the retained SNPs: 3_4_snpImpRefAlleles.txt
+
+
+```{r eval=FALSE} 
+out4 = "3_4_removedSnpDiffAlleles"
+out4.snp = "3_4_snpDiffAlleles"
+out4.snpRetained = "3_4_snpImpRefAlleles"
+ 
+bim3fn = paste0(out3, ".bim ")  
+system( paste0(alignScript, bim3fn, impRefDIR, " alleles > ", out4.snp, ".txt"))
+system( paste0(plink, " --bfile ",  out3, " --exclude ", paste0(out4.snp, ".txt"), " --make-bed --out ", out4) )  
+
+##  Remove SNPs which have an allele which is not in the imputation reference files for that SNP.
+snpDifAllele = read.table(paste0(out4.snp, ".txt"), stringsAsFactors=F)
+snpDifAllele = snpDifAllele[,1] 
+inputBIM = read.table(paste0(out3, ".bim"), stringsAsFactors=F)
+snpRetained = setdiff(inputBIM[,2], snpDifAllele)
+write.table(snpRetained, file=paste0(out4.snpRetained, ".txt"), quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ")
+```  
+
+
+## Imputation
+All files named in this subsection are in the directory 4-imputation/.
+
+Input files:
+
+* PLINK genotyping data after QC and the alignment with the imputation reference files: ../3-lifting/3_4_removedSnpDiffAlleles.#
+* Imputation reference files (see section 2.4.2).
+
+Processing steps:
+
+1. Remove monomorphic SNPs from the well aligned genotyping data.
++ Primary output files: 4_1_removedMonoSnp.#
++ Output file with the removed monomorphic SNPs: 4_1_snpMonoRemoved.txt
+```{r eval=FALSE} 
+inputPrefix4aligned2impRef = "3_4_removedSnpDiffAlleles" ## will also be used in later steps;
+outputPrefix = "4_1_removedMonoSnp" 
+outputMonoSNPfile = "4_1_snpMonoRemoved.txt" # will be used in later steps.
+
+## copy plink files from last step; 
+system( paste0("cp ./3-lifting/", inputPrefix4aligned2impRef, ".bed  ./4-imputation/") )
+system( paste0("cp ./3-lifting/", inputPrefix4aligned2impRef, ".fam  ./4-imputation/") )
+system( paste0("cp ./3-lifting/", inputPrefix4aligned2impRef, ".bim  ./4-imputation/") )
+
+## remove Monomorphic SNPs
+setwd('4-imputation')
+removedMonoSnp(plink, inputPrefix4aligned2impRef, outputPrefix, outputMonoSNPfile)
+```
+
+2. Use the imputation reference files to generate pre-phase haplotypes by SHAPEIT and then do the imputation by using IMPUTE2.
++ Output files: 4_2_imputedDataset.#
+
+The following R functions are required to complete the pre-phasing and imputation processes.
+
+
+```{r eval=FALSE} 
+chrWiseSplit()
+chunk4eachChr()
+prePhasingByShapeit()
+imputedByImpute2()
+formatConvertGtool() 
+mergeImputeData()
+filterImputeData()
+```
+
+3. Remove imputed SNPs with (info < 0.6) where the value info comes from the files *.impute2_info from the imputation.
++ Primary output files: 4_3_removedSnpInfoPostImp.#
++ Output file with the removed SNP names: 4_3_snpRemovedInfoPostImp.txt
++ Output file with the info scores of all SNPs, which consists of two columns, separated by whitespaces, the first the SNPs and the second the info scores: 4_3_snpImputedInfoScore.txt  
+
+```{r eval=FALSE} 
+prefix4imputedFilterPlink = "gwasImputedFiltered"
+filteredImputedDatasetfn = "4_3_removedSnpInfoPostImp" 
+snpWithBadInfoFile = "4_3_snpRemovedInfoPostImp.txt"
+snpImputedInfoScoreFile = "4_3_snpImputedInfoScore.txt"
+ 
+system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", prefix4imputedFilterPlink, ".bed ", filteredImputedDatasetfn, ".bed") )
+system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", prefix4imputedFilterPlink, ".bim ", filteredImputedDatasetfn, ".bim") )
+system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", prefix4imputedFilterPlink, ".fam ", filteredImputedDatasetfn, ".fam") )
+system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", impute2infoFile, " ", snpImputedInfoScoreFile) )
+system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", badImputeSNPfile, " ", snpWithBadInfoFile) ) 
+```
+
+4. Remove all SNPs (if any) which have the same position as a SNP in 4_1_snpMonoRemoved.txt has in Lifted instance data.
++ Output files: 4_4_removedMonoSnpAfter.#
+
+```{r eval=FALSE} 
+filteredImputedDatasetfn = "4_3_removedSnpInfoPostImp" 
+removedMonoSnpAfter = "4_4_removedMonoSnpAfter"
+## extract PLINK files contain only monomorphic SNPs from the original aligned (lifted and QC-ed) data set.
+system( paste0(plink, " --bfile ", inputPrefix4aligned2impRef, " --extract ", outputMonoSNPfile, " --make-bed --out ", inputPrefix4aligned2impRef, "Tmp") ) 
+system( paste0(perl4snpsWithSamePos, " ", filteredImputedDatasetfn, ".bim ", inputPrefix4aligned2impRef, "Tmp", ".bim > tmp.txt" ))
+system( paste0(plink, " --bfile ", filteredImputedDatasetfn, " --exclude tmp.txt --make-bed --out ", removedMonoSnpAfter) ) }  
+```
+
+5. Add previous identified monomorphic SNPs (if any) in 4_1_snpMonoRemoved.txt with their values from the lifted instance data.
++ Output files: 4_5_addedMonoSnpAfter.# 
+
+```{r eval=FALSE} 
+addedMonoSnpAfter = "4_5_addedMonoSnpAfter" 
+## merge both datasets
+system( paste0(plink, " --bfile ", removedMonoSnpAfter, " --bmerge ", inputPrefix4aligned2impRef, ".bed ", inputPrefix4aligned2impRef, ".bim", inputPrefix4aligned2impRef, ".fam --make-bed --out ", addedMonoSnpAfter) )}    
+```
+
+6. Remove SNPs which have a non missing value for less then 20 instances.
++ Primary output files: 4_6_removedSnpMissPostImp.#
++ Output file with the removed SNP names: 4_6_snpRemovedMissPostImp.txt
+
+```{r eval=FALSE} 
+inputPrefix = addedMonoSnpAfter  
+missCutoff = 20
+outputPrefix = "4_6_removedSnpMissPostImp"
+snpWithManyMissSNPfile = "4_6_snpRemovedMissPostImp.txt"
+removedSnpMissPostImp(plink, inputPrefix, missCutoff, snpWithManyMissSNPfile, outputPrefix)
+setwd("..")  
+```
+
+## Reduction and expansion
+
+All files named in this subsection are in the directory 5-reductAndExpand/.
+
+Input files:
+
+* The imputed dataset:../4-imputation/4_6_removedSnpMissPostImp.#
+* The SNPs before imputation:../3-lifting/3_4_snpImpRefAlleles.txt
+* The file with the SNPs with different alleles:../3-lifting/3_4_snpDiffAlleles.txt
+* The SNPs with missing positions: ../3-lifting/3_3_snpMissPos.txt
+* The SNPs with different positions: ../3-lifting/3_2_snpDiffNamePos.txt
+* The dataset before removing SNPs for imputation: ../3-lifting/3_1_liftedDataset.#
+
+Processing steps:
+
+
+1. Firt of all, copy all the input files into the directory ./5-reductAndExpand/. Then do the reduction of the imputed dataset to the SNPs before imputation.
++ Output files: 5_1_reducedToSpecific.#
+
+```{r eval=FALSE} 
+setwd("5-reductAndExpand/")
+
+inputPrefix = "4_6_removedSnpMissPostImp"
+reducedToSpecificfn = "5_1_reducedToSpecific"
+# 1. Reduce the imputed dataset to the SNPs before imputation. 
+system(paste0(plink, " --bfile ", inputPrefix, " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", reducedToSpecificfn) ) 
+```  
+
+2. Add the SNPs (if any) with different alleles with their values from the dataset before removing SNPs.
++ Output files: 5_2_extSpecificDiffAllele.#
+
+```{r eval=FALSE} 
+inputOriginalQCed = "3_1_liftedDataset"
+reducedToSpecificfn = "5_1_reducedToSpecific"
+extSpecificDiffAllelefn = "5_2_extSpecificDiffAllele"
+system(paste0(plink, " --bfile ", inputOriginalQCed, " --extract 3_4_snpDiffAlleles.txt --make-bed --out tmp") ) 
+system(paste0(plink, " --bfile ", reducedToSpecificfn, " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", extSpecificDiffAllelefn) ) 
+```  
+
+3. Add the SNPs (if any) with missing positions with their values from the dataset before removing SNPs.
++ Output files: 5_3_extSpecificMissPos.#
+
+
+```{r eval=FALSE} 
+inputOriginalQCed = "3_1_liftedDataset"
+extSpecificDiffAllelefn = "5_2_extSpecificDiffAllele"
+extSpecificMissPosfn = "5_3_extSpecificMissPos"
+system(paste0(plink, " --bfile ", inputOriginalQCed, " --extract 3_3_snpMissPos.txt --make-bed --out tmp") ) 
+system(paste0(plink, " --bfile ", extSpecificDiffAllelefn, " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", extSpecificMissPosfn) ) 
+```  
+
+4. Add the SNPs (if any) with different positions with their values from the dataset before removing SNPs.
++ Output files: 5_4_extSpecificDiffPos.#
+
+```{r eval=FALSE} 
+system(paste0(plink, " --bfile ", inputOriginalQCed, " --extract 3_2_snpDiffNamePos.txt --make-bed --out tmp") ) 
+system(paste0(plink, " --bfile ", extSpecificMissPosfn, " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", extSpecificDiffPosfn) ) 
+```  
+
+## Final results
+Copy the results of interest to the directory ./6-finalResults.
+
+```{r eval=FALSE} 
+## imputed dataset
+system( paste0("scp ./1-conversion/1_01_metaData.txt ./6-finalResults/metaData.txt " ) )
+
+## go to the directory/ dataset name 
+system( paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.bed ./6-finalResults/imputedSnpsDataset.bed") )
+system( paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.bim ./6-finalResults/imputedSnpsDataset.bim") )
+system( paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.fam ./6-finalResults/imputedSnpsDataset.fam") )
+
+system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.bed ./6-finalResults/specificSnpsDataset.bed") )
+system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.bim ./6-finalResults/specificSnpsDataset.bim") )
+system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.fam ./6-finalResults/specificSnpsDataset.fam") )
+```  
+
+
+# Extending pipelines
+
+## Integrate with Genipe
+### Installation
+To set up Genipe, please refer to Genipe's [installation](http://pgxcentre.github.io/genipe/installation.html#id3) page.
+
+### Additional configuration files 
+* Imputation reference panels
+The imputation reference can be downloaded directly from IMPUTE2's reference page: [1000 Genome phase 3](https://mathgen.stats.ox.ac.uk/impute/1000GP_Phase3.html) or [Genipe's page](http://pgxcentre.github.io/genipe/tutorials/tutorial_genipe.html#data-in-more-details).
+
+* The human reference files
+This reference genome is used for the strand check, you can download from [Genipe's page](http://pgxcentre.github.io/genipe/tutorials/tutorial_genipe.html#data-in-more-details).
+
+
+### Imputation with Genipe
+
+1. Prepare additional configuration files.
+```{r eval=FALSE} 
+## example
+impRefDIR4genipe = "../1000G_Phase3_2014/"
+fastaFile = "../hg19/hg19.fasta"
+```  
+
+2. Imputing genotypes using Genipe.
+```{r eval=FALSE} 
+## Impute genotypes using Genipe
+# chrs ="autosomes"
+# chrs =23
+chrs =22
+inputPrefix = "3_4_removedSnpDiffAlleles"
+thread4impute2 = 20 ## tune by yourself
+thread4shapeit = 30
+segmentSize = 3000000
+imputedByGenipe(chrs, impRefDIR4genipe, inputPrefix, shapeit, impute2, plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
+```
+
+3. Merge chunk-specific region using Genipe.
+```{r eval=FALSE} 
+## merge chunked genomic imputed results
+## example
+chr = 2 
+inputImpute2 = 'chr2.33000001_36000000.impute2'
+probability = 0.9
+completionRate = 0.98
+# info = 0.6
+outputPrefix = paste0('imputedChr', chr)
+mergeByGenipe(inputImpute2, chr, probability, completionRate, info, outputPrefix)
+``` 
+
+4. Extract imputed results chromosome-wise by Genipe.
+```{r eval=FALSE}  
+## extract imputed markers using Genipe 
+chr = 3
+inputImpute2 = paste0('chr', chr,'.imputed.impute2')
+inputMAP = paste0('chr', chr,'.imputed.map')
+format = 'bed'
+prob = 0.9
+outputPrefix = paste0('imputedChr', chr)  
+extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
+```     
+ 
+
+# Trouble-shooting 
+If you have any trouble or comment ? --> Contact: junfang.chen3@gmail.com
+
