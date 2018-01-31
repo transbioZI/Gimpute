@@ -1,0 +1,14 @@
+Package: Gimpute
+Title: Gimpute: An efficient genetic data processing and imputation pipeline
+Version: 0.0.0.9000
+Date: 2017-11-25 
+Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"),
+    email="junfang.chen3@gmail.com"),
+    person("Dietmar", "Lippold", role=c("aut")),
+    person("Emanuel", "Schwarz", role=c("aut")))
+Description: In order to ensure the reliability and reproducibility of genome-wide association study (GWAS) data.
+Depends: R (>= 3.4.1)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
