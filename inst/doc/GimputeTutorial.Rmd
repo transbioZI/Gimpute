@@ -110,6 +110,7 @@ alignScript = paste0(GimputeDIR,"extdata/inst/dataSetImpRefComparePos.pl ")
 
 ### Configuration files
 * Imputation reference files
+
 Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference), such as haplotypes from [1000 genome project](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz). 
 
 ```{r eval=FALSE} 
@@ -117,6 +118,7 @@ Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference
 impRefdir = paste0(GimputeDIR,"imputeRef/1000Gphase1/")
 ```  
 * Genotyping chip annotation file 
+
 Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
 These files are particularly important for strand checking and genomic information of genotypes on a variety of genome builds.
 ```{r eval=FALSE} 
