@@ -52,8 +52,7 @@ This function`install_github()` requires that you build from source, namely, `ma
  
 ## Experimental data
 Since sharing of genetic genotyping data is strictly prohibited, we do not upload any genotyping data for demonstration. 
-However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.
-nlm.nih.gov/aa/wga.cgi?page=login). As the input genotyping data for our pipeline, PLINK format files (PED/MAP or BED/BIM/FAM) are required.
+However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). As the input genotyping data for our pipeline, PLINK format files (PED/MAP or BED/BIM/FAM) are required.
 
 ## Get it Setup 
 ### File and directory naming conventions
