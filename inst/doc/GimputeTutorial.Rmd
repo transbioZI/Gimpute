@@ -193,7 +193,7 @@ inputPrefix = "1_03_replacedGroupAndSex"
 outputPrefix = "1_04_removedNoGroupId"
 removeNoGroupId(plink, inputPrefix, outputPrefix)
 ```
-5. Remove instances which have a value for ance (self identified ancestry) in the file 1_01_metaData.txt which is excluded from the dataset (for the excluded ancestry values see section 1.1.3).
+5. Remove instances which have a value for ance (self identified ancestry) in the file 1_01_metaData.txt which is excluded from the dataset (for the excluded ancestry values see section 2.4.2).
 + Output files: 1_05_removedWrongAnceInst.#
 ```{r eval=FALSE} 
 metaDataFile = "1_01_metaData.txt" 
