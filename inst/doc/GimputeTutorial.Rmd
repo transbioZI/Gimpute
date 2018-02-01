@@ -134,8 +134,9 @@ excludedProbeIdsFile = NULL
 ### Global parameters/variables
 
 ```{r eval=FALSE} 
-## If the data set contains case and control subjects
+## the symbol to indicate the ancestry, such as 'EA', 'AA' ... or NULL.
 ancestrySymbol = NULL
+## If the data set contains case and control subjects 
 caseControl = FALSE #  
 ```
 
