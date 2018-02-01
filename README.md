@@ -20,4 +20,4 @@ install_github("transbioZI/Gimpute")
 ```
 This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
 
-For more information, please look at [Gimpute tutorial]](https://github.com/transbioZI/Gimpute/blob/master/inst/doc/GimputeTutorial.Rmd).
+For more information, please look at [Gimpute tutorial](https://github.com/transbioZI/Gimpute/blob/master/inst/doc/GimputeTutorial.Rmd).
