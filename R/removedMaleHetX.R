@@ -6,7 +6,7 @@
 #' Remove male subjects with haploid heterozygous SNPs
 #'
 #' @description
-#' Determine the frequency of 
+#' Determine the frequency of male subjects that have heterozygous SNPs on chromosome X and a reasonable cutoff to remove those affect males.
 
 
 #' @param plink an executable PLINK program in either the current working directory or somewhere in the command path.
