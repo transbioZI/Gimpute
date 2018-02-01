@@ -137,6 +137,10 @@ excludedProbeIdsFile = NULL
 ancestrySymbol = NULL
 ## If the data set contains case and control subjects 
 caseControl = FALSE #  
+## the cutoff and the sign for removing population outliers based on derived first principle component 
+cutoff =  NULL 
+## the sign to indicate whether your chosen cutoff value should be greater or smaller than the 'real' population value (determined by first PC)
+cutoffSign = 'greater' ## not used if cutoff==NULL
 ```
 
 # Running pipeline
@@ -409,14 +413,14 @@ outputSNPfile = "2_13_snpRemovedHweFemaleXall.txt"
 outputPrefix = "2_13_removedSnpHweFemaleXall" 
 removedSnpFemaleChrXhweAll(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
 ```
-14. For 2_13_removedSnpHweAlloCt.# calculate the PCA (with plots) and remove the outliers from that dataset (for the definition of the outliers see section 1.1.3).
-+ Primary output files: 2_17_removedOutliersWithinHwe.#
-+ Output file with the IDs of the instances and the values of their eigenvectors from the PCA before removal of instances: 2_17_eigenvecWithinHwe-beforeRm.txt
-+ Output file with the plot of the first two PCs from the PCA before removal of instances: 2_17_eigenvecWithinHwe-beforeRm.pdf
-+ Output file with the plot of the first two PCs from the PCA after removal of instances: 2_17_eigenvecWithinHwe-afterRm.pdf
-+ Output file with the IDs of the removed instances and the values of their eigenvectors, sorted ascending by the PC values: 2_17_eigenvecWithinHwe-removed.pdf
+14. For 2_13_removedSnpHweAlloCt.# calculate the PCA (with plots) and remove the outliers from that dataset (for the definition of the outliers see section 2.4.2).
++ Primary output files: 2_14_removedOutliers.#
++ Output file with the IDs of the instances and the values of their eigenvectors from the PCA after removal of instances: 2_14_eigenvalAfterQC.txt
++ Output file with the plot of the first two PCs from the PCA before removal of instances: 2_14_eigenvalAfterQC.png
++ Output file with the plot of the first two PCs from the PCA after removal of instances: 2_14_removedOutliers.png
++ Output file with the IDs of the removed instances and the values of their eigenvectors, sorted ascending by the PC values: 2_14_eigenval4outliers.txt
 ```{r eval=FALSE} 
-## in order to get the ethnic group info
+## For the ethnic group info
 setwd('..')
 metaDataFile = "1_01_metaData.txt"
 system( paste0("scp ./1-conversion/", metaDataFile, " ./2-QC/") )
