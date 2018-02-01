@@ -28,7 +28,7 @@ In order to ensure the reliability and reproducibility of genome-wide associatio
 we set up an efficient, automatic and comprehensive genotype data processing and imputation pipeline termed __Gimpute__.
 which consists of pre-processing (genetic variant information updating/matching/liftOver,
 quality control of genetic variants and study samples, the alignment of variants to the imputation references), 
-imputation and post-imputation quality control in this vignette, which is easy-to-follow and user-friendly. 
+imputation and post-imputation quality control, as well as an extension to Genipe framework in this vignette, which is easy-to-follow and user-friendly. 
 
 # Getting started  
 ## Prerequisites
