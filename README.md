@@ -1,5 +1,6 @@
 # Gimpute
-Gimpute: An efficient genetic data imputation pipeline 
+Gimpute: An efficient genetic data processing and imputation pipeline
+
 
 # Getting started  
 ## Prerequisites
