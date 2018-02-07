@@ -613,7 +613,7 @@ addedMonoSnpAfter = "4_5_addedMonoSnpAfter"
 system( paste0(plink, " --bfile ", removedMonoSnpAfter, " --bmerge ", inputPrefix4aligned2impRef, ".bed ", inputPrefix4aligned2impRef, ".bim", inputPrefix4aligned2impRef, ".fam --make-bed --out ", addedMonoSnpAfter) )}    
 ```
 
-6. Remove SNPs which have a non missing value for less then 20 instances.
+6. Remove SNPs which have a non missing value for less than 20 instances.
 + Primary output files: 4_6_removedSnpMissPostImp.#
 + Output file with the removed SNP names: 4_6_snpRemovedMissPostImp.txt
 
