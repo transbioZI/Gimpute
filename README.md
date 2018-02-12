@@ -8,7 +8,7 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 
 * [R](https://www.r-project.org/) 
 * [PLINK](https://www.cog-genomics.org/plink2) 
-* [GCTA64](http://cnsgenomics.com/software/gcta/download.html) 
+* [GCTA64](http://cnsgenomics.com/software/gcta/#Download) 
 * [SHAPEIT](http://www.shapeit.fr/) 
 * [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
 * [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
