@@ -2,7 +2,7 @@
 # File   : runTests.R
 # Author : Junfang Chen
 # Version0: 28 Jun 2016
-# VersionX: 31 Jan 2018
+# VersionX: 12 Feb 2018
  
 
 
@@ -269,43 +269,34 @@ outputPrefix = "2_12_removedSnpHweFemaleXct"
 removedSnpFemaleChrXhweControl(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
  
  
-
-## step 13 
-pval = 0.000001
-inputPrefix = "2_11_removedSnpHweAutoCt"   ## the output from the step before last step. 
-outputFile_pVal = "2_13_snpHwePvalfemaleXall.txt" 
-outputSNPfile = "2_13_snpRemovedHweFemaleXall.txt" 
-outputPrefix = "2_13_removedSnpHweFemaleXall" 
-removedSnpFemaleChrXhweAll(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
-  
-
+ 
  
 ################################################
-## in order to get the ethnic group info
+## get the ethnic group info
 setwd('..')
 metaDataFile = "1_01_metaData.txt"
 system( paste0("scp ./1-conversion/", metaDataFile, " ./2-QC/") )
 setwd("./2-QC/")
 ################################################ 
 
-## step 14  
+## step 13 
 
-inputPrefix = "2_13_removedSnpHweFemaleXall" ## the output from step 12
-outputPC4subjFile = "2_14_eigenvalAfterQC.txt"
-outputPCplotFile = "2_14_eigenvalAfterQC.png"
+inputPrefix = "2_12_removedSnpHweFemaleXct" ## the output from step 12
+outputPC4subjFile = "2_13_eigenvalAfterQC.txt"
+outputPCplotFile = "2_13_eigenvalAfterQC.png"
 plotPCA4plink(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile)
 
  
 ## remove outliers
-inputPrefix = "2_13_removedSnpHweFemaleXall"
+inputPrefix = "2_12_removedSnpHweFemaleXct"
 cutoff =  NULL 
 cutoffSign = 'greater' ## not used if cutoff==NULL
 
 
-inputPC4subjFile = "2_14_eigenvalAfterQC.txt"
-outputPC4outlierFile = "2_14_eigenval4outliers.txt"
-outputPCplotFile = "2_14_removedOutliers.png"
-outputPrefix = "2_14_removedOutliers" 
+inputPC4subjFile = "2_13_eigenvalAfterQC.txt"
+outputPC4outlierFile = "2_13_eigenval4outliers.txt"
+outputPCplotFile = "2_13_removedOutliers.png"
+outputPrefix = "2_13_removedOutliers" 
 
 removeOutlierByPCs(plink, gcta, inputPrefix, cutoff, cutoffSign, inputPC4subjFile, outputPC4outlierFile, outputPCplotFile, outputPrefix)
  
