@@ -417,9 +417,7 @@ metaDataFile = "1_01_metaData.txt"
 system( paste0("scp ./1-conversion/", metaDataFile, " ./2-QC/") )
 setwd("./2-QC/")
 ################################################ 
-
-## step 14  
-
+  
 inputPrefix = "2_12_removedSnpHweFemaleXct" ## the output from step 12
 outputPC4subjFile = "2_13_eigenvalAfterQC.txt"
 outputPCplotFile = "2_13_eigenvalAfterQC.png"
