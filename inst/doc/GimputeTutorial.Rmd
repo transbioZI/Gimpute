@@ -403,24 +403,13 @@ outputSNPfile = "2_12_snpRemovedHweFemaleXct.txt"
 outputPrefix = "2_12_removedSnpHweFemaleXct" 
 removedSnpFemaleChrXhweControl(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
 ```
-13. From the files 2_12_removedSnpHweAutoCt.# (not from the output of the last step) remove chrX SNPs with HWE p < 10-6 in all female instances.
-+ Primary output files: 2_13_removedSnpHweFemaleXall.#
-+ Output file with HWE p-value for the females chrX SNPs before removing, sorted ascending by the p-values: 2_13_snpHwePvalfemaleXall.txt
-+ Output file with the removed SNP names: 2_13_snpRemovedHweFemaleXall.txt
-```{r eval=FALSE} 
-pval = 0.000001
-inputPrefix = "2_11_removedSnpHweAutoCt"   ## the output from the step before last step. 
-outputFile_pVal = "2_13_snpHwePvalfemaleXall.txt" 
-outputSNPfile = "2_13_snpRemovedHweFemaleXall.txt" 
-outputPrefix = "2_13_removedSnpHweFemaleXall" 
-removedSnpFemaleChrXhweAll(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
-```
-14. For 2_13_removedSnpHweAlloCt.# calculate the PCA (with plots) and remove the outliers from that dataset (for the definition of the outliers see section 2.4.2).
-+ Primary output files: 2_14_removedOutliers.#
-+ Output file with the IDs of the instances and the values of their eigenvectors from the PCA after removal of instances: 2_14_eigenvalAfterQC.txt
-+ Output file with the plot of the first two PCs from the PCA before removal of instances: 2_14_eigenvalAfterQC.png
-+ Output file with the plot of the first two PCs from the PCA after removal of instances: 2_14_removedOutliers.png
-+ Output file with the IDs of the removed instances and the values of their eigenvectors, sorted ascending by the PC values: 2_14_eigenval4outliers.txt
+
+13. Calculate the PCA (with plots) for 2_12_removedSnpHweFemaleXct.# and remove the outliers from that dataset (for the definition of the outliers see section 2.4.2).
++ Primary output files: 2_13_removedOutliers.#
++ Output file with the IDs of the instances and the values of their eigenvectors from the PCA after removal of instances: 2_13_eigenvalAfterQC.txt
++ Output file with the plot of the first two PCs from the PCA before removal of instances: 2_13_eigenvalAfterQC.png
++ Output file with the plot of the first two PCs from the PCA after removal of instances: 2_13_removedOutliers.png
++ Output file with the IDs of the removed instances and the values of their eigenvectors, sorted ascending by the PC values: 2_13_eigenval4outliers.txt
 ```{r eval=FALSE} 
 ## For the ethnic group info
 setwd('..')
@@ -431,20 +420,20 @@ setwd("./2-QC/")
 
 ## step 14  
 
-inputPrefix = "2_13_removedSnpHweFemaleXall" ## the output from step 12
-outputPC4subjFile = "2_14_eigenvalAfterQC.txt"
-outputPCplotFile = "2_14_eigenvalAfterQC.png"
+inputPrefix = "2_12_removedSnpHweFemaleXct" ## the output from step 12
+outputPC4subjFile = "2_13_eigenvalAfterQC.txt"
+outputPCplotFile = "2_13_eigenvalAfterQC.png"
 plotPCA4plink(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile)
 ## remove outliers
-inputPrefix = "2_13_removedSnpHweFemaleXall"
+inputPrefix = "2_12_removedSnpHweFemaleXct"
 cutoff =  NULL 
 cutoffSign = 'greater' ## not used if cutoff==NULL
 
 
-inputPC4subjFile = "2_14_eigenvalAfterQC.txt"
-outputPC4outlierFile = "2_14_eigenval4outliers.txt"
-outputPCplotFile = "2_14_removedOutliers.png"
-outputPrefix = "2_14_removedOutliers" 
+inputPC4subjFile = "2_13_eigenvalAfterQC.txt"
+outputPC4outlierFile = "2_13_eigenval4outliers.txt"
+outputPCplotFile = "2_13_removedOutliers.png"
+outputPrefix = "2_13_removedOutliers" 
 
 removeOutlierByPCs(plink, gcta, inputPrefix, cutoff, cutoffSign, inputPC4subjFile, outputPC4outlierFile, outputPCplotFile, outputPrefix)
 
@@ -464,7 +453,7 @@ All files named in this subsection are in the directory 3-lifting/.
 
 Input files:
 
-* PLINK files after quality control and population outlier detection: 2_14_removedOutliers.#
+* PLINK files after quality control and population outlier detection: 2_13_removedOutliers.#
 * Imputation reference files (see section 2.4.2).
 
 Processing steps:
