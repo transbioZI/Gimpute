@@ -4,7 +4,7 @@ Gimpute: An efficient genetic data processing and imputation pipeline
 
 # Getting started  
 ## Prerequisites
-Gimpute runs in any 64-bit x86 Linux distribution and it requires the following tools:
+Gimpute runs on any 64-bit x86 Linux distribution and it requires the following tools:
 
 * [R](https://www.r-project.org/) 
 * [PLINK](https://www.cog-genomics.org/plink2) 
