@@ -16,6 +16,7 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 ## Installation 
 Development version from Github:
 ```{r eval=FALSE}
+install.packages("devtools")
 library("devtools")
 devtools::install_github("transbioZI/Gimpute")
 ```
