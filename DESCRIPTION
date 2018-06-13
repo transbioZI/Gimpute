@@ -7,6 +7,8 @@ Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"),
     person("Dietmar", "Lippold", role=c("aut")),
     person("Emanuel", "Schwarz", role=c("aut")))
 Description: In order to ensure the reliability and reproducibility of genome-wide association study (GWAS) data.
+Imports:
+    doParallel, lattice
 Depends: R (>= 3.4.1)
 License: GPL-3
 Encoding: UTF-8
