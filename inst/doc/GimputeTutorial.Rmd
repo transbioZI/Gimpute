@@ -80,8 +80,8 @@ system('mkdir 6-finalResults')
 ## go to ./0-rawData
 setwd('0-rawData')
 system('mkdir plinkFiles') ## Original PLINK files 
-system('mkdir sampleInfo') ## Meta data information
-## Here you want to put the necessary PLINK files and meta data in the above two folders.
+system('mkdir sampleInfo') ## Meta-data information
+## All required PLINK files and meta-data files should be copied into the right place after you created the directories. 
 setwd('..')
 ```
 
@@ -152,10 +152,15 @@ cutoffSign = 'greater' ## not used if cutoff==NULL
 All files named in this subsection are in the directory 1-conversion/.
 
 Input files:
+
 * Raw genotype data in PLINK format: ../0-rawData/plinkFiles/*.#
+
 * Meta-data information file about the instances: ../0-rawData/sampleInfo/*.txt
+
 * Chip annotation file for genotype information mapping and strand check (see section 2.4.2).
+
 * The file with the IDs of the excluded instances (see section 2.4.2).
+
 * The file with the IDs of the excluded probes of the chip (see section 2.4.2).
 
 Processing steps:
@@ -207,8 +212,8 @@ removedWrongAnceInst(plink, inputPrefix, metaDataFile, ancestrySymbol, outputPre
 + Output files: 1_06_removedExclProbe.#
 ```{r eval=FALSE} 
 inputPrefix = "1_05_removedWrongAnceInst"
-excludedProbeIdsFile = excludedProbeIdsFile  ## excludedProbeIds is defined in svn
-outputPrefix = "1_06_removedExclProbe" ## 
+excludedProbeIdsFile = excludedProbeIdsFile   
+outputPrefix = "1_06_removedExclProbe"  
 removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix) 
 ```
 7. Remove probes which are not contained in the annotation file or which have missing values in the annotation file.
@@ -216,7 +221,7 @@ removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix)
 + Output file with the removed probes:1_07_probesUnmapped2ChipRef.txt
 ```{r eval=FALSE} 
 inputPrefix = "1_06_removedExclProbe"
-chipAnnoFile = chipAnnoFile ## defined in SVN
+chipAnnoFile = chipAnnoFile  
 chipType = 'illumina'
 outputPrefix = "1_07_removedUnmapProbes"   
 outputSNPunmapFile = "1_07_probesUnmapped2ChipRef.txt"
@@ -227,7 +232,7 @@ removedUnmapProbes(plink, inputPrefix, chipAnnoFile, outputPrefix, outputSNPunma
 + Output file with the removed probes:1_08_probesDouble.txt
 ```{r eval=FALSE} 
 inputPrefix = "1_07_removedUnmapProbes" 
-chipAnnoFile = chipAnnoFile ## defined in SVN
+chipAnnoFile = chipAnnoFile  
 chipType = 'illumina'
 outputSNPdupFile = "1_08_probesDouble.txt"
 outputPrefix = "1_08_removedDoubleProbes"   
@@ -294,7 +299,7 @@ setwd("./2-QC/")
 
 ## step 1 
 inputPrefix = inputPrefix4QC
-hhCutOff = 0.005 ##  
+hhCutOff = 0.005   
 outputPrefix = "2_01_removedSnpHetX" 
 outputFile_SNPhhFreqAll = "2_01_snpHHfreqAll.txt"
 outputFile_SNPhhFreqRetained = "2_01_snpHHfreqRetained.txt"
@@ -327,7 +332,7 @@ setHeteroHaploMissing(plink, inputPrefix, outputPrefix)
 + Output files: 2_04_removedSnpMissPre.#
 ```{r eval=FALSE} 
 inputPrefix = "2_03_setHeteroHaploMissing" 
-snpMissCutOff = 0.05 #
+snpMissCutOff = 0.05  
 outputPrefix = "2_04_removedSnpMissPre" 
 removedSnpMiss(plink, snpMissCutOff, inputPrefix, outputPrefix) 
 ```
@@ -343,7 +348,7 @@ removedInstMiss(plink, sampleMissCutOff, inputPrefix, outputPrefix)
 + Output files: 2_06_removedInstFhet.#
 ```{r eval=FALSE} 
 inputPrefix = "2_05_removedInstMiss" 
-Fhet = 0.2 #
+Fhet = 0.2  
 outputPrefix = "2_06_removedInstFhet" 
 removedInstFhet(plink, Fhet, inputPrefix, outputPrefix)
 ```
@@ -370,7 +375,7 @@ outputPrefix = "2_09_removedSnpMissDiff"
 snpMissDifCutOff = 0.02  
 removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, outputPrefix, caseControl) 
 ```
-10. Remove chrX SNPs with missingness  >= 0.05 in females
+10. Remove chrX SNPs with missingness  >= 0.05 in females. (Optional, if no chrX data)
 + Output files: 2_10_removedSnpFemaleChrXmiss.#
 ```{r eval=FALSE} 
 femaleChrXmissCutoff = 0.05
@@ -391,7 +396,7 @@ outputPrefix = "2_11_removedSnpHweAutoCt"
 
 removedSnpHWEautoControl(plink, inputPrefix, pval, outputFile_pVal, outputSNPfile, outputPrefix)
 ```
-12. Remove chrX SNPs with HWE p < 10-6 in female controls.
+12. Remove chrX SNPs with HWE p < 10-6 in female controls. (Optional, if no chrX data)
 + Primary output files: 2_12_removedSnpHweFemaleXct.#
 + Output file with HWE p-value for the female chrX SNPs before removing, sorted ascending by the p-values:2_12_snpHwePvalfemaleXct.txt
 + Output file with the removed SNP names:2_12_snpRemovedHweFemaleXct.txt
@@ -417,7 +422,7 @@ metaDataFile = "1_01_metaData.txt"
 system( paste0("scp ./1-conversion/", metaDataFile, " ./2-QC/") )
 setwd("./2-QC/")
 ################################################ 
-  
+ 
 inputPrefix = "2_12_removedSnpHweFemaleXct" ## the output from step 12
 outputPC4subjFile = "2_13_eigenvalAfterQC.txt"
 outputPCplotFile = "2_13_eigenvalAfterQC.png"
@@ -455,7 +460,7 @@ Input files:
 * Imputation reference files (see section 2.4.2).
 
 Processing steps:
-1. If the genome build of already QC-ed is different from the genome build of the imputation reference files, lift the data from the first genome build to the second. If the genome build is the same, then just copy the input files.
+1. If the genome build of already QC-ed is different from the genome build of the imputation reference files, then lift the data from the first genome build to the second. If the genome build is the same, then just copy the input files.
  
 + Output files: 3_1_liftedDataset.#
 
@@ -474,7 +479,7 @@ inputBIMfn = paste0(inputPrefix, ".bim ") ## bim file from step1
 system( paste0(alignScript4compareName, inputBIMfn, impRefDIR, " pos > ", out2.snp, ".txt"))
 system( paste0(plink, " --bfile ",  inputPrefix, " --exclude ", out2.snp, ".txt --make-bed --out ", out2) )  
 ```  
-
+ 
 
 3. Remove SNPs for which the combination of base pair position and chromosome is not contained in the imputation reference files (ignoring the SNP name).
 + Primary output files: 3_3_removedSnpMissPos.#
@@ -578,7 +583,7 @@ system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", impute2infoFile, " "
 system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", badImputeSNPfile, " ", snpWithBadInfoFile) ) 
 ```
 
-4. Remove all SNPs (if any) which have the same position as a SNP in 4_1_snpMonoRemoved.txt has in Lifted instance data.
+4. Remove all SNPs (if any) which have the same position as a SNP in 4_1_snpMonoRemoved.txt has in lifted instance data.
 + Output files: 4_4_removedMonoSnpAfter.#
 
 ```{r eval=FALSE} 
@@ -754,5 +759,9 @@ extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
  
 
 # Trouble-shooting 
-If you have any trouble or comment ? --> Contact: junfang.chen3@gmail.com
+If you have any trouble or comment ? --> Contact: junfang.chen@zi-mannheim.de
+
+
+
+
 
