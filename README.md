@@ -18,7 +18,7 @@ Development version from Github:
 ```{r eval=FALSE}
 install.packages("devtools")
 library("devtools")
-devtools::install_github("transbioZI/Gimpute")
+install_github("transbioZI/Gimpute")
 ```
 This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
 
