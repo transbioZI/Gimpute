@@ -17,7 +17,7 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 Development version from Github:
 ```{r eval=FALSE}
 library("devtools")
-install_github("transbioZI/Gimpute")
+devtools::install_github("transbioZI/Gimpute")
 ```
 This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
 
