@@ -1,16 +1,11 @@
-
-# File   : runTests.R
-# Author : Junfang Chen
-# Version0: 28 Jun 2016
-# VersionX: 06 Jun 2018
-  
+ 
 
 
 ############################################################
 ## code chunk number 1: SNP information update  
 ############################################################
 
-library(Gimpute)
+library(Gimpute)  
 
 ## go to the directory where you'd like to generate the data
 # make the following directories and sub-directories  
