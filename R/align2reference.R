@@ -118,7 +118,7 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' @details The output files are genrated in order. Genomic position includes 
 #' chromosomal location and base-pair position of the individual variant. 
 #' All monomorphic SNPs are retained for further processing.  
-#' @author Junfang Chen <junfang.chen@zi-mannheim.de> 
+#' @author Junfang Chen 
 ##' @examples 
 #' @export 
 #' @import doParallel  
