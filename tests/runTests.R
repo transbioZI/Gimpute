@@ -589,7 +589,7 @@ removedMonoSnpAfter <- "4_4_removedMonoSnpAfter"
 ## if no monomorphic SNPs:
 if ( file.size(paste0(outputMonoSNPfile)) == 0 ){
 		renamePlinkBFile(inputPrefix=filteredImputedDatasetfn, 
-				 outputPrefix=removedMonoSnpAfter, action="copy")   
+				 	 	 outputPrefix=removedMonoSnpAfter, action="copy")   
 
 } else { 
 	## extract PLINK files contain only monomorphic SNPs from 
@@ -618,7 +618,7 @@ addedMonoSnpAfter <- "4_5_addedMonoSnpAfter"
  ## if no monomorphic SNPs:
 if ( file.size(paste0(outputMonoSNPfile))==0 ){ 
 		renamePlinkBFile(inputPrefix=filteredImputedDatasetfn, 
-				 outputPrefix=addedMonoSnpAfter, action="copy")  
+				         outputPrefix=addedMonoSnpAfter, action="copy")  
 } else { 
   
 	## merge both datasets
@@ -685,7 +685,7 @@ system(paste0(plink, " --bfile ", inputPrefix,
 # 2. Add the SNPs with different alleles with their values from the dataset before removing SNPs. 
 if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){ 
  	renamePlinkBFile(inputPrefix=reducedToSpecificfn, 
-				 outputPrefix=extSpecificDiffAllelefn, action="copy")   
+				     outputPrefix=extSpecificDiffAllelefn, action="copy")   
 } else { 
 	system(paste0(plink, " --bfile ", inputOriginalQCed, 
 		   " --extract 3_4_snpDiffAlleles.txt --make-bed --out tmp")) 
@@ -699,7 +699,7 @@ if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){
 # 3. Add the SNPs with missing positions with their values from the dataset before removing SNPs. 
 if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){  
 	renamePlinkBFile(inputPrefix=extSpecificDiffAllelefn, 
-				 outputPrefix=extSpecificMissPosfn, action="copy")  
+					 outputPrefix=extSpecificMissPosfn, action="copy")  
 } else {
 	system(paste0(plink, " --bfile ", inputOriginalQCed, 
 		   " --extract 3_3_snpMissPos.txt --make-bed --out tmp")) 
@@ -712,7 +712,7 @@ if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){
 # 4. Add the SNPs with different positions by their values from the dataset before removing SNPs. 
 if ( file.size(paste0("3_2_snpSameNameDiffPos.txt")) == 0 ){  
 	renamePlinkBFile(inputPrefix=extSpecificMissPosfn, 
-				 outputPrefix=extSpecificDiffPosfn, action="copy") 
+				     outputPrefix=extSpecificDiffPosfn, action="copy") 
 } else {
 	system(paste0(plink, " --bfile ", inputOriginalQCed, 
 		   " --extract 3_2_snpSameNameDiffPos.txt --make-bed --out tmp")) 
