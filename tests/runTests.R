@@ -307,8 +307,7 @@ setwd("..")
 system("cp ./2-QC/2_13_removedOutliers.* ./3-lifting/ ")
 setwd("./3-lifting/")
 renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
-				 outputPrefix="3_1_liftedDataset")
-
+				 outputPrefix="3_1_liftedDataset", action="move")
  
 inputFile <- paste0(impRefDIR,"*.legend.gz")  
 bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
@@ -406,7 +405,8 @@ system( paste0("scp 4_1_removedMonoSnp.*  ./", tmp4imputeDIR, "/1-dataFiles/"))
   
 setwd(paste0("./", tmp4imputeDIR, "/1-dataFiles/"))  
 
-renamePlinkBFile(inputPrefix="4_1_removedMonoSnp", outputPrefix="gwas_data_chr")
+renamePlinkBFile(inputPrefix="4_1_removedMonoSnp", 
+				 outputPrefix="gwas_data_chr", action="move")
 
 bimCurrent <- read.table(file=paste0(outputPrefixTmp, ".bim"), 
 						 stringsAsFactors=FALSE)  
@@ -560,7 +560,8 @@ prefix4imputedPlink <- "gwasImputed"
 ## output file name change to: 
 imputedDatasetfn <- "4_2_imputedDataset"
 system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/gwasImputed.* .") )
-renamePlinkBFile(inputPrefix="gwasImputed", outputPrefix="4_2_imputedDataset")
+renamePlinkBFile(inputPrefix="gwasImputed", 
+				 outputPrefix="4_2_imputedDataset", action="move")
 
 ## step 3
 ## Filtered imputed data set; Remove imputed SNPs with (info < 0.6), 
@@ -572,10 +573,12 @@ snpImputedInfoScoreFile <- "4_3_snpImputedInfoScore.txt"
  
 system(paste0("scp ./", tmp4imputeDIR, "/6-finalResults/gwasImputedFiltered.* . "))
 renamePlinkBFile(inputPrefix="gwasImputedFiltered", 
-				 outputPrefix="4_3_removedSnpInfoPostImp") 
+				 outputPrefix="4_3_removedSnpInfoPostImp", action="move")  
 
-system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", impute2infoFile, " ", snpImputedInfoScoreFile) )
-system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", badImputeSNPfile, " ", snpWithBadInfoFile) )
+system(paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", 
+	   impute2infoFile, " ", snpImputedInfoScoreFile))
+system(paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", 
+	   badImputeSNPfile, " ", snpWithBadInfoFile))
  
 ## step 4 
 ## Remove previous identified monomorphic SNPs in the imputed dataset. 
@@ -584,24 +587,27 @@ filteredImputedDatasetfn <- "4_3_removedSnpInfoPostImp"
 removedMonoSnpAfter <- "4_4_removedMonoSnpAfter"
 
 ## if no monomorphic SNPs:
-if ( file.size(paste0(outputMonoSNPfile)) == 0 ){ 
-		system(paste0("scp ", filteredImputedDatasetfn, ".bed ", removedMonoSnpAfter, ".bed") ) 
-		system(paste0("scp ", filteredImputedDatasetfn, ".bim ", removedMonoSnpAfter, ".bim") ) 
-		system(paste0("scp ", filteredImputedDatasetfn, ".fam ", removedMonoSnpAfter, ".fam") )
+if ( file.size(paste0(outputMonoSNPfile)) == 0 ){
 		renamePlinkBFile(inputPrefix=filteredImputedDatasetfn, 
-				 		 outputPrefix=removedMonoSnpAfter) 
+				 outputPrefix=removedMonoSnpAfter, action="copy")   
 
 } else { 
-	## extract PLINK files contain only monomorphic SNPs from the original aligned (lifted and QC-ed) data set.
-	system( paste0(plink, " --bfile ", inputPrefix4aligned2impRef, " --extract ", outputMonoSNPfile, " --make-bed --out ", inputPrefix4aligned2impRef, "Tmp") ) 
-	bim1 <- read.table(paste0(inputPrefix4aligned2impRef, "Tmp.bim"), stringsAsFactors=F)
-	system(paste0("awk '{print $1, $2, $4}' ", filteredImputedDatasetfn, ".bim > tmpFilterImp.txt"))
+	## extract PLINK files contain only monomorphic SNPs from 
+	## the original aligned (lifted and QC-ed) data set.
+	system(paste0(plink, " --bfile ", inputPrefix4aligned2impRef, 
+		   " --extract ", outputMonoSNPfile, " --make-bed --out ", 
+		   inputPrefix4aligned2impRef, "Tmp") ) 
+	bim1 <- read.table(paste0(inputPrefix4aligned2impRef, "Tmp.bim"), 
+					   stringsAsFactors=F)
+	system(paste0("awk '{print $1, $2, $4}' ", 
+		   filteredImputedDatasetfn, ".bim > tmpFilterImp.txt"))
 	bim2 <- read.table("tmpFilterImp.txt", stringsAsFactors=F) 
 	colnames(bim1) <- c("chr", "rsID", "gd", "pos", "a0", "a1") 
 	colnames(bim2) <- c("chr", "rsID", "pos")
 	outputFile <- "tmp.txt"
 	snpSharedPos(inputFile1=bim1, inputFile2=bim2, outputFile, nCore=25) 
-	system( paste0(plink, " --bfile ", filteredImputedDatasetfn, " --exclude tmp.txt --make-bed --out ", removedMonoSnpAfter) )
+	system(paste0(plink, " --bfile ", filteredImputedDatasetfn, 
+		   " --exclude tmp.txt --make-bed --out ", removedMonoSnpAfter))
 	system("rm tmpFilterImp.txt tmp.txt")
 } 
 
@@ -611,14 +617,16 @@ if ( file.size(paste0(outputMonoSNPfile)) == 0 ){
 addedMonoSnpAfter <- "4_5_addedMonoSnpAfter" 
  ## if no monomorphic SNPs:
 if ( file.size(paste0(outputMonoSNPfile))==0 ){ 
-		system(paste0("scp ", filteredImputedDatasetfn, ".bed ", addedMonoSnpAfter, ".bed") ) 
-		system(paste0("scp ", filteredImputedDatasetfn, ".bim ", addedMonoSnpAfter, ".bim") ) 
-		system(paste0("scp ", filteredImputedDatasetfn, ".fam ", addedMonoSnpAfter, ".fam") )  
+		renamePlinkBFile(inputPrefix=filteredImputedDatasetfn, 
+				 outputPrefix=addedMonoSnpAfter, action="copy")  
 } else { 
   
 	## merge both datasets
-	system( paste0(plink, " --bfile ", removedMonoSnpAfter, " --bmerge ", 
-		inputPrefix4aligned2impRef, ".bed ", inputPrefix4aligned2impRef, ".bim ", inputPrefix4aligned2impRef, ".fam --make-bed --out ", addedMonoSnpAfter) )
+	system(paste0(plink, " --bfile ", removedMonoSnpAfter, " --bmerge ", 
+		   inputPrefix4aligned2impRef, ".bed ", 
+		   inputPrefix4aligned2impRef, ".bim ", 
+		   inputPrefix4aligned2impRef, ".fam ", 
+		   "--make-bed --out ", addedMonoSnpAfter))
 	## remove tmp files
 	# system( paste0("rm tmp.txt") )
 	# system( paste0("rm ", inputPrefix4aligned2impRef, "*") )
@@ -632,7 +640,8 @@ inputPrefix <- addedMonoSnpAfter
 missCutoff <- 20
 outputPrefix <- "4_6_removedSnpMissPostImp"
 snpWithManyMissSNPfile <- "4_6_snpRemovedMissPostImp.txt"
-removedSnpMissPostImp(plink, inputPrefix, missCutoff, snpWithManyMissSNPfile, outputPrefix)
+removedSnpMissPostImp(plink, inputPrefix, missCutoff, 
+					  snpWithManyMissSNPfile, outputPrefix)
 
    
 setwd("..")
@@ -656,65 +665,66 @@ extSpecificDiffPosfn <- "5_4_extSpecificDiffPos"
 
 ## go to the directory/ dataset name
 ## imputed dataset
-system( paste0("scp ./4-imputation/", inputPrefix, ".bed ./5-reductAndExpand/ " ) )
-system( paste0("scp ./4-imputation/", inputPrefix, ".fam ./5-reductAndExpand/ " ) )
-system( paste0("scp ./4-imputation/", inputPrefix, ".bim ./5-reductAndExpand/ " ) )
+system(paste0("scp ./4-imputation/", inputPrefix, ".* ./5-reductAndExpand/")) 
 
 ## original but QC-ed dataset
-system( paste0("scp ./3-lifting/", inputOriginalQCed, ".bed ./5-reductAndExpand/ " ) )
-system( paste0("scp ./3-lifting/", inputOriginalQCed, ".fam ./5-reductAndExpand/ " ) )
-system( paste0("scp ./3-lifting/", inputOriginalQCed, ".bim ./5-reductAndExpand/ " ) )
-## 
-system( paste0("scp ./3-lifting/3_4_snpImpRefAlleles.txt ./5-reductAndExpand/ ") )
-system( paste0("scp ./3-lifting/3_4_snpDiffAlleles.txt ./5-reductAndExpand/ ") )
-system( paste0("scp ./3-lifting/3_3_snpMissPos.txt ./5-reductAndExpand/ ") )
-system( paste0("scp ./3-lifting/3_2_snpSameNameDiffPos.txt ./5-reductAndExpand/ ") )
+system(paste0("scp ./3-lifting/", inputOriginalQCed, ".* ./5-reductAndExpand/ "))
+
+system(paste0("scp ./3-lifting/3_4_snpImpRefAlleles.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-lifting/3_4_snpDiffAlleles.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-lifting/3_3_snpMissPos.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-lifting/3_2_snpSameNameDiffPos.txt ./5-reductAndExpand/"))
 
 
 setwd("5-reductAndExpand/")
 # 1. Reduce the imputed dataset to the SNPs before imputation. 
-system(paste0(plink, " --bfile ", inputPrefix, " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", reducedToSpecificfn) ) 
+system(paste0(plink, " --bfile ", inputPrefix, 
+	   " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", 
+	   reducedToSpecificfn)) 
 
 # 2. Add the SNPs with different alleles with their values from the dataset before removing SNPs. 
-if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){  
-	system(paste0("scp ", reducedToSpecificfn, ".bed ", extSpecificDiffAllelefn, ".bed") ) 
-	system(paste0("scp ", reducedToSpecificfn, ".bim ", extSpecificDiffAllelefn, ".bim") ) 
-	system(paste0("scp ", reducedToSpecificfn, ".fam ", extSpecificDiffAllelefn, ".fam") ) 
+if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){ 
+ 	renamePlinkBFile(inputPrefix=reducedToSpecificfn, 
+				 outputPrefix=extSpecificDiffAllelefn, action="copy")   
 } else { 
-	system(paste0(plink, " --bfile ", inputOriginalQCed, " --extract 3_4_snpDiffAlleles.txt --make-bed --out tmp") ) 
-	system(paste0(plink, " --bfile ", reducedToSpecificfn, " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", extSpecificDiffAllelefn) ) 
+	system(paste0(plink, " --bfile ", inputOriginalQCed, 
+		   " --extract 3_4_snpDiffAlleles.txt --make-bed --out tmp")) 
+	system(paste0(plink, " --bfile ", reducedToSpecificfn, 
+		   " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
+		   extSpecificDiffAllelefn) ) 
 	system("rm tmp.*")
   } 
   	
 
 # 3. Add the SNPs with missing positions with their values from the dataset before removing SNPs. 
 if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){  
-	system(paste0("scp ", extSpecificDiffAllelefn, ".bed ", extSpecificMissPosfn, ".bed") ) 
-	system(paste0("scp ", extSpecificDiffAllelefn, ".bim ", extSpecificMissPosfn, ".bim") ) 
-	system(paste0("scp ", extSpecificDiffAllelefn, ".fam ", extSpecificMissPosfn, ".fam") ) 
+	renamePlinkBFile(inputPrefix=extSpecificDiffAllelefn, 
+				 outputPrefix=extSpecificMissPosfn, action="copy")  
 } else {
-	system(paste0(plink, " --bfile ", inputOriginalQCed, " --extract 3_3_snpMissPos.txt --make-bed --out tmp") ) 
-	system(paste0(plink, " --bfile ", extSpecificDiffAllelefn, " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", extSpecificMissPosfn) ) 
+	system(paste0(plink, " --bfile ", inputOriginalQCed, 
+		   " --extract 3_3_snpMissPos.txt --make-bed --out tmp")) 
+	system(paste0(plink, " --bfile ", extSpecificDiffAllelefn, 
+		   " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
+		   extSpecificMissPosfn) ) 
 	system("rm tmp.*")
   }
   	
 # 4. Add the SNPs with different positions by their values from the dataset before removing SNPs. 
 if ( file.size(paste0("3_2_snpSameNameDiffPos.txt")) == 0 ){  
-	system(paste0("scp ", extSpecificMissPosfn, ".bed ", extSpecificDiffPosfn, ".bed") ) 
-	system(paste0("scp ", extSpecificMissPosfn, ".bim ", extSpecificDiffPosfn, ".bim") ) 
-	system(paste0("scp ", extSpecificMissPosfn, ".fam ", extSpecificDiffPosfn, ".fam") ) 
+	renamePlinkBFile(inputPrefix=extSpecificMissPosfn, 
+				 outputPrefix=extSpecificDiffPosfn, action="copy") 
 } else {
-	system(paste0(plink, " --bfile ", inputOriginalQCed, " --extract 3_2_snpSameNameDiffPos.txt --make-bed --out tmp") ) 
-	system(paste0(plink, " --bfile ", extSpecificMissPosfn, " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", extSpecificDiffPosfn) ) 
+	system(paste0(plink, " --bfile ", inputOriginalQCed, 
+		   " --extract 3_2_snpSameNameDiffPos.txt --make-bed --out tmp")) 
+	system(paste0(plink, " --bfile ", extSpecificMissPosfn, 
+		   " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
+		   extSpecificDiffPosfn) ) 
 	system("rm tmp.*")
   }
  
 
-system( paste0("rm ", inputPrefix, "*") ) 
-system( paste0("rm ", inputOriginalQCed, "*") ) 
- 
- 
-system( paste0("rm  *.txt *.log *.hh") ) 
+system(paste0("rm ", inputPrefix, "* ", inputOriginalQCed, "*"))  
+system(paste0("rm  *.txt *.log *.hh")) 
 setwd("..")
  
 
@@ -726,18 +736,19 @@ setwd("..")
 ############################################################
 
 ## imputed dataset
-system( paste0("scp ./1-conversion/1_01_metaData.txt ./6-finalResults/metaData.txt " ) )
+system(paste0("scp ./1-conversion/1_01_metaData.txt ./6-finalResults/metaData.txt " ))
  
 ## go to the directory/ dataset name 
-system( paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.bed ./6-finalResults/imputedSnpsDataset.bed") )
-system( paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.bim ./6-finalResults/imputedSnpsDataset.bim") )
-system( paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.fam ./6-finalResults/imputedSnpsDataset.fam") )
+system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ./6-finalResults/"))  
+system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ./6-finalResults/"))
 
-system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.bed ./6-finalResults/specificSnpsDataset.bed") )
-system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.bim ./6-finalResults/specificSnpsDataset.bim") )
-system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.fam ./6-finalResults/specificSnpsDataset.fam") )
+setwd("./6-finalResults/")
+renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
+				 outputPrefix="imputedSnpsDataset", action="move")
 
-
+renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.", 
+				 outputPrefix="specificSnpsDataset", action="move")
+ 
 
 
 ############################################################
@@ -745,11 +756,10 @@ system( paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.fam ./6-finalResu
 ############################################################
 
 ## additional configuration files for Genipe
-impRefDIR4genipe <- "/data/noether/dataProcessResults/10_Common/imputeReference/1000G_Phase3_2014/"
+impRefDir <- "/data/noether/dataProcessResults/10_Common/imputeReference/1000G_Phase3_2014/"
 fastaFile <- "/data/noether/dataProcessResults/10_Common/imputeReference/hg19/hg19.fasta"
 
-
-
+ 
 ## Impute genotypes using Genipe
 # chrs <- "autosomes"
 # chrs <- 23
@@ -758,7 +768,8 @@ inputPrefix <- "/data/noether/datatmp-nobackup/3_1_BrainCloud/v4/4-imputation/tm
 thread4impute2 <- 20 ## tune by yourself
 thread4shapeit <- 30
 segmentSize <- 3000000
-imputedByGenipe(chrs, impRefDIR4genipe, inputPrefix, shapeit, impute2, plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
+imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute2, 
+			    plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
 
 
 ## merge chunked genomic imputed results
