@@ -357,8 +357,9 @@ outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4 and 5.
 system(paste0("cp ./3-lifting/", inputPrefix4aligned2impRef, ".* ./4-imputation/"))
 ## remove Monomorphic SNPs
 setwd("4-imputation")
-removedMonoSnp(plink, inputPrefix4aligned2impRef, outputPrefix, outputMonoSNPfile)
-
+removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef, 
+			   outputPrefix, outputSNPfile=outputMonoSNPfile)
+ 
 # ## remove unwanted plink files << 
 ## will also be used in step 4 and 5; after that you can remove.
 # system(paste0("rm ", inputPrefix, "*"))
@@ -374,8 +375,8 @@ removedMonoSnp(plink, inputPrefix4aligned2impRef, outputPrefix, outputMonoSNPfil
 # step 2.2 chunk4eachChr.R
 # step 2.3 prePhasingByShapeit.R
 # step 2.4 imputedByImpute2.R 
-# step 2.5 formatConvertGtool.R 
-# step 2.6 mergeImputeData.R 
+# step 2.5 convertImpute2ByGtool 
+# step 2.6 mergePlinkData.R 
 # step 2.7 filterImputeData.R 
  
 ## One must create directories for storing temporal imputation output files 
@@ -417,7 +418,7 @@ inputPrefix  <- outputPrefixTmp
 outputPrefix  <- outputPrefixTmp ## the chromosome number will be appended
 chrX_PAR1suffix <- "X_PAR1"
 chrX_PAR2suffix <- "X_PAR2"
-PAR <- chrWiseSplit(plink, inputPrefix, chrX_PAR1suffix, chrX_PAR2suffix)
+PAR <- chrWiseSplit(plink, inputPrefix, chrX_PAR1suffix, chrX_PAR2suffix, nCore=25)
  
 PAR 
  
@@ -504,8 +505,8 @@ suffix4imputed <- ".impute2noINDEL.impute2"
 postImputeDIR <- "./5-postImpute/" 
 
 nCore <- 30   
-formatConvertGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
-				   prefix4plinkEachChr, suffix4imputed, postImputeDIR, nCore)
+convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
+				      prefix4plinkEachChr, suffix4imputed, postImputeDIR, nCore)
 
  
 
@@ -523,11 +524,11 @@ fn <- mclapply(chrslist, function(i){
 ####################################################### <<< 
 
 prefix4plinkEachChr <- "gwas_data_chr"
-prefix4imputedPlink <- "gwasImputed"
+prefix4mergedPlink <- "gwasImputed"
 par1 <- "X_PAR1"
 par2 <- "X_PAR2"
 # chrs <- c(1,23, par1, par2)   
-mergeImputeData(plink, chrs, prefix4plinkEachChr, prefix4imputedPlink, nCore)
+mergePlinkData(plink, chrs, prefix4plinkEachChr, prefix4mergedPlink, nCore)
  
  
 
@@ -539,14 +540,14 @@ system("mv ./4-imputeResults/*.impute2_info ./6-finalResults/")
 # step 2.7    
 setwd("./6-finalResults")
 suffix4impute2info <- ".impute2_info"
-impute2infoFile <- "impute2infoUpdated.txt"
+outputInfoFile <- "impute2infoUpdated.txt"
 infoScore <- 0.6
 badImputeSNPfile <- "badImputeSNPs.txt"
-prefix4imputedPlink <- "gwasImputed"
-prefix4imputedFilterPlink <- "gwasImputedFiltered" 
+inputPrefix <- prefix4mergedPlink
+outputPrefix <- "gwasImputedFiltered" 
 filterImputeData(plink, suffix4impute2info, 
-				 impute2infoFile, infoScore, badImputeSNPfile, 
-				 prefix4imputedPlink, prefix4imputedFilterPlink)
+				 outputInfoFile, infoScore, badImputeSNPfile, 
+				 inputPrefix, outputPrefix)
 
 setwd("..")
 setwd("..")
@@ -555,8 +556,7 @@ setwd("..")
 
 ## step 2 
 ## Final imputed results >> 
- 
-prefix4imputedPlink <- "gwasImputed"
+  
 ## output file name change to: 
 imputedDatasetfn <- "4_2_imputedDataset"
 system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/gwasImputed.* .") )
@@ -566,7 +566,7 @@ renamePlinkBFile(inputPrefix="gwasImputed",
 ## step 3
 ## Filtered imputed data set; Remove imputed SNPs with (info < 0.6), 
 ## only retain "Good" SNPs.
-prefix4imputedFilterPlink <- "gwasImputedFiltered"
+prefix4filteredPlink <- "gwasImputedFiltered"
 filteredImputedDatasetfn <- "4_3_removedSnpInfoPostImp" 
 snpWithBadInfoFile <- "4_3_snpRemovedInfoPostImp.txt"
 snpImputedInfoScoreFile <- "4_3_snpImputedInfoScore.txt"
@@ -576,7 +576,7 @@ renamePlinkBFile(inputPrefix="gwasImputedFiltered",
 				 outputPrefix="4_3_removedSnpInfoPostImp", action="move")  
 
 system(paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", 
-	   impute2infoFile, " ", snpImputedInfoScoreFile))
+	   outputInfoFile, " ", snpImputedInfoScoreFile))
 system(paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", 
 	   badImputeSNPfile, " ", snpWithBadInfoFile))
  
@@ -639,9 +639,9 @@ if ( file.size(paste0(outputMonoSNPfile))==0 ){
 inputPrefix <- addedMonoSnpAfter  
 missCutoff <- 20
 outputPrefix <- "4_6_removedSnpMissPostImp"
-snpWithManyMissSNPfile <- "4_6_snpRemovedMissPostImp.txt"
+outputSNPfile <- "4_6_snpRemovedMissPostImp.txt"
 removedSnpMissPostImp(plink, inputPrefix, missCutoff, 
-					  snpWithManyMissSNPfile, outputPrefix)
+					  outputSNPfile, outputPrefix)
 
    
 setwd("..")
