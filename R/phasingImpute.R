@@ -16,7 +16,7 @@
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU General Public License for more details. 
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
@@ -34,13 +34,13 @@
 
 #' @param plink an executable program in either the current 
 #' working directory or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK files.
-#' @param outputPrefix the prefix of the output PLINK files 
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files 
 #' after removing monomorphic SNPs.
 #' @param outputSNPfile the output pure text file that stores 
 #' the removed monomorphic SNPs, one per line.
 
-#' @return The output PLINK files after removing monomorphic SNPs 
+#' @return The output PLINK binary files after removing monomorphic SNPs 
 #' and a pure text file with removed monomorphic SNPs.
 #' @export 
 
@@ -66,7 +66,7 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 ## chrWiseSplit.R
 ########################################################################## 
 
-#' Split genome-wide genotyping data into chromosome-wide PLINK files.
+#' Split genome-wide genotyping data into chromosome-wide PLINK binary files.
 #'
 #' @description
 #' Split the whole genome genotyping data chromosome-wise; 
@@ -74,17 +74,17 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 
 #' @param plink an executable program in either the current 
 #' working directory or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK files before splitting.
-#' @param outputPrefix the prefix of the output PLINK files after splitting  
+#' @param inputPrefix the prefix of the input PLINK binary files before splitting.
+#' @param outputPrefix the prefix of the output PLINK binary files after splitting  
 #' separately for each chromosome, appended with the chromosome codes.
-#' @param chrX_PAR1suffix  if chromosome 25 is available and with PAR1, 
+#' @param chrXPAR1suffix  if chromosome 25 is available and with PAR1, 
 #' then generate the suffix with X_PAR1 for chrX_PAR1. 
-#' @param chrX_PAR2suffix  if chromosome 25 is available and with PAR2, 
+#' @param chrXPAR2suffix  if chromosome 25 is available and with PAR2, 
 #' then generate the suffix with X_PAR2 for chrX_PAR2.
 #' @param nCore the number of cores used for parallel computation. 
 #' The default value is 25.  
 
-#' @return The output PLINK files for each chromosome and possibly 
+#' @return The output PLINK binary files for each chromosome and possibly 
 #' also the logical value for the pseudo-autosomal region (PAR)
 #' indicating if PAR exists in the input genotyping data or not.   
 
@@ -102,8 +102,8 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' @author Junfang Chen
 
 
-chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix, 
-						 chrX_PAR2suffix, nCore=25){ 
+chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix, 
+						 chrXPAR2suffix, nCore=25){ 
 
     ## check which chromosomes are available to be splitted from the .bim file
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
@@ -132,7 +132,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix,
 						row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 			system(paste0(plink, " --bfile ", inputPrefix, 
 				   "25 --extract rs4PAR1.txt --make-bed --out ", 
-				   inputPrefix, chrX_PAR1suffix))
+				   inputPrefix, chrXPAR1suffix))
 			par1 <- TRUE  
 			## check for PAR2, if any SNPs out of PAR1, PAR2 also available 
 			if (length(bimPos4par1)<nrow(bim25)){
@@ -140,7 +140,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix,
 				## just to exclude rs4PAR1.txt
 				system(paste0(plink, " --bfile ", inputPrefix, 
 					   "25 --exclude rs4PAR1.txt --make-bed --out ", 
-					   inputPrefix, chrX_PAR2suffix))
+					   inputPrefix, chrXPAR2suffix))
 				par2 <- TRUE 
 			} else { 
 				print("PAR2 is NOT available in chrX!") 
@@ -151,7 +151,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix,
 			par1 <- FALSE
 			par2 <- TRUE 
 			renamePlinkBFile(inputPrefix=paste0(inputPrefix, "25"), 
-							 outputPrefix=paste0(inputPrefix, chrX_PAR2suffix), 
+							 outputPrefix=paste0(inputPrefix, chrXPAR2suffix), 
 							 action="copy") 
 		} 
 	} else {  
@@ -178,7 +178,8 @@ chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix,
 #' Chunk each chromosome genotyping data into multiple segments 
 #' by a predefined window size.
 
-#' @param inputPrefix the prefix of the input PLINK files for each chromosome.
+#' @param inputPrefix the prefix of the input PLINK binary files for 
+#' each chromosome.
 #' @param outputPrefix the prefix of the output pure text files that keep 
 #' all the chunks for each chromosome separately.
 #' @param chrs specifiy the chromosome codes for chunking.
@@ -186,8 +187,8 @@ chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix,
 
 #' @return The output pure text files include all the chunks 
 #' for each chromosome separately. 
-#' @export 
 
+#' @export 
 #' @author Junfang Chen 
 
  
@@ -256,8 +257,9 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize){
 #' @param shapeit an executable program in either the 
 #' current working directory or somewhere in the command path.
 #' @param chrs specifiy the chromosome codes for phasing.
-#' @param dataDIR the directory where genotype PLINK files are located.
-#' @param prefix4plinkEachChr the prefix of PLINK files for each chromosome.
+#' @param dataDIR the directory where genotype PLINK binary files are located.
+#' @param prefix4plinkEachChr the prefix of PLINK binary files for 
+#' each chromosome.
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.
 #' @param phaseDIR the directory where resulting pre-phased files 
@@ -467,7 +469,8 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
 #' Convert IMPUTE2 format files into PLINK format
 #'
 #' @description
-#' Convert all chunks of IMPUTE2 format files into PLINK format using GTOOL.
+#' Convert all chunks of IMPUTE2 format files into binary PLINK format using 
+#' GTOOL.
 
 #' @param gtool an executable program in either the current 
 #' working directory or somewhere in the command path.
@@ -477,13 +480,15 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
 #' @param phaseDIR the directory where pre-phased files are located.
 #' @param imputedDIR the directory where the imputated files are located.
 #' @param prefix4plinkEachChr the prefix of the input IMPUTE2 files and 
-#' also the output PLINK files for each chunk.
+#' also the output PLINK binary files for each chunk.
 #' @param suffix4imputed the suffix of the IMPUTE2 format file that stores 
 #' the imputed value.
-#' @param postImputeDIR the directory where converted PLINK files will be located. 
+#' @param postImputeDIR the directory where converted PLINK binary files 
+#' will be located. 
 #' @param nCore the number of cores used for computation.  
  
-#' @return The converted PLINK format files for each chunk from IMPUTE2 results.
+#' @return The converted binary PLINK format files for each chunk from IMPUTE2 
+#' results.
 #' @export 
 #' @import doParallel  
 
@@ -506,7 +511,7 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
 			SAM_FILE <- paste0(phaseDIR, "chr", i, ".sample")  
 			GEN_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
 							   ".pos", chunkSTART, "-", chunkEND, suffix4imputed) 
-			## output PLINK files
+			## output PLINK binary files
 			PED_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
 							   chunkSTART, "-", chunkEND, ".ped") 
 			MAP_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
@@ -535,23 +540,25 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
 #' Merge chunk-wise PLINK files 
 #'
 #' @description
-#' Merge all chunk-wise PLINK files into chromosome-wise PLINK files then 
-#' assemble into a genome-wide PLINK file set. 
+#' Merge all chunk-wise PLINK binary files into chromosome-wise PLINK 
+#' binary files then assemble into a genome-wide PLINK binary file set. 
 
 #' @param plink an executable program in either the current working 
 #' directory or somewhere in the command path.
 #' @param chrs specifiy the chromosome codes to be merged. 
-#' @param prefix4plinkEachChr the prefix of the input chunk-wise PLINK files. 
+#' @param prefix4plinkEachChr the prefix of the input chunk-wise PLINK 
+#' files. 
 #' @param prefix4mergedPlink  the prefix of the final output PLINK 
-#' format files. 
+#' binary files. 
 #' @param nCore the number of cores used for computation.  
 
-#' @return The merged genome-wide PLINK format files.
+#' @return The merged genome-wide PLINK binary files.
 #' @details Create a file containing a list chunk-wise PLINK PED and MAP 
 #' file names. The prefix of these files must already indicate in which 
 #' chromosome they belong to and files from the same chromosome will be 
 #' combined. Then all chromosomal PLINK files are assembled together 
-#' into one whole genome PLINK file set.
+#' into one whole genome PLINK binary file set.
+
 #' @export 
 #' @import doParallel  
 
@@ -652,13 +659,13 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant.   
 #' @param badImputeSNPfile the output file of SNPs with bad info scores.  
-#' @param inputPrefix the prefix of the input imputed PLINK format files. 
-#' @param outputPrefix the prefix of the output filtered PLINK format files. 
+#' @param inputPrefix the prefix of the input imputed PLINK binary files. 
+#' @param outputPrefix the prefix of the output filtered PLINK binary files. 
 
 #' @return A pure text file contains the info scores of all imputed SNPs with 
 #' two columns: SNP names and the corresponding info scores. 
 #' A pure text file with all excluded SNPs having bad info scores. 
-#' The filtered PLINK format imputed files, 
+#' The filtered PLINK binary imputed files, 
 #' @details Filter genetic variants accoring to the imputation quality score with 
 #' the help of .impute2_info files generated by IMPUTE2. 
 #' Often, we keep variants with imputation info score of greater than 0.6.    
@@ -686,15 +693,12 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
 	arg2 = paste0("awk '{if(length($4) == 1 && length($5) == 1) print}' ")
 	arg3 = paste0("awk '{print $2, $7}' > impute2infoUpdateTmp.txt")
 	system(paste0(arg1, " | ", arg2, " | ", arg3))
-	# system("grep 'rs' impute2infoAllvariants.txt | 
-	# awk '{if(length($4) == 1 && length($5) == 1) print}' | 
-	# awk '{print $2, $7}' > impute2infoUpdateTmp.txt") 
 	system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
 	## added colnames 
 	impute2info <- read.table(file=outputInfoFile, stringsAsFactors=FALSE)  
 	colnames(impute2info) <- c("rs_id", "info") 
 
-	##  filtering   
+	## filtering   
 	snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
 	write.table(snpWithBadInfo, file=badImputeSNPfile, quote=FALSE, 
 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
@@ -717,17 +721,17 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
 #' 
 #' @param plink an executable program in either the current working 
 #' directory or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param missCutoff  the cutoff of the least number of instances for 
 #' a SNP that is not missing.
 #' @param outputSNPfile the output file of SNPs with pre-defined 
 #' missing values.
-#' @param outputPrefix  the prefix of the PLINK format files. 
+#' @param outputPrefix  the prefix of the PLINK binary files. 
 
-#' @return The PLINK format files after post imputation quality control 
+#' @return The PLINK binary files after post imputation quality control 
 #' and a pure text file contains SNPs with pre-defined missing values.
-#' @export 
 
+#' @export 
 #' @author Junfang Chen 
 
 

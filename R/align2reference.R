@@ -1,18 +1,9 @@
 
-
-# File   : prepareLegend2bim.R
-# Author : Junfang Chen 
-# Version: 14.06.2018
-  
-###############################   
-###############################  
-  
-
 #' Prepare a bim-like reference file
 #'
 #' @description
 #' Prepare a bim-like file from the imputation reference legend file 
-#' (1000 genome projects).
+#' (e.g. 1000 genome project).
 
 #' @param inputFile a set of legend file from the imputation reference panel 
 #' from 1000 genome projects.
@@ -64,7 +55,7 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 	    system(paste0(arg1, fileName1, i, fileName2, arg2, arg3, arg4, i, ".txt"))
 	}, mc.cores=ncore)
   
-	##  add chr   
+	## add chr   
 	mclapply(chrslist, function(i){
 	    system(paste0("awk '{print ", i, ", $0}' chr", i, ".txt > bimChr", i, ".txt"))
 	}, mc.cores=ncore) 
@@ -96,15 +87,15 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' @param inputPrefix the prefix of the input PLINK files.
 #' @param referenceFile the reference file used for the alignment, which is a PLINK 
 #' BIM alike format file.
-#' @param out2 the prefix of the output PLINK format files after removing SNPs whose 
+#' @param out2 the prefix of the output PLINK binary files after removing SNPs whose 
 #' genomic positions are not in the imputation reference, taking SNP names into account.  
 #' @param out2.snp the output plain text file that stores the removed SNPs whose genomic 
 #' positions are not in the imputation reference, taking SNP names into account.  
-#' @param out3 the prefix of the output PLINK format files after removing SNPs whose 
+#' @param out3 the prefix of the output PLINK binary files after removing SNPs whose 
 #' genomic positions are not in the imputation reference, ingoring SNP names.    
 #' @param out3.snp the output plain text file that stores the removed SNPs whose genomic 
 #' positions are not in the imputation reference, ingoring SNP names.  
-#' @param out4 the prefix of the output PLINK format files after removing SNPs whose alleles 
+#' @param out4 the prefix of the output PLINK binary files after removing SNPs whose alleles 
 #' are not in the imputation reference, taking their genomic positions into account.    
 #' @param out4.snp the output plain text file that stores the removed SNPs whose alleles 
 #' are not in the imputation reference, taking their genomic positions into account. 
@@ -118,6 +109,7 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' @details The output files are genrated in order. Genomic position includes 
 #' chromosomal location and base-pair position of the individual variant. 
 #' All monomorphic SNPs are retained for further processing.  
+
 #' @author Junfang Chen 
 ###' @examples  
 #' @export 
@@ -219,8 +211,8 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 #' Find shared genomic position between two files.
 #'
 #' @description
-#' Find shared genomic position between two files and return the snp names of 
-#' the second input file.
+#' Find shared genomic position between two files 
+#' and return the snp names of the second input file.
 
 #' @param inputFile1 the pure text file that has at least three columns: 
 #' chromosomal location, snp name and base-pair position. 
@@ -231,6 +223,7 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 
 #' @return The snp name of the second input file which shares the same genomic 
 #' position with that of the first input file.
+
 #' @export 
 #' @import doParallel  
 

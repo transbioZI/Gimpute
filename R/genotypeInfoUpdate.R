@@ -38,10 +38,10 @@
 #' @param dupSampleIDFile a pure text file that stores the duplicated sample IDs, 
 #' each ID per line. If it is null, then duplicate the input PLINK files from 
 #' the last step as the output files.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after removing duplicated sample IDs. 
+#' @return The output PLINK binary files after removing duplicated sample IDs. 
 #' @export 
 
 #' @author Junfang Chen 
@@ -80,17 +80,17 @@ removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
 #' Update group and geneder information
 #'
 #' @description
-#' Replace group and gender information in the PLINK format files by using 
+#' Replace group and gender information in the PLINK binary files by using 
 #' the information from the metadata file.
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param metaDataFile a pure text file that stores the meta information of 
 #' the samples.  
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after updating the gender and grouping 
+#' @return The output PLINK binary files after updating the gender and grouping 
 #' information. 
 
 #' @details Find the shared sample IDs between PLINK input files and metadata file. 
@@ -161,10 +161,10 @@ updateGroupIdAndSex <- function(plink, inputPrefix, metaDataFile, outputPrefix){
 #' or somewhere in the command path.
 #' @param metaDataFile a pure text file that stores the meta information of 
 #' the samples.  
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after removing samples without group 
+#' @return The output PLINK binary files after removing samples without group 
 #' information.
 #' @export 
 
@@ -196,14 +196,14 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param metaDataFile a pure text file that stores the meta information of 
 #' the samples.  
 #' @param ancestrySymbol an indicator that shows the symbol of targeted ancestry. 
 #' If it is null, then all samples are selected. 
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK files after checking the ancestry information. 
+#' @return The output PLINK binary files after checking the ancestry information. 
 #' @details ancestrySymbol, such as 'EA' stands for the European, 
 #' 'AA' for African American. See the metaDataFile for more details. 
 #' @export  
@@ -243,13 +243,13 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param excludedProbeIdsFile a pure text file that stores the SNP IDs, 
 #' one per line, which need to be removed. If it is null, then skip this step.
 
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after removing unwanted SNP IDs.
+#' @return The output PLINK binary files after removing unwanted SNP IDs.
 #' @details excludedProbeIdsFile should be defined in a plain text file 
 #' in advance. Improper SNPs such as AFFX, cnvi etc.. with unexpect format
 #' must be excluded.
@@ -283,15 +283,15 @@ removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPre
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param chipAnnoFile a pure text file that stores the chip annotation
 #' information. 
 #' @param outputSNPfile a pure text file that stores the SNP IDs, 
 #' one per line, which are not mapped to the chip annotation file.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
 #' @return The output text file contains the removed SNP IDs, one per line.
-#' The PLINK format files after removing unmapped SNP IDs.
+#' The PLINK binary files after removing unmapped SNP IDs.
 #' @details This chip annotation file is defined in advance.
 
 #' @export 
@@ -340,15 +340,15 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
   
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param chipAnnoFile an input chip annotation file. 
 #' @param chipType a string name that defines the type of the chip annotation 
 #' file: 'Illumina', 'affymetrix' or 'psychChip'.
 #' @param outputSNPdupFile a pure text file that stores the duplicated SNP IDs, 
 #' which can be found with the help of the chip annotation file.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after removing duplicated SNP IDs.
+#' @return The output PLINK binary files after removing duplicated SNP IDs.
 #' @details Duplicated SNPs have two levels of meaning: 1.) SNPs have same 
 #' rs-names but different versions of SNP ID ound in chip annotation file. 
 #' e.g. SNP-A IDs for Affymetrix chip. 2.) SNPs with duplicated genomic 
@@ -433,14 +433,14 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param chipAnnoFile a pure text file that stores the chip annotation 
 #' information. 
 #' @param chipType a string name defines the type of the chip annotation file: 
 #' 'Illumina', 'affymetrix' or 'psychChip'.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after updating SNP information.
+#' @return The output PLINK binary files after updating SNP information.
 #' @details The SNP information in the chip annotation file is used as
 #' the reference. 
 
@@ -544,10 +544,10 @@ updatedSnpInfo <- function(plink, inputPrefix,
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after splitting chromosome X into 
+#' @return The output PLINK binary files after splitting chromosome X into 
 #' pseudoautosomal region and non-pseudoautosomal region.
 #' @details Genomic coordinate system is on genome build hg19.
 
@@ -587,10 +587,10 @@ changedXyChr <- function(plink, inputPrefix, outputPrefix){
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
  
-#' @return The output PLINK format files after removing SNPs 
+#' @return The output PLINK binary files after removing SNPs 
 #' on the chromosome Y and mitochondrial DNA.
 #' @details Note that if chromosome Y and mitochondrial DNA are available,
 #' they must be coded as 24 and 26, respectively. 

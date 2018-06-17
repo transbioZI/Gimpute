@@ -4,16 +4,16 @@
 #' Rename PLINK binary files  
 #'
 #' @description
-#' Rename a set of PLINK format files (.BED, .BIM and .FAM).   
+#' Rename a set of PLINK binary files (.BED, .BIM and .FAM).   
 #' 
-#' @param inputPrefix the prefix of the input PLINK format files. 
-#' @param outputPrefix  the prefix of the output PLINK format files. 
+#' @param inputPrefix the prefix of the input PLINK binary files. 
+#' @param outputPrefix  the prefix of the output PLINK binary files. 
 
 #' @return  Renamed PLINK binary files. 
 #' @details The original input files can be retained using the action "copy"
 #' or removed by using "move".
-#' @export 
 
+#' @export 
 #' @author Junfang Chen 
 
 

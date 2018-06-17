@@ -44,7 +44,7 @@
 #' 4.) '25' imputes for the pseudoautosomal regions of chromosome 23.
 #' @param impRefDir the directory where the imputation reference files 
 #' are located.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param shapeit an executable SHAPEIT binary program in either the current 
 #' working directory or somewhere in the command path.
 #' @param impute2 an executable IMPUTE2 binary program in either the current 

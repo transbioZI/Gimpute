@@ -36,19 +36,21 @@
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param hhCutOff the cutoff for removing male haploid heterozygous SNPs 
 #' on the chromosome X.
-#' @param outputPrefix the prefix of the output PLINK format files.
-#' @param outputFile_SNPhhFreqAll the output pure text file that stores 
+#' @param outputPrefix the prefix of the output PLINK binary files.
+#' @param outputHetSNPfile the output pure text file that stores 
 #' all heterozygous SNPs with their frequency (the number of males for the 
 #' corresponding SNP), if any. Lines are sorted by descending number.
-#' @param outputFile_SNPhhFreqRetained the output pure text file that stores 
+#' @param outputRetainSNPfile the output pure text file that stores 
 #' retained heterozygous SNPs with their frequency (the number of males for 
 #' the corresponding SNP), if any. Lines are sorted by descending number.
 
-#' @return The output PLINK format files and two pure text files (if any) with 
-#' heterozygous SNPs and their respective frequency. 
+#' @return 1.) The output PLINK binary files. 2.) A pure text files (if any)
+#' with two columns: SNPs and their corresponding frequency. 3.) After SNP 
+#' removal, a pure text files (if any) with two columns: SNPs and their 
+#' corresponding frequency.
 #' @details  A haploid heterozygous is a male genotype that is heterozygous, 
 #' which could be an error given the haploid nature of the male X chromosome.
 #' In principle, one has to remove all heterozygous SNPs of chromosome X in males. 
@@ -61,7 +63,7 @@
    
   
 removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix, 
-						   outputFile_SNPhhFreqAll, outputFile_SNPhhFreqRetained){
+						   outputHetSNPfile, outputRetainSNPfile){
 
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
 	chrDist <- table(bim[,1])
@@ -101,12 +103,12 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 			hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
 			hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
 			## all heterozygous SNPs 
-			write.table(hetSNPinstNum, file=outputFile_SNPhhFreqAll, quote=FALSE, 
+			write.table(hetSNPinstNum, file=outputHetSNPfile, quote=FALSE, 
 						row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
 			## remaining heterozygous SNPs 
 			hetSNPinstNumSub <- hetSNPinstNum[!is.element(hetSNPinstNum[,1], mostFakeSNPs), ]
-			write.table(hetSNPinstNumSub, file=outputFile_SNPhhFreqRetained, 
+			write.table(hetSNPinstNumSub, file=outputRetainSNPfile, 
 					    quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 	    } 
 
@@ -119,48 +121,54 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 	}
 }	
 
-
-
-
-
  
+  
  
 ##########################################   
 ##########################################
-#' Remove male subjects with haploid heterozygous SNPs only if chromosome X 
-#' data exists.
+#' Remove male subjects with haploid heterozygous SNPs 
 #'
 #' @description
 #' Determine the frequency of male subjects that have heterozygous SNPs on 
-#' chromosome X and a reasonable cutoff to remove those affect males.
+#' chromosome X and a reasonable cutoff to remove those affect males, if 
+#' chromosome X data exists.
 
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param hhSubjCutOff the cutoff for removing male subjects with haploid 
 #' heterozygous SNPs on the chromosome X.
-#' @param outputPrefix the prefix of the output PLINK format files.
-#' @param outputFile_subjHetFreqAll the output pure text file that stores male subjects 
+#' @param outputPrefix the prefix of the output PLINK binary files.
+#' @param outputSubjHetFile the output pure text file that stores male subjects 
 #' that have heterozygous SNPs with their frequency (if any), i.e. the number of 
-#' .hh SNPs in this male. 
-#' @param outputFile_subjHetFreqRetained the output pure text file that stores
-#'  male subjects that have heterozygous SNPs with their frequency after 'improper' 
-#' subject removal (if any).
-#' @param outputFile_SNPhhFreqAll the output pure text file that stores all 
-#' heterozygous SNPs 
-#' with their frequency (the number of males for this SNP), if any. 
+#' .hh SNPs in this male. Lines are sorted by descending number.
+#' @param outputRetainSubjectFile the output pure text file that stores
+#' male subjects that have heterozygous SNPs with their frequency after 
+#' subject removal (if any). Lines are sorted by descending number.
+#' @param outputHetSNPfile the output pure text file that stores all 
+#' heterozygous SNPs with their frequency (the number of males for this SNP)
+#' , if any. Lines are sorted by descending number.
 
-#' @return The output PLINK format files and two pure text files (if any) with 
-#' heterozygous SNPs and their respective frequency. 
-#' @details 
+#' @return 1.) The output PLINK binary files. 2.) A pure text file with 
+#' two columns: heterozygous male subjects and their corresponding heterozygous
+#' SNPs. 3.) After subject removal, a pure text file consisting of two columns:
+#' heterozygous male subjects and their corresponding heterozygous SNPs. 
+#' A pure text file with two columns: all heterozygous SNPs and their frequency.
 
+#' @details  A haploid heterozygous is a male genotype that is heterozygous, 
+#' which could be an error given the haploid nature of the male X chromosome.
+#' In principle, one has to remove all males that have heterozygous SNPs on the 
+#' chromosome X. However, too many males might be removed in some data sets. 
+#' Therefore a small percentage of such males in the data set is allowed.
+ 
 #' @export 
-
+#' @author Junfang Chen 
+ 
 
 removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix, 
-							outputFile_subjHetFreqAll, outputFile_subjHetFreqRetained, 
-							outputFile_SNPhhFreqAll){		
+							outputSubjHetFile, outputRetainSubjectFile, 
+							outputHetSNPfile){		
 
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
 	chrDist <- table(bim[,1])
@@ -172,8 +180,8 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 		if ( is.na(file.size("male23nonPAR.hh")) ){  
 			## copy/rename all snp info updated plink files
 			renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-			system(paste0("touch ", outputFile_subjHetFreqAll) )
-			system(paste0("touch ", outputFile_subjHetFreqRetained) )
+			system(paste0("touch ", outputSubjHetFile) )
+			system(paste0("touch ", outputRetainSubjectFile) )
   
 	    } else { 	
 
@@ -198,12 +206,12 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 			## generate hetSNPsFreq in .txt file 
 			InstHetSNP <- as.data.frame(hetInstFreq, stringsAsFactors=FALSE) 
 			InstHetSNP <- InstHetSNP[order(InstHetSNP[,2], decreasing=T),] 
-			write.table(InstHetSNP, file=outputFile_subjHetFreqAll, quote=FALSE, 
+			write.table(InstHetSNP, file=outputSubjHetFile, quote=FALSE, 
 					    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
 			## remaining males with heterozygous SNPs 
 			InstHetSNPsub <- InstHetSNP[!is.element(InstHetSNP[,1], names(mostFakeInst)), ] 
-			write.table(InstHetSNPsub, file=outputFile_subjHetFreqRetained, 
+			write.table(InstHetSNPsub, file=outputRetainSubjectFile, 
 					    quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
   		} 
 
@@ -214,14 +222,14 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 			   " --chr 23 --filter-males --make-bed --out male23nonPAR"))
 
 		if (is.na(file.size("male23nonPAR.hh"))) {  
-			system(paste0("touch ", outputFile_SNPhhFreqAll)) ## with empty output	  
+			system(paste0("touch ", outputHetSNPfile)) ## with empty output	  
 	    } else { 	 
 			hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)  
 			hetSNPsFreq <- table(hh[,3])  
 			hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
 			hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
 			## all heterozygous SNPs 
-			write.table(hetSNPinstNum, file=outputFile_SNPhhFreqAll, 
+			write.table(hetSNPinstNum, file=outputHetSNPfile, 
 					    quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
 		}
  		system(paste0("rm male23nonPAR.*"))	
@@ -244,9 +252,11 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
-#' @return The output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
+#' @return The output PLINK binary files after setting haploid heterozygous 
+#' SNPs as missing.
+
 #' @export 
 
 #' @author Junfang Chen 
@@ -267,19 +277,18 @@ setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
 #' Remove SNPs with missing values
 #'
 #' @description
-#' Remove SNPs with missingness of greater than a certain threshold before/after 
-#' removing subjects.
+#' Remove SNPs with missingness of greater than a certain threshold.
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param snpMissCutOff the cutoff of the missingness for removing SNPs.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK format files after removing SNPs with pre-defined 
+#' @return The output PLINK binary files after removing SNPs with pre-defined 
 #' missing values.
-#' @export 
 
+#' @export 
 #' @author Junfang Chen 
 ##' @examples  
  
@@ -299,17 +308,20 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
 #' Remove subjects with missing values
 #'
 #' @description
-#' Remove Subjects or instances with missingness of greater than a certain threshold.
+#' Remove Subjects or instances with missingness of greater than a certain 
+#' threshold.
+
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param sampleMissCutOff the cutoff of the missingness for removing 
 #' subjects/instances.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
-#' @return The output PLINK format files after removing subjects with pre-defined 
-#' missing values.
-#' @export 
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
+#' @return The output PLINK binary files after removing subjects with  
+#' a pre-defined removal cutoff.
+
+#' @export 
 #' @author Junfang Chen 
 ##' @examples  
 
@@ -326,24 +338,24 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 
 ##########################################   
 ##########################################	
-#' Remove subjects with great autosomal heterozygosity deviation
+#' Remove subjects with abnormal autosomal heterozygosity deviation
 #'
 #' @description
-#' Remove instances with great autosomal heterozygosity deviation. 
-#' i.e. with |Fhet| >= 0.2.
-#' This analysis will automatically skip haploid markers 
-#' (male X and Y chromosome markers).
+#' Remove subjects with great autosomal heterozygosity deviation. 
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param Fhet the cutoff of the autosomal heterozygosity deviation.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK format files after removing subjects with great 
+#' @return The output PLINK binary files after removing subjects with great 
 #' autosomal heterozygosity deviation.
-#' @export 
+#' @details If the cutoff of the autosomal heterozygosity deviation is set to 
+#' be greater than 0.2, i.e. |Fhet| >= 0.2, then this analysis will 
+#' automatically skip haploid markers (male X and Y chromosome markers).
 
+#' @export 
 #' @author Junfang Chen 
 ##' @examples  
  
@@ -351,15 +363,15 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){ 
 
 	system(paste0(plink, " --bfile ", inputPrefix, " --het --out ", outputPrefix))
-	#  F inbreeding coefficient estimate
+	##  F inbreeding coefficient estimate
 	autoHet <- read.table(file=paste0(outputPrefix, ".het"), header=T)  
 	fhet <- autoHet[, "F"]
 	qc_data_fhet <- autoHet[which(abs(fhet) >= Fhet), c(1, 2)]  
 	## the individual IDs to be removed  
 	write.table(qc_data_fhet, file=paste0(outputPrefix, ".txt"), quote=FALSE, 
 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	##############
-	# To remove certain individuals 
+  
+	## To remove certain individuals 
 	system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
 		   paste0(outputPrefix, ".txt"), " --make-bed --out ", outputPrefix))
 	system(paste0("rm ", outputPrefix, ".het"))
@@ -375,29 +387,33 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
 #'
 #' @description
 #' Reset paternal and maternal codes of non-founders if parents not present. 
-#' Replace the paternal ID and maternal ID of instances (childs) by the
+#' Replace the paternal ID and maternal ID of subjects (childs) by the
 #' value zero if the paternal ID and the maternal ID do not belong to any
-#' instance (parent) with the same family ID as the child. 
+#' subject (parent) with the same family ID as the child. 
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK format files.
-#' @export 
+#' @return The output PLINK binary files.
+#' @details By default, if parental IDs are provided for a sample, 
+#' they are not treated as a founder even if neither parent is 
+#' in the dataset.  With no modifiers, --make-founders clears 
+#' both parental IDs whenever at least one parent is not in the dataset, 
+#' and the affected samples are now considered founders. 
 
+
+
+#' @export  
 #' @author Junfang Chen 
 ##' @examples  
 
-# By default, if parental IDs are provided for a sample, they are not treated as a founder even if neither parent is in the dataset. 
-# With no modifiers, --make-founders clears both parental IDs whenever at least one parent is not in the dataset, 
-# and the affected samples are now considered founders. 
-# This is done by invoking PLINK command '--make-founders'.
+# 
  
 removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){ 
 
-	# Remove the parent IDs which do not belong to instances.
+	# Remove the parent IDs which do not belong to subjects
 	system(paste0(plink, " --bfile ", inputPrefix, 
 		   " --make-founders require-2-missing --make-bed --out ", outputPrefix)) 
  
@@ -411,36 +427,36 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 #' @description
 #' Remove SNPs with difference in SNP missingness between cases and controls. 
 #' To test for differential call rates between cases and controls for each SNP
-#' This only works for the genotype data set with cases and controls. 
+#' This only works for the genotype data with cases and controls. 
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param snpMissDifCutOff the cutoff of the difference in missingness between 
 #' cases and controls. 
-#' @param outputPrefix the prefix of the output PLINK format files.
-#' @param caseControl a logical value indicating whether the data set contains 
+#' @param outputPrefix the prefix of the output PLINK binary files.
+#' @param caseControl a logical value indicating whether the data contains 
 #' both case-control subjects.
 
-#' @return The output PLINK format files.
-#' @export 
+#' @return The output PLINK binary files.
 
+#' @export 
 #' @author Junfang Chen 
 ##' @examples  
- 
-# SNP missingness < 0.02 (after sample removal);
+
+
 removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff, 
 							   outputPrefix, caseControl){
 
-	if (caseControl == FALSE){  ## this is only for the control data set
+	if (caseControl == FALSE){  
+			## this is only for the control data set
 			renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	} else if (caseControl == TRUE) {
-
+	} else if (caseControl == TRUE) { 
 		outputPrefix.tmp <- paste0(outputPrefix, "tmp")
 		system (paste0(plink, " --bfile ", inputPrefix, 
 				" --test-missing --out ", outputPrefix.tmp) ) 
-		# Writing case/control missingness test to [ *.missing ]  
-		## add R command to compute differential call rates 
+		## Write case/control missingness test to [ *.missing ]  
+		## compute differential call rates 
 		## between cases and controls for each SNP 
 		ccmissing <- read.table(file=paste0(outputPrefix.tmp, ".missing"), 
 								header=T, sep="")  
@@ -461,24 +477,24 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
  
 
 
-
 ##########################################   
-##########################################  removedSnpFemaleChrXmiss.R 
+##########################################    
 #' remove chromosome X SNPs in females
 #'
 #' @description
-#' #.Remove chrX SNPs with a pre-defined cutoff for missingness in females.
+#' Remove SNPs on the chromosome X with a pre-defined cutoff for 
+#' missingness in females.
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param femaleChrXmissCutoff the cutoff of the missingness 
 #' in female chromosome X SNPs.
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK format files.
+#' @return The output PLINK binary files.
+
 #' @export 
-
 #' @author Junfang Chen 
 ##' @examples  
 
@@ -490,7 +506,7 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 	chrDist <- table(bim[,1])
 	chr23check <- is.element(names(chrDist), 23)
 	if (chr23check == TRUE) { 
-	  	### additional QC (female-chrX SNPs, missingness ok?)  
+	  	## additional QC (female-chrX SNPs, missingness ok?)  
 	 	outputPrefix.tmp1 <- paste0(outputPrefix, "tmp1")
 		outputPrefix.tmp2 <- paste0(outputPrefix, "tmp2")
 		system(paste0(plink, " --bfile ", inputPrefix, 
@@ -529,28 +545,29 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 #' Hardy weinberg equilibrium test for autosomal SNPs in controls.
 #'
 #' @description
-#' Remove autosomal SNPs in controls.
+#' Remove autosomal SNPs deviating from Hardy weinberg equilibrium in controls.
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param pval the p-value cutoff for controlling HWE test in control subjects. 
-#' Only autosomal SNPs are tested here. 
-#' @param outputFile_pVal the output pure text file that stores autosomal SNPs and 
+#' Only autosomal SNPs are considered. 
+#' @param outputPvalFile the output pure text file that stores autosomal SNPs and 
 #' their sorted HWE p-values.
-#' @param outputSNPfile the output pure text file that stores the removed SNPs.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputSNPfile the output pure text file that stores the removed SNPs, 
+#' one per line.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK format files.
+#' @return The output PLINK binary files.
+
 #' @export 
-
 #' @author Junfang Chen 
 ##' @examples  
 
 
 ##  
 
-removedSnpHWEautoControl <- function(plink, inputPrefix, pval, outputFile_pVal, 
+removedSnpHWEautoControl <- function(plink, inputPrefix, pval, outputPvalFile, 
 									 outputSNPfile, outputPrefix){ 
  
 	outputPrefix.tmp <- paste0(outputPrefix, "tmp")
@@ -563,15 +580,14 @@ removedSnpHWEautoControl <- function(plink, inputPrefix, pval, outputFile_pVal,
 	## for controls 
 	hweControl <- hweCheck[which(hweCheck$TEST == "UNAFF"), ]  
 	snpHweValAutoCt <- subset(hweControl, select=c(SNP, P))
-	snpHweValAutoCt <- snpHweValAutoCt[order(snpHweValAutoCt[,"P"]),]
-	# head(snpHweValuesAutoCt)
-	write.table(snpHweValAutoCt, file=outputFile_pVal, quote=FALSE, 
+	snpHweValAutoCt <- snpHweValAutoCt[order(snpHweValAutoCt[,"P"]),] 
+	write.table(snpHweValAutoCt, file=outputPvalFile, quote=FALSE, 
 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 	removedSNPhweControl <- hweControl[which(hweControl$P <= pval), "SNP"]
 	write.table(removedSNPhweControl, file=outputSNPfile, quote=FALSE, 
 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 
-	########## exclude SNPs 
+	## exclude SNPs 
 	system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
 		   outputSNPfile, " --make-bed --out ", outputPrefix)) 
 	system(paste0("rm ", outputPrefix.tmp, ".*"))
@@ -582,31 +598,33 @@ removedSnpHWEautoControl <- function(plink, inputPrefix, pval, outputFile_pVal,
 
 ##########################################   
 ##########################################  
-#'  Hardy weinberg equilibrium test for chromosome X SNPs in female controls. 
+#' Hardy weinberg equilibrium test for chromosome X SNPs in female controls. 
 #'
 #' @description
-#'  Hardy weinberg equilibrium test for chromosome X SNPs in female controls.  
+#' Hardy weinberg equilibrium test for SNPs on the chromosome X in 
+#' female controls.  
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param pval the p-value cutoff for controlling HWE test in female control 
-#' subjects. Only chromosome X SNPs are tested here. 
-#' @param outputFile_pVal the output pure text file that stores chromosome X SNPs 
+#' subjects. Only chromosome X SNPs are considered. 
+#' @param outputPvalFile the output pure text file that stores chromosome X SNPs 
 #' and their sorted HWE p-values.
-#' @param outputSNPfile the output pure text file that stores the removed SNPs.
-#' @param outputPrefix the prefix of the output PLINK format files.
+#' @param outputSNPfile the output pure text file that stores the removed SNPs, 
+#' one per line.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK format files.
+#' @return The output PLINK binary files.
+
 #' @export 
-
 #' @author Junfang Chen 
 ##' @examples  
 
 ##   
  
 removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval, 
-										   outputFile_pVal, outputSNPfile, 
+										   outputPvalFile, outputSNPfile, 
 										   outputPrefix){ 
 	
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
@@ -625,7 +643,7 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 		hweControl <- hweCheck[which(hweCheck$TEST == "UNAFF"), ] # 
 		snpHweValChrXCt <- subset(hweControl, select=c(SNP, P))
 		snpHweValChrXCt <- snpHweValChrXCt[order(snpHweValChrXCt[,"P"]),]
-		write.table(snpHweValChrXCt, file=outputFile_pVal, quote=FALSE, 
+		write.table(snpHweValChrXCt, file=outputPvalFile, quote=FALSE, 
 					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 		## remove bad SNPs
 		removedSNPhweControl <- hweControl[which(hweControl$P <= pval), "SNP"]
@@ -650,43 +668,46 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 
 ##########################################   
 ##########################################
-#' Population outlier detection via PCA 
+#' Population outlier detection
 #'
 #' @description
-#' Perform principle component analysis (PCA) on quality controlled genotype 
-#' data set in order to detect population outliers, 
-#' and plot the PCs for visualization. Note that, only autosomal genotypes are 
-#' used for computing principle components. 
-  
+#' Principle component analysis (PCA) on the genotype data is performed 
+#' to detect population outliers, and the first two PCs 
+#' are plotted for the visualization. 
 
-#' @param gcta an executable GCTA program in either the current working directory 
+#' @param gcta an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK format files.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param nThread the number of threads used for computation. 
 #' @param outputPC4subjFile the pure text file that stores all the subject IDs 
-#' after QC and their corresponding eigenvalues of the first two principle components.
+#' and their corresponding eigenvalues of the first two principle components.
 #' @param outputPCplotFile the plot file for visualizing the first two 
-#' principle components of all subjects.
+#' principle components of all investigated subjects.
 
 #' @return The output pure text file and plot file for storing first two 
 #' principle components of study subjects.
+#' @details Before population outlier detection, it's better to perform QC 
+#' on the genotype data. 
+#' Only autosomal genotypes are used for principle component analysis. 
+
 #' @export 
 #' @import lattice  
 
 #' @author Junfang Chen 
 ##' @examples  
+ 
 
-## http://cnsgenomics.com/software/gcta/#Download
-
-plotPCA4plink <- function(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile){ 
+plotPCA4plink <- function(gcta, inputPrefix, nThread, 
+						  outputPC4subjFile, outputPCplotFile){ 
 
 	autosomefn <- paste0(inputPrefix, "Autosome")
 	system(paste0(gcta, " --bfile ", inputPrefix, 
-		   " --make-grm --autosome --out ", autosomefn, " --thread-num 30"))
+		   " --make-grm --autosome --out ", autosomefn, " --thread-num ", nThread))
 	system(paste0(gcta, " --grm ", autosomefn, " --pca 20 --out ", 
-		   autosomefn, " --thread-num 30"))
+		   autosomefn, " --thread-num ", nThread))
 
 	eigen <- read.table(file=paste0(autosomefn,".eigenvec"), stringsAsFactors=FALSE)
-	pcs <- eigen[,1:4] ## first two PCs
+	pcs <- eigen[,1:4] ## first two PCs in the 3rd and 4th column.
 	write.table(pcs, outputPC4subjFile, quote=FALSE, row.names=FALSE, 
 			    col.names=FALSE, eol="\r\n", sep=" ")
 	pcWithGroup <- cbind(pcs, stringsAsFactors=FALSE)
@@ -703,50 +724,45 @@ plotPCA4plink <- function(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile
 
  
 
-
- 
-
-  
  
 ##
 ######################################################
 ######################################################
-#' Remove population outliers by principle components
+#' Remove population outliers
 #'
 #' @description
-#' This function decides if one would remove population outliers or not. 
-#' If the outliers are necessary to be removed 
-#' then one uses the eigenvalues from the first principle component as 
-#' a criterion for finding out the outliers by defining a proper cutoff.
+#' Remove population outliers by using principle component analysis.
   
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
-#' @param cutoff the cutoff that would distinguish the outliers from 
-#' ordinary population. 
-#' If it is null, then no outliers or not necessary to remove outliers.
-#' If it has only a value, then one also has to define the cutoffSign as below.
-#' If it has two values, then one doesn't have to define the cutoffSign.
-#' @param cutoffSign the cutoff sign: 'greater' or 'smaller' that would determine 
+#' @param gcta an executable program in either the current working directory 
+#' or somewhere in the command path.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param cutoff the cutoff that distinguishes the eigenvalues of the outliers  
+#' from ordinary population. If it is null, then there are no outliers or 
+#' outliers are not required to be removed.  
+#' @param cutoffSign the cutoff sign: 'greater' or 'smaller' that determines 
 #' if the outliers should be greater or smaller than the cutoff value.
-#' if the cutoff score has two values, then no need to define the cutoffSign.
 #' @param inputPC4subjFile the pure text file that stores all the subject IDs 
-#' after QC and their corresponding eigenvalues of the first two principle components, if any.
+#' and their corresponding eigenvalues of the first two principle components.
 #' @param outputPC4outlierFile the pure text file that stores the outlier IDs 
-#' and their corresponding eigenvalues of the first two principle components, if any.
+#' and their corresponding eigenvalues of the first two principle components.
 #' @param outputPCplotFile the plot file for visualizing the first two 
-#' principle components of all subjects without population outliers, if any.
+#' principle components of all subjects without population outliers.
+#' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @param inputPrefix the prefix of the input PLINK format files.
-#' @param outputPrefix the prefix of the output PLINK format files..
-#' @param outputSNPs the output pure text file that stores the removed 
-#' monomorphic SNPs.
+#' @return 1.) The output PLINK binary files after outlier removal. 
+#' 2.) The output pure text file (if any) for storing removed outlier IDs 
+#' and their corresponding PCs. 3.) The plot file (if any) for visualizing 
+#' the first two principle components after outlier removal.
 
-#' @return The output PLINK format files after outlier removal. 
-#' The output pure text file (if any) for storing removed outlier IDs 
-#' and their corresponding PCs. 
-#' The plot file (if any) for visualizing the first two principle components 
-#' after outlier removal.
+#' @details This function is used for removing population outliers. 
+#' If the outliers are necessary to be removed, then one uses the eigenvalues 
+#' from the first principle component as a criterion to find out the outliers 
+#' by assigning an appropriate cutoff. 
+  
+
 #' @export 
 #' @import lattice  
 #' @author Junfang Chen 
@@ -757,7 +773,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
 							   outputPCplotFile, outputPrefix){
 
 	## if no outliers or no need to remove PC outliers. 
-	if ( is.null(cutoff) == TRUE ){ 
+	if (is.null(cutoff) == TRUE) { 
 		## copy/rename all snp info updated plink files
 		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")
 	} else {  
