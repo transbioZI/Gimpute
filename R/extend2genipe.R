@@ -205,8 +205,8 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
 ##' @examples 
   
 
-mergeByGenipe <- function(inputImpute2, chr, probability, completionRate, 
-    #' info, outputPrefix){ 
+mergeByGenipe <- function(inputImpute2, chr, probability, 
+                          completionRate, info, outputPrefix){ 
          
     system( paste0("impute2-merger ", 
     " --impute2 ", inputImpute2, " \ ",
