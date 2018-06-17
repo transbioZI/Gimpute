@@ -40,7 +40,7 @@
 #' @param outputSNPfile the output pure text file that stores 
 #' the removed monomorphic SNPs, one per line.
 
-#' @return  The output PLINK files after removing monomorphic SNPs 
+#' @return The output PLINK files after removing monomorphic SNPs 
 #' and a pure text file with removed monomorphic SNPs.
 #' @export 
 
@@ -84,7 +84,7 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' @param nCore the number of cores used for parallel computation. 
 #' The default value is 25.  
 
-#' @return  The output PLINK files for each chromosome and possibly 
+#' @return The output PLINK files for each chromosome and possibly 
 #' also the logical value for the pseudo-autosomal region (PAR)
 #' indicating if PAR exists in the input genotyping data or not.   
 
@@ -184,7 +184,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrX_PAR1suffix,
 #' @param chrs specifiy the chromosome codes for chunking.
 #' @param windowSize  the window size of each chunk.
 
-#' @return  The output pure text files include all the chunks 
+#' @return The output pure text files include all the chunks 
 #' for each chromosome separately. 
 #' @export 
 
@@ -268,7 +268,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize){
 #' along with nThread.
  
 
-#' @return  The pre-phased haplotypes for given chromosomes.  
+#' @return The pre-phased haplotypes for given chromosomes.  
 #' @details If ChrX is available then it is done differently by passing the flag 
 #' --chrX to SHAPEIT.
 
@@ -355,12 +355,12 @@ prePhasingByShapeit <- function(shapeit, chrs, dataDIR,
 #' @param XPAR a logical value indicating whether --chrX flag should be 
 #' passed for prephasing using SHAPEIT.
 #' --chrX flag, specifically for chrX imputation'
-#' @return  The imputed files for all chunks from given chromosomes.  
+#' @return The imputed files for all chunks from given chromosomes.  
 #' @export 
 #' @import doParallel  
 
 #' @author Junfang Chen 
-#' @examples 
+##' @examples 
  
 
 imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR, 
@@ -483,7 +483,7 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
 #' @param postImputeDIR the directory where converted PLINK files will be located. 
 #' @param nCore the number of cores used for computation.  
  
-#' @return  The converted PLINK format files for each chunk from IMPUTE2 results.
+#' @return The converted PLINK format files for each chunk from IMPUTE2 results.
 #' @export 
 #' @import doParallel  
 
@@ -546,7 +546,7 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
 #' format files. 
 #' @param nCore the number of cores used for computation.  
 
-#' @return  The merged genome-wide PLINK format files.
+#' @return The merged genome-wide PLINK format files.
 #' @details Create a file containing a list chunk-wise PLINK PED and MAP 
 #' file names. The prefix of these files must already indicate in which 
 #' chromosome they belong to and files from the same chromosome will be 
@@ -724,7 +724,7 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
 #' missing values.
 #' @param outputPrefix  the prefix of the PLINK format files. 
 
-#' @return  The PLINK format files after post imputation quality control 
+#' @return The PLINK format files after post imputation quality control 
 #' and a pure text file contains SNPs with pre-defined missing values.
 #' @export 
 

@@ -54,11 +54,11 @@
 #' @param thread4impute2 the number of threads for the imputation.  
 #' @param thread4shapeit the number of threads for phasing.
   
-#' @return  The imputed files using genipe.
+#' @return The imputed files using genipe.
 #' @export 
 
-#' @author Junfang Chen <junfang.chen@zi-mannheim.de> 
-#' @examples 
+#' @author Junfang Chen 
+###' @examples 
   
 
 imputedByGenipe <- function(chrs, impRefDir, inputPrefix, 
@@ -90,6 +90,7 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
     LEGENDfileX_PAR2 <- paste0(impRefDir, "1000GP_Phase3_chrX_PAR2.legend.gz") 
     GENMAPfileX_PAR2 <- paste0(impRefDir, "genetic_map_chrX_PAR2_combined_b37.txt") 
 
+    autosomeCode = seq_len(22) 
 
     if (chrs == "autosomes"){ 
         system( paste0("genipe-launcher ", 
@@ -107,8 +108,8 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
         " --thread ", thread4impute2, " \ ", 
         " --shapeit-thread ", thread4shapeit, " \ ", 
         " --report-title Tutorial \ ",  
-        " --report-number 'TestReport' \ " ) ) 
-    } else if (is.element(chrs, 1:22)) { ## one chromosome at a time
+        " --report-number 'TestReport' \ " ) )  
+    } else if (is.element(chrs, autosomeCode)) { ## one chromosome at a time
         system( paste0("genipe-launcher ", 
         " --chrom ", chrs, " \ ", 
         " --bfile ", inputPrefix, " \ ",
@@ -197,11 +198,11 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
 #' with the allele frequency estimate threshold for site exclusion. (<0.00)
 #' @param outputPrefix the prefix for the imputed output files. 
  
-#' @return  The merged imputed files using genipe.
+#' @return The merged imputed files using genipe.
 #' @export 
 
-#' @author Junfang Chen <junfang.chen@zi-mannheim.de> 
-#' @examples 
+#' @author Junfang Chen 
+##' @examples 
   
 
 mergeByGenipe <- function(inputImpute2, chr, probability, completionRate, 
@@ -263,11 +264,11 @@ mergeByGenipe <- function(inputImpute2, chr, probability, completionRate,
 #' the specified threshold. Can be use in combination with ‘--maf’, ‘--rate’ 
 #' and ‘--genomic’.
   
-#' @return  The extracted imputed files using genipe.
+#' @return The extracted imputed files using genipe.
 #' @export 
 
-#' @author Junfang Chen <junfang.chen@zi-mannheim.de> 
-#' @examples  
+#' @author Junfang Chen 
+##' @examples  
 
 
 # impute2-extractor  --impute2 imputedChr2.impute2   --out imputedChr2   
@@ -286,27 +287,6 @@ extractByGenipe <- function(inputImpute2, inputMAP, outputPrefix, format, prob){
     ) )
     system(paste0("rm ", tmpMarkerFile))    
 }
- 
-
-# extractByGenipeGenomicRegion <- function(inputImpute2, outputPrefix, 
-#                                          format, prob, genomicRange, 
-#                                           maf, rate, info){             
-
-#             system( paste0("impute2-extractor ", 
-#             " --impute2 ", inputImpute2, " \ ",
-#             " --index ", " \ ",  
-#             " --out ", outputPrefix, " \ ",  
-#             " --format  ", format, " \ ",  
-#             " --genomic  ", genomicRange, " \ ",
-#             " --maf  ", maf, " \ ",
-#             " --rate  ", rate, " \ ",
-#             " --info  ", info, " \ "
-#             ) )    
-# }
-
-
-
- 
  
 
  
