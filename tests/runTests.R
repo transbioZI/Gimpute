@@ -70,7 +70,7 @@ removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix)
 metaDataFile <- "1_01_metaData.txt"
 inputPrefix <- "1_02_removedExclInst"
 outputPrefix <- "1_03_replacedGroupAndSex"
-replaceGroupIdAndSex(plink, inputPrefix, metaDataFile, outputPrefix)
+updateGroupIdAndSex(plink, inputPrefix, metaDataFile, outputPrefix)
 
 # step 4 remove instances without group IDs
 metaDataFile <- "1_01_metaData.txt"
@@ -97,9 +97,9 @@ inputPrefix <- "1_06_removedExclProbe"
 chipAnnoFile <- chipAnnoFile  
 chipType <- "illumina"
 outputPrefix <- "1_07_removedUnmapProbes"   
-outputSNPunmapFile <- "1_07_probesUnmapped2ChipRef.txt"
+outputSNPfile <- "1_07_probesUnmapped2ChipRef.txt"
 removedUnmapProbes(plink, inputPrefix, chipAnnoFile, 
-				   outputPrefix, outputSNPunmapFile)
+				   outputPrefix, outputSNPfile)
  
 
 ## step 8 (Optional, if chip annotation file is not given)
@@ -157,10 +157,10 @@ setwd("./2-QC/")
 inputPrefix <- inputPrefix4QC
 hhCutOff <- 0.005 ##  can be tuned
 outputPrefix <- "2_01_removedSnpHetX" 
-outputFile_SNPhhFreqAll <- "2_01_snpHHfreqAll.txt"
-outputFile_SNPhhFreqRetained <- "2_01_snpHHfreqRetained.txt"
+outputHetSNPfile <- "2_01_snpHHfreqAll.txt"
+outputRetainSNPfile <- "2_01_snpHHfreqRetained.txt"
 removedSnpHetX(plink, inputPrefix, hhCutOff, outputPrefix, 
-		 	   outputFile_SNPhhFreqAll, outputFile_SNPhhFreqRetained)
+		 	   outputHetSNPfile, outputRetainSNPfile)
 
 
 ## step 2  2_02_removedHetXInst
@@ -168,12 +168,12 @@ removedSnpHetX(plink, inputPrefix, hhCutOff, outputPrefix,
 inputPrefix <- "2_01_removedSnpHetX"
 hhSubjCutOff <- 15
 outputPrefix <- "2_02_removedInstHetX"
-outputFile_subjHetFreqAll <- "2_02_instHetXfreqAll.txt" 
-outputFile_subjHetFreqRetained <- "2_02_instHetXfreqRetained.txt"  
-outputFile_SNPhhFreqAll <- "2_02_snpHHfreqAll.txt"
+outputSubjHetFile <- "2_02_instHetXfreqAll.txt" 
+outputRetainSubjectFile <- "2_02_instHetXfreqRetained.txt"  
+outputHetSNPfile <- "2_02_snpHHfreqAll.txt"
 removedMaleHetX(plink, inputPrefix, hhSubjCutOff, 
-				outputPrefix, outputFile_subjHetFreqAll, 
-				outputFile_subjHetFreqRetained, outputFile_SNPhhFreqAll) 
+				outputPrefix, outputSubjHetFile, 
+				outputRetainSubjectFile, outputHetSNPfile) 
 
 ## step 3 
 # 3. Set all heterozygous alleles of SNPs of the chromosome 23 for males
@@ -235,22 +235,22 @@ removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, inputPrefix, outputPrefix)
 
 pval <- 0.000001
 inputPrefix <- "2_10_removedSnpFemaleChrXmiss"  
-outputFile_pVal <- "2_11_snpHwePvalAutoCt.txt" 
+outputPvalFile <- "2_11_snpHwePvalAutoCt.txt" 
 outputSNPfile <-  "2_11_snpRemovedHweAutoCt.txt" 
 outputPrefix <- "2_11_removedSnpHweAutoCt" 
 
 removedSnpHWEautoControl(plink, inputPrefix, pval, 
-						 outputFile_pVal, outputSNPfile, outputPrefix)
+						 outputPvalFile, outputSNPfile, outputPrefix)
 
 
 ## step 12 
 pval <- 0.000001
 inputPrefix <- "2_11_removedSnpHweAutoCt"   
-outputFile_pVal <- "2_12_snpHwePvalfemaleXct.txt" 
+outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
 outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
 outputPrefix <- "2_12_removedSnpHweFemaleXct" 
 removedSnpFemaleChrXhweControl(plink, inputPrefix, pval, 
-							   outputFile_pVal, outputSNPfile, outputPrefix)
+							   outputPvalFile, outputSNPfile, outputPrefix)
  
  
  
@@ -268,7 +268,8 @@ setwd("./2-QC/")
 inputPrefix <- "2_12_removedSnpHweFemaleXct" ## the output from step 12
 outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPCplotFile <- "2_13_eigenvalAfterQC.png"
-plotPCA4plink(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile)
+nThread = 30
+plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
 
  
 ## remove outliers
@@ -416,9 +417,9 @@ print(currentChr)
  
 inputPrefix  <- outputPrefixTmp 
 outputPrefix  <- outputPrefixTmp ## the chromosome number will be appended
-chrX_PAR1suffix <- "X_PAR1"
-chrX_PAR2suffix <- "X_PAR2"
-PAR <- chrWiseSplit(plink, inputPrefix, chrX_PAR1suffix, chrX_PAR2suffix, nCore=25)
+chrXPAR1suffix <- "X_PAR1"
+chrXPAR2suffix <- "X_PAR2"
+PAR <- chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore=25)
  
 PAR 
  
