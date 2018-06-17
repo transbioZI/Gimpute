@@ -2,31 +2,53 @@
 % Please edit documentation in R/genotypeQC.R
 \name{removedMaleHetX}
 \alias{removedMaleHetX}
-\title{Remove male subjects with haploid heterozygous SNPs only if chromosome X data exists.}
+\title{Remove male subjects with haploid heterozygous SNPs}
 \usage{
 removedMaleHetX(plink, inputPrefix, hhSubjCutOff, outputPrefix,
-  outputFile_subjHetFreqAll, outputFile_subjHetFreqRetained,
-  outputFile_SNPhhFreqAll)
+  outputSubjHetFile, outputRetainSubjectFile, outputHetSNPfile)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{hhSubjCutOff}{the cutoff for removing male subjects with haploid heterozygous SNPs on the chromosome X.}
+\item{hhSubjCutOff}{the cutoff for removing male subjects with haploid 
+heterozygous SNPs on the chromosome X.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 
-\item{outputFile_subjHetFreqAll}{the output pure text file that stores male subjects that have heterozygous SNPs with their frequency (if any), i.e. the number of .hh SNPs in this male.}
+\item{outputSubjHetFile}{the output pure text file that stores male subjects 
+that have heterozygous SNPs with their frequency (if any), i.e. the number of 
+.hh SNPs in this male. Lines are sorted by descending number.}
 
-\item{outputFile_subjHetFreqRetained}{the output pure text file that stores male subjects that have heterozygous SNPs with their frequency after 'improper' subject removal
-(if any).}
+\item{outputRetainSubjectFile}{the output pure text file that stores
+male subjects that have heterozygous SNPs with their frequency after 
+subject removal (if any). Lines are sorted by descending number.}
 
-\item{outputFile_SNPhhFreqAll}{the output pure text file that stores all heterozygous SNPs with their frequency (the number of males for this SNP), if any.}
+\item{outputHetSNPfile}{the output pure text file that stores all 
+heterozygous SNPs with their frequency (the number of males for this SNP)
+, if any. Lines are sorted by descending number.}
 }
 \value{
-The output PLINK format files and two pure text files (if any) with heterozygous SNPs and their respective frequency.
+1.) The output PLINK binary files. 2.) A pure text file with 
+two columns: heterozygous male subjects and their corresponding heterozygous
+SNPs. 3.) After subject removal, a pure text file consisting of two columns:
+heterozygous male subjects and their corresponding heterozygous SNPs. 
+A pure text file with two columns: all heterozygous SNPs and their frequency.
 }
 \description{
-Determine the frequency of male subjects that have heterozygous SNPs on chromosome X and a reasonable cutoff to remove those affect males.
+Determine the frequency of male subjects that have heterozygous SNPs on 
+chromosome X and a reasonable cutoff to remove those affect males, if 
+chromosome X data exists.
+}
+\details{
+A haploid heterozygous is a male genotype that is heterozygous, 
+which could be an error given the haploid nature of the male X chromosome.
+In principle, one has to remove all males that have heterozygous SNPs on the 
+chromosome X. However, too many males might be removed in some data sets. 
+Therefore a small percentage of such males in the data set is allowed.
+}
+\author{
+Junfang Chen
 }

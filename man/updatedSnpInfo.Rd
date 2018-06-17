@@ -2,29 +2,35 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{updatedSnpInfo}
 \alias{updatedSnpInfo}
-\title{Update the probes or SNPs information}
+\title{Update the SNP information}
 \usage{
 updatedSnpInfo(plink, inputPrefix, chipAnnoFile, chipType, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{chipAnnoFile}{a pure text file that stores the chip annotation information (Affymetrix, Illumination, PsychChip and so on). 
-This file can be found http://www.well.ox.ac.uk/~wrayner/strand/.}
+\item{chipAnnoFile}{a pure text file that stores the chip annotation 
+information.}
 
-\item{chipType}{a string name that defines the type of the chip annotation file: 'Illumina', 'affymetrix' or 'psychChip'.}
+\item{chipType}{a string name defines the type of the chip annotation file: 
+'Illumina', 'affymetrix' or 'psychChip'.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after updating SNP information.
+The output PLINK binary files after updating SNP information.
 }
 \description{
-Update SNP information including SNP name, genomic position, chromosome location and the strand information, with the help of the chip annotation file. 
-This chip annotation file is defined in the configuration folder.
+Update SNP information including SNP name, base-pair position, 
+chromosomal location and the strand information.
+}
+\details{
+The SNP information in the chip annotation file is used as
+the reference.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

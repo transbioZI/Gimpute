@@ -7,20 +7,26 @@
 removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, inputPrefix, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{femaleChrXmissCutoff}{the cutoff of the missingness in female chromosome X SNPs.}
+\item{femaleChrXmissCutoff}{the cutoff of the missingness 
+in female chromosome X SNPs.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files.
+The output PLINK binary files.
 }
 \description{
-#.Remove chrX SNPs with a pre-defined cutoff for missingness in females.
+Remove SNPs on the chromosome X with a pre-defined cutoff for 
+missingness in females.
+}
+\examples{
+ 
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

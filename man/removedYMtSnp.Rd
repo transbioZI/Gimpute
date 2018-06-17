@@ -2,23 +2,29 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{removedYMtSnp}
 \alias{removedYMtSnp}
-\title{Remove SNPs on the chromosome Y and mitochondria}
+\title{Remove SNPs on the chromosome Y and mitochondrial DNA}
 \usage{
 removedYMtSnp(plink, inputPrefix, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after splitting chromosome X into pseudoautosomal region and non-pseudoautosomal region.
+The output PLINK binary files after removing SNPs 
+on the chromosome Y and mitochondrial DNA.
 }
 \description{
-Remove SNPs on the chromosome Y and mitochondria (in this case, chromosome==24 & chromosome==26 are removed). If no such SNPs, the output files remain the same as the input.
+Remove SNPs on the chromosome Y and mitochondrial DNA.
+}
+\details{
+Note that if chromosome Y and mitochondrial DNA are available,
+they must be coded as 24 and 26, respectively.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

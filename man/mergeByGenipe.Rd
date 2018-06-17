@@ -10,13 +10,16 @@ mergeByGenipe(inputImpute2, chr, probability, completionRate, info,
 \arguments{
 \item{inputImpute2}{the output from IMPUTE2.}
 
-\item{chr}{specifiy the chromosome segment to be merged, on which the imputation was made.}
+\item{chr}{specifiy the chromosome segment to be merged, on which the 
+imputation was made.}
 
 \item{probability}{the probability threshold for no calls. [<0.9]}
 
-\item{completionRate}{the completion rate threshold for site exclusion. [<0.98]}
+\item{completionRate}{the completion rate threshold for site exclusion. 
+[<0.98]}
 
-\item{info}{the measure of the observed statistical information associated with the allele frequency estimate threshold for site exclusion. (<0.00)}
+\item{info}{the measure of the observed statistical information associated 
+with the allele frequency estimate threshold for site exclusion. (<0.00)}
 
 \item{outputPrefix}{the prefix for the imputed output files.}
 }
@@ -25,9 +28,10 @@ The merged imputed files using genipe.
 }
 \description{
 Concatenate IMPUTE2 output files and retrieve some statistics. 
-This is automatically called by the main genipe pipeline to merge IMPUTE2 files generated for all the genomic segments. 
+This is automatically called by the main genipe pipeline to merge IMPUTE2 
+files generated for all the genomic segments. 
 For details, see Genipe IMPUTE2 merger options.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

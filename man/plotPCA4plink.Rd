@@ -2,26 +2,41 @@
 % Please edit documentation in R/genotypeQC.R
 \name{plotPCA4plink}
 \alias{plotPCA4plink}
-\title{Population outlier detection via PCA}
+\title{Population outlier detection}
 \usage{
-plotPCA4plink(gcta, inputPrefix, outputPC4subjFile, outputPCplotFile)
+plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
 }
 \arguments{
-\item{gcta}{an executable GCTA program in either the current working directory or somewhere in the command path.}
+\item{gcta}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{outputPC4subjFile}{the pure text file that stores all the subject IDs after QC and their corresponding eigenvalues of the first two principle components.}
+\item{nThread}{the number of threads used for computation.}
 
-\item{outputPCplotFile}{the plot file for visualizing the first two principle components of all subjects.}
+\item{outputPC4subjFile}{the pure text file that stores all the subject IDs 
+and their corresponding eigenvalues of the first two principle components.}
+
+\item{outputPCplotFile}{the plot file for visualizing the first two 
+principle components of all investigated subjects.}
 }
 \value{
-The output pure text file and plot file for storing first two principle components of study subjects.
+The output pure text file and plot file for storing first two 
+principle components of study subjects.
 }
 \description{
-Perform principle component analysis (PCA) on quality controlled genotype data set in order to detect population outliers, 
-and plot the PCs for visualization. Note that, only autosomal genotypes are used for computing principle components.
+Principle component analysis (PCA) on the genotype data is performed 
+to detect population outliers, and the first two PCs 
+are plotted for the visualization.
+}
+\details{
+Before population outlier detection, it's better to perform QC 
+on the genotype data. 
+Only autosomal genotypes are used for principle component analysis.
+}
+\examples{
+ 
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

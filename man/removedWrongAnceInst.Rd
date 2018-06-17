@@ -2,29 +2,35 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{removedWrongAnceInst}
 \alias{removedWrongAnceInst}
-\title{Remove samples with improper ancestry}
+\title{Remove samples with incorrect ancestry}
 \usage{
 removedWrongAnceInst(plink, inputPrefix, metaDataFile, ancestrySymbol,
   outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{metaDataFile}{a pure text file that stores the meta information of the samples.}
+\item{metaDataFile}{a pure text file that stores the meta information of 
+the samples.}
 
-\item{ancestrySymbol}{an indicator that shows the symbol of targeted ancestry. Such as 'EA' stands for the European, 'AA' for African American. 
+\item{ancestrySymbol}{an indicator that shows the symbol of targeted ancestry. 
 If it is null, then all samples are selected.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after ancestry check.
+The output PLINK binary files after checking the ancestry information.
 }
 \description{
-Remove samples with improper ancestry or keep samples with your own purpose.
+Remove samples with the incorrect ancestry or keep samples at your own chioce.
+}
+\details{
+ancestrySymbol, such as 'EA' stands for the European, 
+'AA' for African American. See the metaDataFile for more details.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

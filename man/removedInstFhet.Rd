@@ -2,26 +2,35 @@
 % Please edit documentation in R/genotypeQC.R
 \name{removedInstFhet}
 \alias{removedInstFhet}
-\title{Remove subjects with great autosomal heterozygosity deviation}
+\title{Remove subjects with abnormal autosomal heterozygosity deviation}
 \usage{
 removedInstFhet(plink, Fhet, inputPrefix, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
 \item{Fhet}{the cutoff of the autosomal heterozygosity deviation.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after removing subjects with great autosomal heterozygosity deviation.
+The output PLINK binary files after removing subjects with great 
+autosomal heterozygosity deviation.
 }
 \description{
-Remove instances with great autosomal heterozygosity deviation. i.e. with |Fhet| >= 0.2.
-This analysis will automatically skip haploid markers (male X and Y chromosome markers).
+Remove subjects with great autosomal heterozygosity deviation.
+}
+\details{
+If the cutoff of the autosomal heterozygosity deviation is set to 
+be greater than 0.2, i.e. |Fhet| >= 0.2, then this analysis will 
+automatically skip haploid markers (male X and Y chromosome markers).
+}
+\examples{
+ 
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

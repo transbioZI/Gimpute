@@ -4,28 +4,35 @@
 \alias{removedSnpHWEautoControl}
 \title{Hardy weinberg equilibrium test for autosomal SNPs in controls.}
 \usage{
-removedSnpHWEautoControl(plink, inputPrefix, pval, outputFile_pVal,
+removedSnpHWEautoControl(plink, inputPrefix, pval, outputPvalFile,
   outputSNPfile, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{pval}{the p-value cutoff for controlling HWE test in control subjects. Only autosomal SNPs are tested here.}
+\item{pval}{the p-value cutoff for controlling HWE test in control subjects. 
+Only autosomal SNPs are considered.}
 
-\item{outputFile_pVal}{the output pure text file that stores autosomal SNPs and their sorted HWE p-values.}
+\item{outputPvalFile}{the output pure text file that stores autosomal SNPs and 
+their sorted HWE p-values.}
 
-\item{outputSNPfile}{the output pure text file that stores the removed SNPs.}
+\item{outputSNPfile}{the output pure text file that stores the removed SNPs, 
+one per line.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files.
+The output PLINK binary files.
 }
 \description{
-Remove autosomal SNPs in controls.
+Remove autosomal SNPs deviating from Hardy weinberg equilibrium in controls.
+}
+\examples{
+ 
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

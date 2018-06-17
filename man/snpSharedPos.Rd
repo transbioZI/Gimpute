@@ -22,6 +22,6 @@ The snp name of the second input file which shares the same genomic
 position with that of the first input file.
 }
 \description{
-Find shared genomic position between two files and return the snp names of 
-the second input file.
+Find shared genomic position between two files 
+and return the snp names of the second input file.
 }

@@ -7,20 +7,24 @@
 chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
 }
 \arguments{
-\item{inputPrefix}{the prefix of the input plink files for each chromosome.}
+\item{inputPrefix}{the prefix of the input PLINK binary files for 
+each chromosome.}
 
-\item{outputPrefix}{the prefix of the output pure text files that keep all the chunks for each chromosome.}
+\item{outputPrefix}{the prefix of the output pure text files that keep 
+all the chunks for each chromosome separately.}
 
-\item{chrs}{specifiy the chromosomes for chunking.}
+\item{chrs}{specifiy the chromosome codes for chunking.}
 
 \item{windowSize}{the window size of each chunk.}
 }
 \value{
-The output pure text files that keep all the chunks for each chromosome.
+The output pure text files include all the chunks 
+for each chromosome separately.
 }
 \description{
-Chunk each chromosome into multiple segments by a predefined window size.
+Chunk each chromosome genotyping data into multiple segments 
+by a predefined window size.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }
