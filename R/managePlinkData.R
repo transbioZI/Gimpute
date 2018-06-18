@@ -20,13 +20,13 @@
 renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 
 	if (action == "copy"){
-		system(paste0("scp ", inputPrefix, ".bed", outputPrefix, ".bed"))
-		system(paste0("scp ", inputPrefix, ".bim", outputPrefix, ".bim"))
-		system(paste0("scp ", inputPrefix, ".fam", outputPrefix, ".fam"))
+		system(paste0("scp ", inputPrefix, ".bed ", outputPrefix, ".bed"))
+		system(paste0("scp ", inputPrefix, ".bim ", outputPrefix, ".bim"))
+		system(paste0("scp ", inputPrefix, ".fam ", outputPrefix, ".fam"))
 	} else if (action == "move"){
-		system(paste0("mv ", inputPrefix, ".bed", outputPrefix, ".bed"))
-		system(paste0("mv ", inputPrefix, ".bim", outputPrefix, ".bim"))
-		system(paste0("mv ", inputPrefix, ".fam", outputPrefix, ".fam"))
+		system(paste0("mv ", inputPrefix, ".bed ", outputPrefix, ".bed"))
+		system(paste0("mv ", inputPrefix, ".bim ", outputPrefix, ".bim"))
+		system(paste0("mv ", inputPrefix, ".fam ", outputPrefix, ".fam"))
 	}
 }
  
