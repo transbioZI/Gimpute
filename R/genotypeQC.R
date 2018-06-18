@@ -427,18 +427,19 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 #' @description
 #' Remove SNPs with difference in SNP missingness between cases and controls. 
 #' To test for differential call rates between cases and controls for each SNP
-#' This only works for the genotype data with cases and controls. 
-
+ 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param snpMissDifCutOff the cutoff of the difference in missingness between 
 #' cases and controls. 
 #' @param outputPrefix the prefix of the output PLINK binary files.
-#' @param caseControl a logical value indicating whether the data contains 
-#' both case-control subjects.
-
+#' @param groupLabel a string value indicating the outcome label: "control", or, 
+#' "case" or "caseControl" for both existing groups.
+ 
 #' @return The output PLINK binary files.
+#' @details Only if both case-control groups exist in the input genotype data, 
+#' differential SNPs are removed. 
 
 #' @export 
 #' @author Junfang Chen 
@@ -446,12 +447,14 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 
 removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff, 
-							   outputPrefix, caseControl){
+							   outputPrefix, groupLabel){
 
-	if (caseControl == FALSE){  
-			## this is only for the control data set
-			renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	} else if (caseControl == TRUE) { 
+
+	if (groupLabel != "caseControl"){   
+		## this is only for the control data set
+		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+
+	} else if (groupLabel == "caseControl") { 
 		outputPrefix.tmp <- paste0(outputPrefix, "tmp")
 		system (paste0(plink, " --bfile ", inputPrefix, 
 				" --test-missing --out ", outputPrefix.tmp) ) 
@@ -503,9 +506,10 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 	 								 inputPrefix, outputPrefix){ 
 
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-	chrDist <- table(bim[,1])
-	chr23check <- is.element(names(chrDist), 23)
-	if (chr23check == TRUE) { 
+	chrCodes <- names(table(bim[,1]))
+	chr23check <- length(grep(23, chrCodes))
+
+	if (chr23check == 1) { 
 	  	## additional QC (female-chrX SNPs, missingness ok?)  
 	 	outputPrefix.tmp1 <- paste0(outputPrefix, "tmp1")
 		outputPrefix.tmp2 <- paste0(outputPrefix, "tmp2")
@@ -538,20 +542,20 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 
 
 
-
+ 
 
 ##########################################   
 ##########################################
-#' Hardy weinberg equilibrium test for autosomal SNPs in controls.
+#' Hardy Weinberg Equilibrium test for autosomal SNPs
 #'
 #' @description
-#' Remove autosomal SNPs deviating from Hardy weinberg equilibrium in controls.
-
+#' Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium.
+ 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
-#' @param pval the p-value cutoff for controlling HWE test in control subjects. 
-#' Only autosomal SNPs are considered. 
+#' @param pval the p-value cutoff for controlling HWE test in either control or 
+#' case subjects. Only autosomal SNPs are considered. 
 #' @param outputPvalFile the output pure text file that stores autosomal SNPs and 
 #' their sorted HWE p-values.
 #' @param outputSNPfile the output pure text file that stores the removed SNPs, 
@@ -559,32 +563,42 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 #' @param outputPrefix the prefix of the output PLINK binary files.
 
 #' @return The output PLINK binary files.
+#' @details 
 
 #' @export 
 #' @author Junfang Chen 
 ##' @examples  
 
-
-##  
-
-removedSnpHWEautoControl <- function(plink, inputPrefix, pval, outputPvalFile, 
-									 outputSNPfile, outputPrefix){ 
+removedSnpHWEauto <- function(groupLabel, plink, inputPrefix, 
+						  	  pval, outputPvalFile, 
+							  outputSNPfile, outputPrefix){ 
  
+ 	if (groupLabel == "control"){ 
+	 	groupStatus <- "filter-controls"
+	 	affection <- "UNAFF" 
+ 	} else if (groupLabel == "case"){
+ 		groupStatus <- "filter-cases"
+	 	affection <- "AFF" 
+ 	} else {
+ 		"ERROR: the input label is wrong!"
+ 	}
+
 	outputPrefix.tmp <- paste0(outputPrefix, "tmp")
-	system(paste0(plink, " --bfile ", inputPrefix, 
-		   " --filter-controls --hardy --autosome --make-bed --out ", 
+	system(paste0(plink, " --bfile ", inputPrefix, " --",
+		   groupStatus, " --hardy --autosome --make-bed --out ", 
 		   outputPrefix.tmp))  
+
 	## read HWE p values 
 	hweCheck <- read.table(file=paste0(outputPrefix.tmp, ".hwe"), 
 						   header=TRUE, stringsAsFactors=FALSE) 
-	## for controls 
-	hweControl <- hweCheck[which(hweCheck$TEST == "UNAFF"), ]  
-	snpHweValAutoCt <- subset(hweControl, select=c(SNP, P))
-	snpHweValAutoCt <- snpHweValAutoCt[order(snpHweValAutoCt[,"P"]),] 
-	write.table(snpHweValAutoCt, file=outputPvalFile, quote=FALSE, 
+
+	hwe <- hweCheck[which(hweCheck$TEST == affection), ]  
+	snpHweValAuto <- subset(hwe, select=c(SNP, P))
+	snpHweValAuto <- snpHweValAuto[order(snpHweValAuto[,"P"]),] 
+	write.table(snpHweValAuto, file=outputPvalFile, quote=FALSE, 
 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	removedSNPhweControl <- hweControl[which(hweControl$P <= pval), "SNP"]
-	write.table(removedSNPhweControl, file=outputSNPfile, quote=FALSE, 
+	removedSNPhwe <- hwe[which(hwe$P <= pval), "SNP"]
+	write.table(removedSNPhwe, file=outputSNPfile, quote=FALSE, 
 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 
 	## exclude SNPs 
@@ -593,15 +607,14 @@ removedSnpHWEautoControl <- function(plink, inputPrefix, pval, outputPvalFile,
 	system(paste0("rm ", outputPrefix.tmp, ".*"))
 
 }
-
-
+ 
 
 ##########################################   
 ##########################################  
-#' Hardy weinberg equilibrium test for chromosome X SNPs in female controls. 
+#' Hardy Weinberg Equilibrium test for chromosome X SNPs in female controls. 
 #'
 #' @description
-#' Hardy weinberg equilibrium test for SNPs on the chromosome X in 
+#' Hardy Weinberg Equilibrium test for SNPs on the chromosome X in 
 #' female controls.  
 
 #' @param plink an executable program in either the current working directory 
@@ -659,13 +672,8 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
 	}
 }
+  
  
-
- 
-
-
-
-
 ##########################################   
 ##########################################
 #' Population outlier detection
@@ -814,4 +822,4 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
 
 
 
-
+ 
