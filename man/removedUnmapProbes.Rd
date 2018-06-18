@@ -2,29 +2,36 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{removedUnmapProbes}
 \alias{removedUnmapProbes}
-\title{Check if all study SNPs are included in the chip annotation file. If some of study SNPs are not included then remove them.}
+\title{Remove SNPs not in the chip annotation file}
 \usage{
 removedUnmapProbes(plink, inputPrefix, chipAnnoFile, outputPrefix,
-  outputSNPunmapFile)
+  outputSNPfile)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{chipAnnoFile}{a pure text file that stores the chip annotation information (Affymetrix, Illumination, PsychChip and so on). 
-This file can be found http://www.well.ox.ac.uk/~wrayner/strand/.}
+\item{chipAnnoFile}{a pure text file that stores the chip annotation
+information.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 
-\item{outputSNPunmapFile}{a pure text file that stores the probe/SNP IDs, which are not mapped to the chip annotation file.}
+\item{outputSNPfile}{a pure text file that stores the SNP IDs, 
+one per line, which are not mapped to the chip annotation file.}
 }
 \value{
-The output PLINK format files after removing unmapped probe IDs.
+The output text file contains the removed SNP IDs, one per line.
+The PLINK binary files after removing unmapped SNP IDs.
 }
 \description{
-Remove probes or SNPs that are not mapped to the chip annotation information. This chip annotation file is defined in the configuration folder.
+Check if all SNPs are included in the chip annotation file. 
+If some of the input SNPs are not included, then remove them.
+}
+\details{
+This chip annotation file is defined in advance.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

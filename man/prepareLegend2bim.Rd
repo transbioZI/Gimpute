@@ -21,7 +21,7 @@ are already defined, i.e. "chr", "rsID", "pos", "a0",	"a1."
 }
 \description{
 Prepare a bim-like file from the imputation reference legend file 
-(1000 genome projects).
+(e.g. 1000 genome project).
 }
 \details{
 To prepare a bim-like reference file from legend files. 
@@ -31,5 +31,5 @@ in column3 and 4, and start with 'rs") and remove duplicated snp IDs.
 Column names are added in the end.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

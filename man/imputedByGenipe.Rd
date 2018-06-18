@@ -4,21 +4,29 @@
 \alias{imputedByGenipe}
 \title{Impute genotypes using Genipe}
 \usage{
-imputedByGenipe(chrs, impRefDIR4genipe, inputPrefix, shapeit, impute2, plink,
+imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute2, plink,
   fastaFile, segmentSize, thread4impute2, thread4shapeit)
 }
 \arguments{
-\item{chrs}{specifiy the chromosomes for imputation. There are four different options ("autosomes", "1, or 2, or 3...or 22", "23", "25"). 
-1.) 'autosomes': will impute chromosome 1 to 22 together; 2.) 'chrs' belongs to one of (1, 2,...22) then the imputation is done just for one autosomal chromosome.
-3.) '23' will do the imputation for the non-pseudoautosomal region of chromosome 23. 4.) '25' imputes for the pseudoautosomal regions of chromosome 23.}
+\item{chrs}{specifiy the chromosomes for imputation. There are 
+four different options ("autosomes", "1, or 2, or 3...or 22", "23", "25"). 
+1.) 'autosomes': will impute chromosome 1 to 22 together; 2.) 'chrs' 
+belongs to one of (1, 2,...22) then the imputation is done just for 
+one autosomal chromosome.
+3.) '23' will do the imputation for the non-pseudoautosomal region of 
+chromosome 23. 
+4.) '25' imputes for the pseudoautosomal regions of chromosome 23.}
 
-\item{impRefDIR4genipe}{the directory where the imputation reference files are located.}
+\item{impRefDir}{the directory where the imputation reference files 
+are located.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{shapeit}{an executable SHAPEIT binary program in either the current working directory or somewhere in the command path.}
+\item{shapeit}{an executable SHAPEIT binary program in either the current 
+working directory or somewhere in the command path.}
 
-\item{impute2}{an executable IMPUTE2 binary program in either the current working directory or somewhere in the command path.}
+\item{impute2}{an executable IMPUTE2 binary program in either the current 
+working directory or somewhere in the command path.}
 
 \item{fastaFile}{the human reference files for the initial strand check.}
 
@@ -32,9 +40,10 @@ imputedByGenipe(chrs, impRefDIR4genipe, inputPrefix, shapeit, impute2, plink,
 The imputed files using genipe.
 }
 \description{
-Perform imputation by Genipe for the autosomal and sex chromosome prephased known haplotypes with a reference panel. 
+Perform imputation by Genipe for the autosomal and sex chromosome prephased 
+known haplotypes with a reference panel. 
 Note that pre-phasing using SHAPEIT is done without the refernce haplotypes.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

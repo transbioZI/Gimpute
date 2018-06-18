@@ -8,24 +8,30 @@ removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, outputPrefix,
   caseControl)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{snpMissDifCutOff}{the cutoff of the difference in missingness between cases and controls.}
+\item{snpMissDifCutOff}{the cutoff of the difference in missingness between 
+cases and controls.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 
-\item{caseControl}{a logical value indicating whether the data set contains both case-control subjects.}
+\item{caseControl}{a logical value indicating whether the data contains 
+both case-control subjects.}
 }
 \value{
-The output PLINK format files.
+The output PLINK binary files.
 }
 \description{
 Remove SNPs with difference in SNP missingness between cases and controls. 
 To test for differential call rates between cases and controls for each SNP
-This only works for the genotype data set with cases and controls.
+This only works for the genotype data with cases and controls.
+}
+\examples{
+ 
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

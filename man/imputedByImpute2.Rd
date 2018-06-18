@@ -8,15 +8,18 @@ imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, imputedDIR,
   prefix4plinkEachChr, nCore, effectiveSize)
 }
 \arguments{
-\item{impute2}{an executable IMPUTE2 program in either the current working directory or somewhere in the command path.}
+\item{impute2}{an executable program in either the current 
+working directory or somewhere in the command path.}
 
-\item{chrs}{specifiy the chromosomes for imputation.}
+\item{chrs}{specifiy the chromosome codes for imputation.}
 
-\item{prefixChunk}{the prefix of the chunk files for each chromosome, along with the proper location directory.}
+\item{prefixChunk}{the prefix of the chunk files for each chromosome, 
+along with the proper location directory.}
 
 \item{phaseDIR}{the directory where prephased haplotypes are located.}
 
-\item{impRefDIR}{the directory where the imputation reference files are located.}
+\item{impRefDIR}{the directory where the imputation reference files 
+are located.}
 
 \item{imputedDIR}{the directory where imputed files will be located.}
 
@@ -26,15 +29,17 @@ imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, imputedDIR,
 
 \item{effectiveSize}{this parameter controls the effective population size.}
 
-\item{XPAR}{a logical value indicating whether --chrX flag should be passed for prephasing using SHAPEIT.
+\item{XPAR}{a logical value indicating whether --chrX flag should be 
+passed for prephasing using SHAPEIT.
 --chrX flag, specifically for chrX imputation'}
 }
 \value{
 The imputed files for all chunks from given chromosomes.
 }
 \description{
-Perform imputation by IMPUTE2 for the autosomal and sex chromosome prephased known haplotypes with a reference panel.
+Perform imputation by IMPUTE2 for the autosomal and sex chromosome 
+prephased known haplotypes with a reference panel.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

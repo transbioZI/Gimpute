@@ -1,18 +1,9 @@
 
-
-# File   : prepareLegend2bim.R
-# Author : Junfang Chen 
-# Version: 14.06.2018
-  
-###############################   
-###############################  
-  
-
 #' Prepare a bim-like reference file
 #'
 #' @description
 #' Prepare a bim-like file from the imputation reference legend file 
-#' (1000 genome projects).
+#' (e.g. 1000 genome project).
 
 #' @param inputFile a set of legend file from the imputation reference panel 
 #' from 1000 genome projects.
@@ -20,14 +11,14 @@
 #' file alike format data. 
 #' @param nCore the number of cores used for computation.  
 
-#' @return  Prepare a bim-like reference file. Note that the column names 
+#' @return Prepare a bim-like reference file. Note that the column names 
 #' are already defined, i.e. "chr", "rsID", "pos", "a0",	"a1."
 #' @details To prepare a bim-like reference file from legend files. 
 #' One should first extract the specific content from these legend files 
 #' after downloading. Note that extract only biallelic SNPs (only 1 allele 
 #' in column3 and 4, and start with 'rs") and remove duplicated snp IDs. 
 #' Column names are added in the end. 
-#' @author Junfang Chen <junfang.chen@zi-mannheim.de> 
+#' @author Junfang Chen 
 #' @export   
 #' @import doParallel  
  
@@ -64,7 +55,7 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 	    system(paste0(arg1, fileName1, i, fileName2, arg2, arg3, arg4, i, ".txt"))
 	}, mc.cores=ncore)
   
-	##  add chr   
+	## add chr   
 	mclapply(chrslist, function(i){
 	    system(paste0("awk '{print ", i, ", $0}' chr", i, ".txt > bimChr", i, ".txt"))
 	}, mc.cores=ncore) 
@@ -91,20 +82,20 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' Output files are generated sequentially, so they are determined 
 #' by the previous PLINK files.
  
-#' @param plink an executable PLINK program in either the current working directory 
+#' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK files.
 #' @param referenceFile the reference file used for the alignment, which is a PLINK 
 #' BIM alike format file.
-#' @param out2 the prefix of the output PLINK format files after removing SNPs whose 
+#' @param out2 the prefix of the output PLINK binary files after removing SNPs whose 
 #' genomic positions are not in the imputation reference, taking SNP names into account.  
 #' @param out2.snp the output plain text file that stores the removed SNPs whose genomic 
 #' positions are not in the imputation reference, taking SNP names into account.  
-#' @param out3 the prefix of the output PLINK format files after removing SNPs whose 
+#' @param out3 the prefix of the output PLINK binary files after removing SNPs whose 
 #' genomic positions are not in the imputation reference, ingoring SNP names.    
 #' @param out3.snp the output plain text file that stores the removed SNPs whose genomic 
 #' positions are not in the imputation reference, ingoring SNP names.  
-#' @param out4 the prefix of the output PLINK format files after removing SNPs whose alleles 
+#' @param out4 the prefix of the output PLINK binary files after removing SNPs whose alleles 
 #' are not in the imputation reference, taking their genomic positions into account.    
 #' @param out4.snp the output plain text file that stores the removed SNPs whose alleles 
 #' are not in the imputation reference, taking their genomic positions into account. 
@@ -113,13 +104,14 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 
 #' @param nCore the number of cores used for computation. This can be tuned along with nThread.
  
-#' @return  The set of aligned PLINK files from your own study compared with 
+#' @return The set of aligned PLINK files from your own study compared with 
 #' the imputation reference.
 #' @details The output files are genrated in order. Genomic position includes 
 #' chromosomal location and base-pair position of the individual variant. 
 #' All monomorphic SNPs are retained for further processing.  
-#' @author Junfang Chen <junfang.chen@zi-mannheim.de> 
-##' @examples 
+
+#' @author Junfang Chen 
+###' @examples  
 #' @export 
 #' @import doParallel  
  
@@ -219,8 +211,8 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 #' Find shared genomic position between two files.
 #'
 #' @description
-#' Find shared genomic position between two files and return the snp names of 
-#' the second input file.
+#' Find shared genomic position between two files 
+#' and return the snp names of the second input file.
 
 #' @param inputFile1 the pure text file that has at least three columns: 
 #' chromosomal location, snp name and base-pair position. 
@@ -229,8 +221,9 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 #' @param outputFile the pure text file return the snp name of the second input file.
 #' @param nCore the number of cores used for computation.  
 
-#' @return  The snp name of the second input file which shares the same genomic 
+#' @return The snp name of the second input file which shares the same genomic 
 #' position with that of the first input file.
+
 #' @export 
 #' @import doParallel  
 

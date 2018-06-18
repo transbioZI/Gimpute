@@ -2,25 +2,29 @@
 % Please edit documentation in R/phasingImpute.R
 \name{removedMonoSnp}
 \alias{removedMonoSnp}
-\title{Remove monomorphic SNPs}
+\title{Exclude monomorphic SNPs}
 \usage{
-removedMonoSnp(plink, inputPrefix, outputPrefix, outputSNPs)
+removedMonoSnp(plink, inputPrefix, outputPrefix, outputSNPfile)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current 
+working directory or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input plink files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{outputPrefix}{the prefix of the output plink files (after removing monomorphic SNPs).}
+\item{outputPrefix}{the prefix of the output PLINK binary files 
+after removing monomorphic SNPs.}
 
-\item{outputSNPs}{the output pure text file that stores the removed monomorphic SNPs.}
+\item{outputSNPfile}{the output pure text file that stores 
+the removed monomorphic SNPs, one per line.}
 }
 \value{
-The output plink files (after removing monomorphic SNPs) and a pure text file with removed monomorphic SNPs.
+The output PLINK binary files after removing monomorphic SNPs 
+and a pure text file with removed monomorphic SNPs.
 }
 \description{
-Remove monomorphic SNPs after QC and alignment to the imputation reference.
+Detect monomorphic SNPs from PLINK BIM file and exclude them if any.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

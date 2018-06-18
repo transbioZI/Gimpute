@@ -2,32 +2,46 @@
 % Please edit documentation in R/phasingImpute.R
 \name{chrWiseSplit}
 \alias{chrWiseSplit}
-\title{Split genome-wide genotyping data into separate files by chromosome}
+\title{Split genome-wide genotyping data into chromosome-wide PLINK binary files.}
 \usage{
-chrWiseSplit(plink, inputPrefix, chrX_PAR1suffix, chrX_PAR2suffix)
+chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore = 25)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current 
+working directory or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input plink files before splitting.}
+\item{inputPrefix}{the prefix of the input PLINK binary files before splitting.}
 
-\item{chrX_PAR1suffix}{if chromosome 25 is available and with PAR1, then generate the suffix with X_PAR1 for chrX_PAR1}
+\item{chrXPAR1suffix}{if chromosome 25 is available and with PAR1, 
+then generate the suffix with X_PAR1 for chrX_PAR1.}
 
-\item{chrX_PAR2suffix}{if chromosome 25 is available and with PAR2, then generate the suffix with X_PAR2 for chrX_PAR2}
+\item{chrXPAR2suffix}{if chromosome 25 is available and with PAR2, 
+then generate the suffix with X_PAR2 for chrX_PAR2.}
 
-\item{outputPrefix}{the prefix of the output plink files after splitting and the chromosome number will be appended separately.}
+\item{nCore}{the number of cores used for parallel computation. 
+The default value is 25.}
+
+\item{outputPrefix}{the prefix of the output PLINK binary files after splitting
+separately for each chromosome, appended with the chromosome codes.}
 }
 \value{
-The output plink files for each chromosome and possibly also the suffix of chrX_PAR.
+The output PLINK binary files for each chromosome and possibly 
+also the logical value for the pseudo-autosomal region (PAR)
+indicating if PAR exists in the input genotyping data or not.
 }
 \description{
-Split the whole genome genotyping data chromosome-wise; allow parallel computating for all chromosomes.
-if chromosome 25 is also available, further split chr25 (PAR or Chr_XY) into PAR1 and PAR2 according to the genomic coordination GRCh37 
+Split the whole genome genotyping data chromosome-wise; 
+allow parallel computating for all chromosomes.
+}
+\details{
+If chromosome 25 is also available, namely the pseudo-autosomal
+region of chromosome X, then further split chr25 (PAR or Chr_XY)
+into PAR1 and PAR2 according to the genomic coordination GRCh37
 from https://en.wikipedia.org/wiki/Pseudoautosomal_region.
 The locations of the PARs within GRCh37 are:  
-PAR1	X	60001	2699520 
-PAR2	X	154931044	155260560
+PAR1	X	60001	2699520; 
+PAR2	X	154931044	155260560.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

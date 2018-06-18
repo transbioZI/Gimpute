@@ -8,7 +8,7 @@ checkAlign2ref(plink, inputPrefix, referenceFile, out2, out2.snp, out3,
   out3.snp, out4, out4.snp, out4.snpRetained, nCore = 25)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory 
+\item{plink}{an executable program in either the current working directory 
 or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK files.}
@@ -16,19 +16,19 @@ or somewhere in the command path.}
 \item{referenceFile}{the reference file used for the alignment, which is a PLINK 
 BIM alike format file.}
 
-\item{out2}{the prefix of the output PLINK format files after removing SNPs whose 
+\item{out2}{the prefix of the output PLINK binary files after removing SNPs whose 
 genomic positions are not in the imputation reference, taking SNP names into account.}
 
 \item{out2.snp}{the output plain text file that stores the removed SNPs whose genomic 
 positions are not in the imputation reference, taking SNP names into account.}
 
-\item{out3}{the prefix of the output PLINK format files after removing SNPs whose 
+\item{out3}{the prefix of the output PLINK binary files after removing SNPs whose 
 genomic positions are not in the imputation reference, ingoring SNP names.}
 
 \item{out3.snp}{the output plain text file that stores the removed SNPs whose genomic 
 positions are not in the imputation reference, ingoring SNP names.}
 
-\item{out4}{the prefix of the output PLINK format files after removing SNPs whose alleles 
+\item{out4}{the prefix of the output PLINK binary files after removing SNPs whose alleles 
 are not in the imputation reference, taking their genomic positions into account.}
 
 \item{out4.snp}{the output plain text file that stores the removed SNPs whose alleles 
@@ -54,6 +54,9 @@ The output files are genrated in order. Genomic position includes
 chromosomal location and base-pair position of the individual variant. 
 All monomorphic SNPs are retained for further processing.
 }
+\examples{
+ 
+}
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

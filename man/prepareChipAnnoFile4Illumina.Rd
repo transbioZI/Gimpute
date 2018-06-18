@@ -7,16 +7,23 @@
 prepareChipAnnoFile4Illumina(inputFile, outputFile)
 }
 \arguments{
-\item{inputFile}{an input pure text file that shows the chip annotation file which can be downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.}
+\item{inputFile}{an input pure text file that contains the chip annotation
+information.}
 
-\item{outputFile}{an output pure text file that stores the chip annotation information in used-defined format (Affymetrix, Illumination, PsychChip and so on).}
+\item{outputFile}{an output pure text file that stores the chip annotation 
+information in a pre-defined format.}
 }
 \value{
-a pure text file that stores the prepared chip annotation information in user-defined format.
+a pure text file that stores the prepared chip annotation 
+information in a user-defined format.
 }
 \description{
 Prepare Illumina chip annotation file into the format of interest.
 }
+\details{
+If the chip annotation file is not available, it can be 
+downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
+}
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

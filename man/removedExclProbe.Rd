@@ -2,27 +2,32 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{removedExclProbe}
 \alias{removedExclProbe}
-\title{Remove probes or SNPs}
+\title{Remove improper SNPs}
 \usage{
 removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{excludedProbeIdsFile}{a pure text file that stores the probe IDs, which should be removed. 
-If it is null, then copy and paste the input PLINK files from the last step.}
+\item{excludedProbeIdsFile}{a pure text file that stores the SNP IDs, 
+one per line, which need to be removed. If it is null, then skip this step.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after removing unwanted probe IDs.
+The output PLINK binary files after removing unwanted SNP IDs.
 }
 \description{
-Remove probes or SNPs that may be duplicated, or with unexpected probe names, which should be defined in advance. 
-For instance, one can define these probes in the configuration folder.
+Remove SNPs that may be duplicated, or with unexpected SNP names.
+}
+\details{
+excludedProbeIdsFile should be defined in a plain text file 
+in advance. Improper SNPs such as AFFX, cnvi etc.. with unexpect format
+must be excluded.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

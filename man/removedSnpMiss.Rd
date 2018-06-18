@@ -7,20 +7,25 @@
 removedSnpMiss(plink, snpMissCutOff, inputPrefix, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
 \item{snpMissCutOff}{the cutoff of the missingness for removing SNPs.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after removing SNPs with pre-defined missing values.
+The output PLINK binary files after removing SNPs with pre-defined 
+missing values.
 }
 \description{
-Remove SNPs with missingness of greater than a certain threshold before/after removing subjects.
+Remove SNPs with missingness of greater than a certain threshold.
+}
+\examples{
+ 
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }

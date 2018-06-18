@@ -2,32 +2,39 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{removedDoubleProbes}
 \alias{removedDoubleProbes}
-\title{Remove duplicated probes or SNPs}
+\title{Remove duplicated SNPs}
 \usage{
 removedDoubleProbes(plink, inputPrefix, chipAnnoFile, chipType,
   outputSNPdupFile, outputPrefix)
 }
 \arguments{
-\item{plink}{an executable PLINK program in either the current working directory or somewhere in the command path.}
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK format files.}
+\item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{chipAnnoFile}{a pure text file that stores the chip annotation information (Affymetrix, Illumination, PsychChip and so on). 
-This file can be found http://www.well.ox.ac.uk/~wrayner/strand/.}
+\item{chipAnnoFile}{an input chip annotation file.}
 
-\item{chipType}{a string name that defines the type of the chip annotation file: 'Illumina', 'affymetrix' or 'psychChip'.}
+\item{chipType}{a string name that defines the type of the chip annotation 
+file: 'Illumina', 'affymetrix' or 'psychChip'.}
 
-\item{outputSNPdupFile}{a pure text file that stores the duplicated probe/SNP IDs, which can be found with the help of the chip annotation file.}
+\item{outputSNPdupFile}{a pure text file that stores the duplicated SNP IDs, 
+which can be found with the help of the chip annotation file.}
 
-\item{outputPrefix}{the prefix of the output PLINK format files.}
+\item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK format files after removing duplicated probe IDs.
+The output PLINK binary files after removing duplicated SNP IDs.
 }
 \description{
-Remove duplicated probes or SNPs that have same rs-names but different versions of SNP ID (e.g. SNP-A IDs for Affymetrix chip) found in chip annotation information (For Affymetrix chip and PsychChip). 
-This chip annotation file is defined in the configuration folder.
+Remove duplicated SNPs that have same rs-names or duplicated genomic position.
+}
+\details{
+Duplicated SNPs have two levels of meaning: 1.) SNPs have same 
+rs-names but different versions of SNP ID ound in chip annotation file. 
+e.g. SNP-A IDs for Affymetrix chip. 2.) SNPs with duplicated genomic 
+position: the combination of base pair position and chromosomal location.
 }
 \author{
-Junfang Chen <junfang.chen@zi-mannheim.de>
+Junfang Chen
 }
