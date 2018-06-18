@@ -63,13 +63,13 @@ removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
 		system(paste0(plink, " --bfile ", inputPrefix, 
 			   " --remove ", dupIDsfn, " --make-bed --out ", outputPrefix))
 		system(paste0("rm ", dupSampleIDFile, " ", dupIDsfn)) 
-		system(paste0("rm ", inputPrefix, ".*") )
+		# system(paste0("rm ", inputPrefix, ".*") )
 
 	} else { 
 		## copy/rename all snp info updated plink files
 		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")
 		## remove the raw genotype plink files
-		system(paste0("rm ", inputPrefix, ".*"))
+		# system(paste0("rm ", inputPrefix, ".*"))
 	} 
 }
  
@@ -245,7 +245,7 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param excludedProbeIdsFile a pure text file that stores the SNP IDs, 
-#' one per line, which need to be removed. If it is null, then skip this step.
+#' one per line, which need to be removed. If it is null, then no SNPs are removed.
 
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
@@ -292,7 +292,8 @@ removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPre
  
 #' @return The output text file contains the removed SNP IDs, one per line.
 #' The PLINK binary files after removing unmapped SNP IDs.
-#' @details This chip annotation file is defined in advance.
+#' @details If the chip annotation file is not available for your study, 
+#' you can download it from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 #' @export 
 #' @author Junfang Chen 
@@ -342,10 +343,12 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param chipAnnoFile an input chip annotation file. 
+#' If the chip annotation file is not available for your study, it can be 
+#' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 #' @param chipType a string name that defines the type of the chip annotation 
-#' file: 'Illumina', 'affymetrix' or 'psychChip'.
+#' file: 'illumina', 'affymetrix' or 'psychChip'.
 #' @param outputSNPdupFile a pure text file that stores the duplicated SNP IDs, 
-#' which can be found with the help of the chip annotation file.
+#' which are detected by the use of the chip annotation file.
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
 #' @return The output PLINK binary files after removing duplicated SNP IDs.
@@ -436,8 +439,11 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param chipAnnoFile a pure text file that stores the chip annotation 
 #' information. 
+#' If the chip annotation file is not available for your study, it can be 
+#' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
+
 #' @param chipType a string name defines the type of the chip annotation file: 
-#' 'Illumina', 'affymetrix' or 'psychChip'.
+#' 'illumina', 'affymetrix' or 'psychChip'.
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
 #' @return The output PLINK binary files after updating SNP information.
@@ -556,8 +562,8 @@ updatedSnpInfo <- function(plink, inputPrefix,
 #' @author Junfang Chen 
 ##' @examples 
  
- 
-changedXyChr <- function(plink, inputPrefix, outputPrefix){
+
+splitXchr <- function(plink, inputPrefix, outputPrefix){
 
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=F)  
 	chrDist <- table(bim[,1])
@@ -636,7 +642,7 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
  
 #' @return a pure text file that stores the prepared chip annotation 
 #' information in a user-defined format. 
-#' @details If the chip annotation file is not available, it can be 
+#' @details If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 #' @export 
@@ -689,7 +695,7 @@ prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
  
 #' @return a pure text file that stores the prepared chip annotation 
 #' information in a user-defined format. 
-#' @details If the chip annotation file is not available, it can be 
+#' @details If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 
@@ -739,7 +745,7 @@ prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
  
 #' @return a pure text file that stores the prepared chip annotation 
 #' information in a user-defined format. 
-#' @details If the chip annotation file is not available, it can be 
+#' @details If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 #' @export 
@@ -768,5 +774,124 @@ prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 
 }
 
-  
+
+
+##########################################   
+##########################################  
+
+
+
+#' Update genotype information
+#'
+#' @description
+#' Update genotype data information of the original PLINK binary files involving  
+#' subject metadata information remapping and SNP information rearrangement and 
+#' conversion according to the annotation file.
+
+#' @param plink an executable program in either the current working directory 
+#' or somewhere in the command path.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param dupSampleIDFile a pure text file that stores the duplicated sample IDs, 
+#' each ID per line. If it is null, then duplicate the input PLINK files from 
+#' the last step as the output files. 
+#' @param ancestrySymbol an indicator that shows the symbol of targeted ancestry. 
+#' If it is null, then all samples are selected. 
+#' @param excludedProbeIdsFile a pure text file that stores the SNP IDs, 
+#' one per line, which need to be removed. If it is null, no SNPs are removed.
+#' @param chipAnnoFile a pure text file that stores the chip annotation
+#' information. 
+#' @param chipType a string name that defines the type of the chip annotation 
+#' file: 'illumina', 'affymetrix' or 'psychChip'.
+
+#' @param outputPrefix the prefix of the output PLINK binary files.
+ 
+#' @return The output PLINK binary files after genotype information remapping. 
+#' @details The original PLINK files are implicitly processed by the following steps: 
+#' 1.) remove duplicated subjects;
+#' 2.) update group ID and sex information;
+#' 3.) remove not labelled subjects;
+#' 4.) remove subjects with wrong ancestry;
+#' 5.) remove incorrectly annotated SNPs;
+#' 6.) remove SNPs that are not in the annotation file;
+#' 7.) remove duplicated SNPs;
+#' 8.) update SNP genomic position and strand information;
+#' 9.) splitchromosome X into pseudoautosomal region (PAR) and non-PAR;
+#' 10.) remove SNPs on the chromosome Y and mitochondrial DNA.
+#' The metadata information file and the chip annotation file are used as the 
+#' reference for the update.
+#' If the chip annotation file is not available for your study, it can be 
+#' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
+
+#' @export  
+#' @author Junfang Chen 
+##' @examples 
+
+ 
+updateGenoInfo <- function(plink, inputPrefix, metaDataFile, dupSampleIDFile,
+							   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+							   chipType, outputPrefix){
+ 
+	## step 2
+	outputPrefix2 <- "1_02_removedExclInst" 
+	removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix=outputPrefix2)
+	# step 3 replace group IDs 
+	metaDataFile <- "1_01_metaData.txt" 
+	outputPrefix3 <- "1_03_replacedGroupAndSex"
+	updateGroupIdAndSex(plink, inputPrefix=outputPrefix2, 
+						metaDataFile, outputPrefix=outputPrefix3)
+	# step 4 remove instances without group IDs 
+	outputPrefix4 <- "1_04_removedNoGroupId"
+	removeNoGroupId(plink, inputPrefix=outputPrefix3, outputPrefix=outputPrefix4)
+
+	## step5 remove instances with improper ancestry  
+	outputPrefix5 <- "1_05_removedWrongAnceInst"
+	removedWrongAnceInst(plink, inputPrefix=outputPrefix4, metaDataFile,  
+						 ancestrySymbol, outputPrefix=outputPrefix5)
+	## step 6   
+	outputPrefix6 <- "1_06_removedExclProbe"  
+	removedExclProbe(plink, inputPrefix=outputPrefix5, 
+					 excludedProbeIdsFile, outputPrefix=outputPrefix6) 
+	## step 7 (Optional, if chip annotation file is not given) 
+	outputPrefix7 <- "1_07_removedUnmapProbes"   
+	outputSNPfile7 <- "1_07_probesUnmapped2ChipRef.txt"
+	removedUnmapProbes(plink, inputPrefix=outputPrefix6, chipAnnoFile,
+					   outputPrefix=outputPrefix7, outputSNPfile=outputSNPfile7)
+	## step 8 (Optional, if chip annotation file is not given) 
+	outputSNPdupFile8 <- "1_08_probesDouble.txt"
+	outputPrefix8 <- "1_08_removedDoubleProbes"   
+	removedDoubleProbes(plink, inputPrefix=outputPrefix7, chipAnnoFile, 
+					    chipType, outputSNPdupFile=outputSNPdupFile8, 
+					    outputPrefix=outputPrefix8) 
+	## step 9 (Optional, if chip annotation file is not given) 
+	outputPrefix9 <- "1_09_updatedSnpInfo"   
+	updatedSnpInfo(plink, inputPrefix=outputPrefix8, 
+				   chipAnnoFile, chipType, outputPrefix=outputPrefix9)
+	## step 10 	 
+	outputPrefix10 <- "1_10_splitXchr"
+	splitXchr(plink, inputPrefix=outputPrefix9, outputPrefix=outputPrefix10)
+	## step 11  
+	outputPrefix11 <- "1_11_removedYMtSnp"
+	removedYMtSnp(plink, inputPrefix=outputPrefix10, outputPrefix=outputPrefix11)
+
+	## remove intermediate files
+	system(paste0("rm ", outputPrefix2, ".*"))
+	system(paste0("rm ", outputPrefix3, ".*"))
+	system(paste0("rm ", outputPrefix4, ".*"))
+	system(paste0("rm ", outputPrefix5, ".*"))
+	system(paste0("rm ", outputPrefix6, ".*"))
+	system(paste0("rm ", outputPrefix7, ".*"))
+	system(paste0("rm ", outputPrefix8, ".*"))
+	system(paste0("rm ", outputPrefix9, ".*"))
+	system(paste0("rm ", outputPrefix10, ".*"))
+
+	if (file.exists(outputSNPfile7)) {  
+		system(paste0("rm ", outputSNPfile7))
+	}
+
+	if (file.exists(outputSNPdupFile8)) {  
+		system(paste0("rm ", outputSNPdupFile8))
+	}	
+ 
+}
+ 
   
