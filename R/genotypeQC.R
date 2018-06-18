@@ -549,7 +549,7 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 #' Hardy Weinberg Equilibrium test for autosomal SNPs
 #'
 #' @description
-#' Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium.
+#' Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium (HWE).
  
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
@@ -580,7 +580,7 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
  		groupStatus <- "filter-cases"
 	 	affection <- "AFF" 
  	} else {
- 		"ERROR: the input label is wrong!"
+ 		"ERROR: during HWE test on autosome! Wrong label warning!"
  	}
 
 	outputPrefix.tmp <- paste0(outputPrefix, "tmp")
@@ -634,16 +634,16 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 #' @author Junfang Chen 
 ##' @examples  
 
-##   
  
 removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval, 
 										   outputPvalFile, outputSNPfile, 
 										   outputPrefix){ 
 	
 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-	chrDist <- table(bim[,1])
-	chr23check <- is.element(names(chrDist), 23)
-	if (chr23check == TRUE) { 
+	chrCodes <- names(table(bim[,1]))
+	chr23check <- length(grep(23, chrCodes))
+
+	if (chr23check == 1) { 
 	 
 		outputPrefix.tmp <- paste0(outputPrefix, "tmp") 
 		system(paste0(plink, " --bfile ", inputPrefix, 
@@ -673,7 +673,8 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 	}
 }
   
- 
+
+    
 ##########################################   
 ##########################################
 #' Population outlier detection
@@ -822,4 +823,140 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
 
 
 
+
  
+##
+######################################################
+######################################################
+#' Quality control for genotype data
+#'
+#' @description
+#' Perform quality control on the genotype data. 
+
+#' @param plink an executable program in either the current working directory 
+#' or somewhere in the command path.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param snpMissCutOffpre the cutoff of the missingness for removing SNPs 
+#' before subject removal. The default is 0.05.
+#' @param sampleMissCutOff the cutoff of the missingness for removing 
+#' subjects/instances. The default is 
+#' @param Fhet the cutoff of the autosomal heterozygosity deviation. 
+#' The default is 0.2.
+#' @param snpMissCutOffpost the cutoff of the missingness for removing SNPs 
+#' after subject removal. The default is 0.02. 
+#' @param snpMissDifCutOff the cutoff of the difference in missingness between 
+#' cases and controls. The default is 0.02.
+#' @param femaleChrXmissCutoff the cutoff of the missingness in female 
+#' chromosome X SNPs. The default is 0.05.
+#' @param pval4autoCtl the p-value cutoff for controlling HWE test in either 
+#' control or case subjects. Only autosomal SNPs are considered. 
+#' The default is 0.000001
+#' @param pval4femaleXctl the p-value cutoff for controlling HWE test in 
+#' female control subjects. Only chromosome X SNPs are considered. 
+#' The default is 0.000001
+#' @param outputPrefix the prefix of the output PLINK binary files after QC.
+ 
+#' @return The output PLINK binary files after QC.
+#' @details The original PLINK files are implicitly processed by the following 
+#' default steps: 
+#' 1.) Set all heterozygous alleles of SNPs on male chrX as missing;
+#' 2.) SNP missingness < 0.05 (before sample removal);
+#' 3.) Subject missingness < 0.02;  
+#' 4.) Remove subjects with |Fhet| >= 0.2;
+#' 5.) Reset paternal and maternal codes;
+#' 6.) SNP missingness < 0.02 (after sample removal);
+#' 7.) Remove SNPs with difference >= 0.02 of SNP missingness 
+#' between cases and controls;
+#' 8.) Remove chrX SNPs with missingness >= 0.05 in females.
+#' (Optional, if no chrX data);
+#' 9.) Remove autosomal SNPs with HWE p < 10-6 in controls;
+#' 10.) Remove chrX SNPs with HWE p < 10-6 in female controls. 
+#' (Optional, if no chrX data). 
+
+
+#' @export  
+#' @author Junfang Chen 
+##' @examples  
+   
+
+genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05, 
+				   sampleMissCutOff=0.02, Fhet=0.2, 
+				   snpMissCutOffpost=0.02, snpMissDifCutOff=0.02,
+				   femaleChrXmissCutoff=0.05, pval4autoCtl=0.000001, 
+				   pval4femaleXctl=0.000001, outputPrefix) {
+
+	## check case control status
+	groupLabel <- getGroupLabel(inputFAMfile=paste0(inputPrefix, ".fam"))
+	## step 3 
+	# 3. Set all heterozygous alleles of SNPs of the chr 23 for males
+	outputPrefix3 <- "2_03_setHeteroHaploMissing" 
+	setHeteroHaploMissing(plink, inputPrefix, outputPrefix=outputPrefix3) 
+	## step 4  SNP missingness < 0.05 (before sample removal);  
+	outputPrefix4 <- "2_04_removedSnpMissPre" 
+	removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpre, 
+				   inputPrefix=outputPrefix3, outputPrefix=outputPrefix4) 	   
+	## step 5 
+	# subject missingness < 0.02;  
+	outputPrefix5 <- "2_05_removedInstMiss" 
+	removedInstMiss(plink, sampleMissCutOff,  
+					inputPrefix=outputPrefix4, outputPrefix=outputPrefix5)
+	## step 6  
+	outputPrefix6 <- "2_06_removedInstFhet" 
+	removedInstFhet(plink, Fhet, 
+					inputPrefix=outputPrefix5, outputPrefix=outputPrefix6)
+	## step 7
+	outputPrefix7 <- "2_07_removedParentIdsMiss" 
+	removedParentIdsMiss(plink, inputPrefix=outputPrefix6, 
+						 outputPrefix=outputPrefix7)
+	## step 8  
+	outputPrefix8 <- "2_08_removedSnpMissPost" 
+	removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
+				   inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
+	## step 9 
+	## Remove SNPs with difference >= 0.02 of SNP missingness between cases and controls.
+	outputPrefix9 <- "2_09_removedSnpMissDiff" 
+	removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
+					   snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
+	## step 10
+	outputPrefix10 <- "2_10_removedSnpFemaleChrXmiss" 
+	removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
+							 inputPrefix=outputPrefix9, 
+							 outputPrefix=outputPrefix10) 
+	## step 11
+	outputPvalFile <- "2_11_snpHwePvalAuto.txt" 
+	outputSNPfile <-  "2_11_snpRemovedHweAuto.txt" 
+	outputPrefix11 <- "2_11_removedSnpHweAuto" 
+	if (groupLabel == "control" | groupLabel == "caseControl"){
+		removedSnpHWEauto(groupLabel="control", plink, 
+						  inputPrefix=outputPrefix10, 
+			 		 	  pval=pval4autoCtl, outputPvalFile, 
+					      outputSNPfile, outputPrefix=outputPrefix11)
+	## HWE test is only performed on control data 
+	} else { print("ERROR: HWE test on autosome!") }
+	## step 12 
+	outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
+	outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
+	# outputPrefix12 <- "2_12_removedSnpHweFemaleXct" 
+	removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
+								   pval=pval4femaleXctl, outputPvalFile,
+								    outputSNPfile, outputPrefix=outputPrefix)
+
+	## remove intermediate files 
+	system(paste0("rm ", outputPrefix3, ".*"))
+	system(paste0("rm ", outputPrefix4, ".*"))
+	system(paste0("rm ", outputPrefix5, ".*"))
+	system(paste0("rm ", outputPrefix6, ".*"))
+	system(paste0("rm ", outputPrefix7, ".*"))
+	system(paste0("rm ", outputPrefix8, ".*"))
+	system(paste0("rm ", outputPrefix9, ".*"))
+	system(paste0("rm ", outputPrefix10, ".*"))
+	system(paste0("rm ", outputPrefix11, ".*")) 
+
+	if (file.exists(outputPvalFile)) {  
+		system(paste0("rm ", outputPvalFile))
+	}
+	if (file.exists(outputSNPfile)) {  
+		system(paste0("rm ", outputSNPfile))
+	}	
+	 
+}	 
