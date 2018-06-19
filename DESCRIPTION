@@ -11,6 +11,7 @@ Imports:
     doParallel, lattice
 Depends: R (>= 3.5.0)
 License: GPL-3
+Suggests: knitr
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
