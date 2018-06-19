@@ -15,6 +15,14 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 
 ## Installation 
 Development version from Github:
+
+1.) Install Gimpute from the command line
+```{r eval=FALSE}
+git clone https://github.com/transbioZI/Gimpute
+R CMD build Gimpute
+R CMD INSTALL Gimpute_0.99.3.tar.gz
+```
+2.) Install Gimpute in R
 ```{r eval=FALSE}
 install.packages("devtools")
 library("devtools")
