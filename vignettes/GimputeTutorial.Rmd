@@ -51,7 +51,7 @@ install_github("transbioZI/Gimpute")
 This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
  
 ## Experimental data
-PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. Free datasets are available under ./inst/extdata/ in our package. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). 
+PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown in this tutorial as well. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). 
 
 
 ## Get it Setup 
@@ -64,23 +64,9 @@ Binary PLINK files are recommended due to their smaller file size and fast proce
 * filename.txt denotes a file with additionally information, like SNP names, in pure text format.
 The names of the output files begin with the number of the step which produces the respective file.
 
-* the following directories and sub-directories should be made in advance.
-
-```{r eval=FALSE} 
-## Start an R session in a directory where your data processing and imputation results will be stored.
-## Then make the following sub-directories: 
-system('mkdir 1-conversion')
-system('mkdir 2-QC')
-system('mkdir 3-lifting')
-system('mkdir 4-imputation')
-system('mkdir 5-reductAndExpand')
-system('mkdir 6-finalResults')
-```
-
-
 ```{r eval=FALSE} 
 ## Examples
-## Define the directory where you place the required/downloaded tools and additional scripts (perl scripts).
+## Define the directory where you place the required tools.
 GimputeDIR = "/home/yourname/Gimpute/"
 
 ## required tools and R packages
@@ -110,9 +96,11 @@ chipAnnoFile= NULL
 ``` 
 * Self-defined configuration files
 ```{r eval=FALSE} 
-## if it's not NULL, then the file stores the duplicated sample IDs should be placed in this directory.
+## if it's not NULL, then the file stores the duplicated sample IDs 
+## should be placed in this directory.
 dupSampleIDFile = NULL 
-## if it's not NULL, then the file stores the probes which have to be excluded should be placed in this directory.
+## if it's not NULL, then the file stores the probes 
+## which have to be excluded should be placed in this directory.
 excludedProbeIdsFile = NULL 
 ```
  
@@ -121,15 +109,28 @@ excludedProbeIdsFile = NULL
 ```{r eval=FALSE} 
 ## the symbol to indicate the ancestry, such as 'EA', 'AA' ... or NULL.
 ancestrySymbol = NULL
-## If the data set contains case and control subjects 
-caseControl = FALSE #  
-## the cutoff and the sign for removing population outliers based on derived first principle component 
+## the cutoff and the sign for removing population outliers 
+## based on derived first principle component 
 cutoff =  NULL 
-## the sign to indicate whether your chosen cutoff value should be greater or smaller than the 'real' population value (determined by first PC)
+## the sign to indicate whether your chosen cutoff value should be greater 
+## or smaller than the 'real' population value (determined by first PC)
 cutoffSign = 'greater' ## not used if cutoff==NULL
 ```
 
-# Running pipeline
+
+```{r eval=FALSE} 
+## Start an R session in a directory where you"d like to generate the data.
+system('mkdir 1-conversion')
+system('mkdir 2-QC')
+system('mkdir 3-lifting')
+system('mkdir 4-imputation')
+system('mkdir 5-reductAndExpand')
+system('mkdir 6-finalResults')
+```
+
+
+
+# Running pipeline 
 ## Genotyping data conversion
 
 All files named in this subsection are in the directory 1-conversion/.
@@ -151,9 +152,10 @@ Processing steps:
 1. Use the raw genotype data and meta-data information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. EA or AA), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained.
 + Output file: 1_01_metaData.txt
 
+
 ```{r eval=FALSE} 
 
-## read plink files and meta information file
+## Load PLINK binary files and meta information file
 bedFile <- system.file("extdata", "study.bed", package="Gimpute")
 bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
 famFile <- system.file("extdata", "study.fam", package="Gimpute")
