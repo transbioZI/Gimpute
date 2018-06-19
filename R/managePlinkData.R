@@ -31,3 +31,39 @@ renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 }
  
 
+
+#' Get the outcome label of the genotype data
+#'
+#' @description
+#' Get the group label from the PLINK FAM file.
+#' 
+#' @param inputPrefix the PLINK FAM file. 
+ 
+#' @return  The group label of the genotype data: "control" or "case" or 
+#' "caseControl" indicating both groups exist.
+#' @details If the input FAM file also has missing outcomes, which are 
+#' shown in the sixth column of FAM file as "0", then an error is given.
+
+#' @export 
+#' @author Junfang Chen 
+
+
+getGroupLabel <- function(inputFAMfile){ 
+
+	## check case control label: (1=unaff, 2=aff, 0=miss)
+	fam <- read.table(file=inputFAMfile, stringsAsFactors=FALSE)
+	groupIDs <- names(table(fam[,6]))
+
+	if (length(groupIDs) == 1) {
+		if (groupIDs == "1") {label <- "control"} 
+		if (groupIDs == "2") {label <- "case"} 
+		print(label)
+	} else if (length(groupIDs) == 2) {
+		label <- "caseControl"
+		print(label)
+	} else {
+		print("ERROR: more than two groups!")
+	}
+
+	return(label)
+}
