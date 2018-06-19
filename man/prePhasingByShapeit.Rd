@@ -5,7 +5,7 @@
 \title{Prephasing genotypes using SHAPEIT}
 \usage{
 prePhasingByShapeit(shapeit, chrs, dataDIR, prefix4plinkEachChr, impRefDIR,
-  phaseDIR, nThread, effectiveSize, nCore)
+  phaseDIR, nThread = 40, effectiveSize = 20000, nCore = 1)
 }
 \arguments{
 \item{shapeit}{an executable program in either the 
@@ -24,12 +24,14 @@ are located.}
 \item{phaseDIR}{the directory where resulting pre-phased files 
 will be located.}
 
-\item{nThread}{the number of threads used for computation.}
+\item{nThread}{the number of threads used for computation.
+The default value is 40.}
 
-\item{effectiveSize}{this parameter controls the effective population size.}
+\item{effectiveSize}{this parameter controls the effective population size. 
+The default value is 20000.}
 
 \item{nCore}{the number of cores used for computation. This can be tuned 
-along with nThread.}
+along with nThread. The default value is 1}
 }
 \value{
 The pre-phased haplotypes for given chromosomes.

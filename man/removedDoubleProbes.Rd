@@ -13,13 +13,15 @@ or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{chipAnnoFile}{an input chip annotation file.}
+\item{chipAnnoFile}{an input chip annotation file. 
+If the chip annotation file is not available for your study, it can be 
+downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.}
 
 \item{chipType}{a string name that defines the type of the chip annotation 
-file: 'Illumina', 'affymetrix' or 'psychChip'.}
+file: 'illumina', 'affymetrix' or 'psychChip'.}
 
 \item{outputSNPdupFile}{a pure text file that stores the duplicated SNP IDs, 
-which can be found with the help of the chip annotation file.}
+which are detected by the use of the chip annotation file.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }

@@ -13,10 +13,12 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{chipAnnoFile}{a pure text file that stores the chip annotation 
-information.}
+information. 
+If the chip annotation file is not available for your study, it can be 
+downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.}
 
 \item{chipType}{a string name defines the type of the chip annotation file: 
-'Illumina', 'affymetrix' or 'psychChip'.}
+'illumina', 'affymetrix' or 'psychChip'.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }

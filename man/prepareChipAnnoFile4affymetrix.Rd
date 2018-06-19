@@ -21,7 +21,7 @@ information in a user-defined format.
 Prepare Affymetrix chip annotation file into the format of interest.
 }
 \details{
-If the chip annotation file is not available, it can be 
+If the chip annotation file is not available for your study, it can be 
 downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 }
 \author{

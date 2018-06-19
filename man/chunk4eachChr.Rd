@@ -4,7 +4,7 @@
 \alias{chunk4eachChr}
 \title{Chunk each chromosome into multiple segments}
 \usage{
-chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
+chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize = 3e+06)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
@@ -15,7 +15,8 @@ all the chunks for each chromosome separately.}
 
 \item{chrs}{specifiy the chromosome codes for chunking.}
 
-\item{windowSize}{the window size of each chunk.}
+\item{windowSize}{the window size of each chunk. 
+The default value is 3000000.}
 }
 \value{
 The output pure text files include all the chunks 

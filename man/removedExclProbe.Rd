@@ -13,7 +13,7 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{excludedProbeIdsFile}{a pure text file that stores the SNP IDs, 
-one per line, which need to be removed. If it is null, then skip this step.}
+one per line, which need to be removed. If it is null, then no SNPs are removed.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }

@@ -4,7 +4,7 @@
 \alias{filterImputeData}
 \title{Filter genetic variants}
 \usage{
-filterImputeData(plink, suffix4impute2info, outputInfoFile, infoScore,
+filterImputeData(plink, suffix4impute2info, outputInfoFile, infoScore = 0.6,
   badImputeSNPfile, inputPrefix, outputPrefix)
 }
 \arguments{
@@ -18,7 +18,7 @@ store the imputation quality score for each variant from .impute2_info files.}
 two columns: all imputed SNPs and their info scores.}
 
 \item{infoScore}{the cutoff of filtering imputation quality score for 
-each variant.}
+each variant. The default value is 0.6.}
 
 \item{badImputeSNPfile}{the output file of SNPs with bad info scores.}
 

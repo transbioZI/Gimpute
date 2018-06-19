@@ -2,7 +2,7 @@
 % Please edit documentation in R/genotypeQC.R
 \name{removedSnpFemaleChrXhweControl}
 \alias{removedSnpFemaleChrXhweControl}
-\title{Hardy weinberg equilibrium test for chromosome X SNPs in female controls.}
+\title{Hardy Weinberg Equilibrium test for chromosome X SNPs in female controls.}
 \usage{
 removedSnpFemaleChrXhweControl(plink, inputPrefix, pval, outputPvalFile,
   outputSNPfile, outputPrefix)
@@ -28,7 +28,7 @@ one per line.}
 The output PLINK binary files.
 }
 \description{
-Hardy weinberg equilibrium test for SNPs on the chromosome X in 
+Hardy Weinberg Equilibrium test for SNPs on the chromosome X in 
 female controls.
 }
 \examples{

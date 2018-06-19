@@ -30,7 +30,8 @@ Check if all SNPs are included in the chip annotation file.
 If some of the input SNPs are not included, then remove them.
 }
 \details{
-This chip annotation file is defined in advance.
+If the chip annotation file is not available for your study, 
+you can download it from http://www.well.ox.ac.uk/~wrayner/strand/.
 }
 \author{
 Junfang Chen
