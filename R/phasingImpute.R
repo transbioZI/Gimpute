@@ -183,7 +183,8 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' @param outputPrefix the prefix of the output pure text files that keep 
 #' all the chunks for each chromosome separately.
 #' @param chrs specifiy the chromosome codes for chunking.
-#' @param windowSize  the window size of each chunk.
+#' @param windowSize  the window size of each chunk. 
+#' The default value is 3000000.
 
 #' @return The output pure text files include all the chunks 
 #' for each chromosome separately. 
@@ -193,12 +194,12 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 
  
 
-chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize){  
+chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){  
 
 	for (i in chrs){ 
 
-		bimfilename <- paste0(inputPrefix, i, ".bim")
-		bimdata <- read.table(file=bimfilename, sep="\t", stringsAsFactors=FALSE)
+		bim <- paste0(inputPrefix, i, ".bim")
+		bimdata <- read.table(file=bim, sep="\t", stringsAsFactors=FALSE)
 		position <- bimdata[,4]
 		posStart <- head(position,1)
 		posEnd <- tail(position,1)
@@ -265,10 +266,11 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize){
 #' @param phaseDIR the directory where resulting pre-phased files 
 #' will be located.
 #' @param nThread the number of threads used for computation.
-#' @param effectiveSize this parameter controls the effective population size.
+#' The default value is 40. 
+#' @param effectiveSize this parameter controls the effective population size. 
+#' The default value is 20000.
 #' @param nCore the number of cores used for computation. This can be tuned 
-#' along with nThread.
- 
+#' along with nThread. The default value is 1
 
 #' @return The pre-phased haplotypes for given chromosomes.  
 #' @details If ChrX is available then it is done differently by passing the flag 
@@ -277,12 +279,11 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize){
 #' @export 
 #' @import doParallel  
 
-#' @author Junfang Chen 
-  
+#' @author Junfang Chen   
 
 prePhasingByShapeit <- function(shapeit, chrs, dataDIR, 
 								prefix4plinkEachChr, impRefDIR, phaseDIR, 
-								nThread, effectiveSize, nCore){
+								nThread=40, effectiveSize=20000, nCore=1){
 
 	chrslist <- as.list(chrs)
 	mclapply(chrslist, function(i){
@@ -657,7 +658,7 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.  
 #' @param infoScore the cutoff of filtering imputation quality score for 
-#' each variant.   
+#' each variant. The default value is 0.6. 
 #' @param badImputeSNPfile the output file of SNPs with bad info scores.  
 #' @param inputPrefix the prefix of the input imputed PLINK binary files. 
 #' @param outputPrefix the prefix of the output filtered PLINK binary files. 
@@ -675,8 +676,9 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 #' @author Junfang Chen 
    
 
+
 filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
-							 infoScore, badImputeSNPfile, inputPrefix, 
+							 infoScore=0.6, badImputeSNPfile, inputPrefix, 
 							 outputPrefix){ 
 
 	## read each .impute2_info file, remove 1st line, add to another file and repeat   
@@ -755,5 +757,203 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 }
 # 
 
- 
- 
+  
+
+
+##########################################################################
+## phaseImpute.R
+########################################################################## 
+#' Phasing and imputation 
+#'
+#' @description
+#' Perform phasing, imputation and conversion from IMPUTE2 format into PLINK 
+#' binary files. 
+
+#' @param inputPrefix the prefix of the input PLINK binary files for 
+#' the imputation.
+#' @param outputPrefix the prefix of the output PLINK binary files  
+#' after imputation and filtering out bad imputed variants.
+#' @param prefix4final the prefix of the output PLINK binary files  
+#' after imputation.
+#' @param plink an executable program in either the current 
+#' working directory or somewhere in the command path.
+#' @param shapeit an executable program in either the current 
+#' working directory or somewhere in the command path.
+#' @param impute2 an executable program in either the current 
+#' working directory or somewhere in the command path.
+#' @param gtool an executable program in either the current 
+#' working directory or somewhere in the command path. 
+#' @param windowSize  the window size of each chunk. 
+#' The default value is 3000000. 
+#' @param effectiveSize this parameter controls the effective population size. 
+#' The default value is 20000.
+#' @param nCore4phase the number of cores used for phasing. This can be tuned 
+#' along with nThread. The default value is 1 
+#' @param nThread the number of threads used for computation.
+#' The default value is 40. 
+#' @param nCore4impute the number of cores used for imputation. 
+#' The default value is 40. 
+#' @param nCore4gtool the number of cores used for computation. 
+#' The default value is 40. 
+#' @param infoScore the cutoff of filtering imputation quality score for 
+#' each variant. The default value is 0.6. 
+#' @param outputInfoFile the output file of impute2 info scores consisting of 
+#' two columns: all imputed SNPs and their info scores.   
+#' @param impRefDIR the directory where the imputation reference files 
+#' are located.  
+#' @param tmpImputeDir the name of the temporary directory used for 
+#' storing phasing and imputation results.
+#' @param keepTmpDir a logical value indicating if the directory 
+#' 'tmpImputeDir' should be kept or not. The default is TRUE.
+
+#' @return 1.) The filtered imputed PLINK binary files; 
+#' 2.) The final PLINK binary files including bad imputed variants;
+#' 3.) A pure text file contains the info scores of all imputed SNPs with 
+#' two columns: SNP names and the corresponding info scores. 
+#' @details The whole imputation process mainly consists of the following 
+#' steps: 
+#' 1.) Phasing the input PLINK data using an existing imputation reference;  
+#' 2.) Imputing the input PLINK data using phased results and an existing 
+#' reference data; 
+#' 3.) Converting IMPUTE2 format data into PLINK format.
+#' 4.) Combining all imputed data into whole-genome PLINK binary files.
+#' 5.) Filtering out imputed variants with bad imputation quality. 
+
+#' @export 
+#' @author Junfang Chen 
+
+
+phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
+						plink, shapeit, impute2, gtool, 
+						windowSize=3000000, effectiveSize=20000, 
+						nCore4phase=1, nThread=40, 
+						nCore4impute=40, nCore4gtool=40, 
+						infoScore=0.6, outputInfoFile,
+						impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE){
+
+	## One must create directories for storing temporary imputation output files 
+	## The name of these directories must be fixed for the sake of the subsequent steps.
+	system(paste0("mkdir ", tmpImputeDir))
+	setwd(tmpImputeDir) ## 
+	## sub-directories  
+	system("mkdir 1-dataFiles")
+	system("mkdir 2-chunkFile") 
+	system("mkdir 3-phaseResults")
+	system("mkdir 4-imputeResults")
+	system("mkdir 5-postImpute")
+	system("mkdir 6-finalResults")  
+	# define directories
+	dataDIR <- "./1-dataFiles/"  
+	chunkDIR <- "./2-chunkFile/"
+	phaseDIR <- "./3-phaseResults/"  
+	imputedDIR <- "./4-imputeResults/"  
+	postImputeDIR <- "./5-postImpute/" 
+	finalImputeDIR <- "./6-finalResults/"  
+	setwd("..")  
+	## step 2.1 
+	## copy plink files without monomorphic SNPs; prepare for the imputation.
+	prefixGWchr <- "gwas_data_chr"  
+	system( paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
+	setwd(paste0("./", tmpImputeDir, "/1-dataFiles/"))  
+	renamePlinkBFile(inputPrefix, outputPrefix=prefixGWchr, action="move")
+	bimCurrent <- read.table(file=paste0(prefixGWchr, ".bim"), 
+							 stringsAsFactors=FALSE)  
+	currentChr <- names(table(bimCurrent[,1]))
+	print(currentChr)  
+	chrXPAR1suffix <- "X_PAR1"
+	chrXPAR2suffix <- "X_PAR2"
+	## nCore is chosen as the number of chromosomes available 
+	PAR <- chrWiseSplit(plink, inputPrefix=prefixGWchr, chrXPAR1suffix, 
+						chrXPAR2suffix, nCore=length(currentChr))
+	print(PAR)  
+	if (PAR[[1]]) {par1 <- "X_PAR1"} else {par1 <- NULL}
+	if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
+	## step 2.2
+	chunkPrefix <- "chunks_chr" 
+	chrs <- c(currentChr, par1, par2)    
+	chunk4eachChr(inputPrefix=prefixGWchr, 
+				  outputPrefix=chunkPrefix, chrs, windowSize) 
+
+	setwd("..") 
+	system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
+	## step 2.3     
+	prePhasingByShapeit(shapeit, chrs, dataDIR, 
+						prefix4plinkEachChr=prefixGWchr, 
+						impRefDIR, phaseDIR, nThread, 
+						effectiveSize, nCore4phase)
+	## step 2.4   
+	prefixChunk <- paste0(chunkDIR, chunkPrefix)        
+	imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
+					 imputedDIR, prefix4plinkEachChr=prefixGWchr, 
+					 nCore4impute, effectiveSize)
+	## step 2.5   
+	## extract only SNPs (without INDELs)
+	#######################################################
+	setwd(imputedDIR)  
+	## extract only SNPs starting with "rs";  .
+	ls <- system("ls gwas*.impute2", intern=T)
+	snpPrefix <- "rs" 
+	biglists <- as.list(ls)
+	mclapply(biglists, function(i){ 
+		arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
+		arg2 <- paste0(i, "noINDEL.impute2")   
+		system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
+	}, mc.cores=length(biglists)) 
+	setwd("..") 
+	suffix4imputed <- ".impute2noINDEL.impute2"   
+	convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
+					      prefix4plinkEachChr=prefixGWchr, suffix4imputed, 
+					      postImputeDIR, nCore4gtool)
+  
+	## step 2.6  
+	####################################################### 
+	## Modify missing genotype format.
+	setwd(postImputeDIR)   
+	## replace 'N' in the .ped files into 0 > missing values.
+	chrslist <- as.list(chrs) 
+	fn <- mclapply(chrslist, function(i){
+		system(paste0("sed -i 's/N/0/g' ", prefixGWchr, i, ".*ped "))
+	}, mc.cores=length(chrslist)) 
+	prefixMerge <- "gwasMerged" 
+	mergePlinkData(plink, chrs, prefix4plinkEachChr=prefixGWchr, 
+				   prefixMerge, nCore=length(chrslist))
+	## fam IDs might be changed: a.) if IDs have 'N'; b.) IID, FID may be switched.
+	## >> update this as below 
+	## the original PLINK files before imputation
+	setwd("..")
+	system(paste0("scp ", dataDIR, prefixGWchr, ".fam ", postImputeDIR)) 
+	setwd(postImputeDIR) 
+	## update FAM IDs in the imputed PLINK files
+	famOrig <- read.table(paste0(prefixGWchr, ".fam"), stringsAsFactors=FALSE) 
+	famImpute <- read.table(paste0(prefixMerge,".fam"), 
+							stringsAsFactors=FALSE) 
+	## changes ID codes for individuals specified in recoded.txt, 
+	## which should be in the format of 4 cols per row: 
+	## old FID, old IID, new FID, new IID, e.g.
+	recodMat <- cbind(famImpute[,1:2], famOrig[,1:2]) 
+	write.table(recodMat, file="recoded.txt", quote=FALSE, 
+				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+	 
+	system(paste0(plink, " --bfile ", prefixMerge, 
+		   " --update-ids recoded.txt --make-bed --out ", prefix4final)) 
+	#######################################################
+	setwd("..")
+	system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
+	system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
+	## step 2.7    
+	setwd(finalImputeDIR)
+	suffix4impute2info <- ".impute2_info"
+	badImputeSNPfile <- "badImputeSNPs.txt" 
+	filterImputeData(plink, suffix4impute2info, 
+					 outputInfoFile, infoScore, badImputeSNPfile, 
+					 inputPrefix=prefix4final, outputPrefix)
+	setwd("..")
+	setwd("..")
+	if (keepTmpDir == FALSE){
+		system(paste0("rm -r ", tmpImputeDir))
+	} else if (keepTmpDir == TRUE){
+		print("Keep the temporary imputation folder.")
+	}
+
+}
+
