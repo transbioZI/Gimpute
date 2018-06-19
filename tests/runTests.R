@@ -34,7 +34,7 @@ ancestrySymbol <- NULL
 ############################################################
 
 ## go to the directory where you"d like to generate the data
-# make the following directories and sub-directories  
+# make the following directories    
 system("mkdir 1-conversion")
 system("mkdir 2-QC")
 system("mkdir 3-lifting")
