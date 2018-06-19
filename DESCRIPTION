@@ -6,9 +6,7 @@ Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"),
     email="junfang.chen33@gmail.com"),
     person("Dietmar", "Lippold", role=c("aut")),
     person("Emanuel", "Schwarz", role=c("aut")))
-Description: Genotype imputation is essential for genome-wide 
-association studies (GWAS) to retrieve information of untyped variants 
-and facilitate comparability across studies. 
+Description: Genotype imputation is essential for genome-wide association studies (GWAS) to retrieve information of untyped variants and facilitate comparability across studies. 
 Imports:
     doParallel, lattice
 Depends: R (>= 3.5.0)
