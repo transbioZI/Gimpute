@@ -261,7 +261,7 @@ removedYMtSnp(plink, inputPrefix=outputPrefix10, outputPrefix=outputPrefix11)
 ```
 
 
-### Complete processing step
+### A compact processing step
 
 ```{r eval=FALSE} 
 ## module function
