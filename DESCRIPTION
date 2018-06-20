@@ -11,7 +11,7 @@ Description: Genotype imputation is essential for genome-wide association studie
     (GWAS) to retrieve information of untyped variants and facilitate comparability 
     across studies. Based on widely used and freely available tools, 
     we have developed Gimpute, an automated processing and imputation pipeline 
-    for genome-wide association data. Gimpute includes pro-cessing steps for 
+    for genome-wide association data. Gimpute includes processing steps for 
     genotype liftOver, quality control, population outlier detection, 
     haplotype pre-phasing, imputation, post imputation, data management 
     and the extension to other existing pipeline. 
