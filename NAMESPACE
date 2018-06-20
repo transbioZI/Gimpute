@@ -48,3 +48,6 @@ export(updateGroupIdAndSex)
 export(updatedSnpInfo)
 import(doParallel)
 import(lattice)
+import(BiocStyle)
+import(knitr)
+
