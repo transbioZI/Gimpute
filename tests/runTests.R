@@ -23,8 +23,8 @@ system("mkdir sampleInfo") ## Metadata
 setwd("..")
 
 ## Define the directory where you place the imputation reference files 
-impRefdir <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
-
+impRefDIR <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
+impRefDIR <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef/1000Gphase1/"
 ## Genotyping chip annotation file 
 ## chipAnnoFile <- "/home/junfang.chen/Gimpute/config/Illumina/Human1M-Duov3_B-b37.Illmn.strand"
 chipAnnoFile <- NULL 
@@ -271,7 +271,7 @@ phaseImpute(inputPrefix, outputPrefix, prefix4final,
 			nCore4phase=1, nThread=40, 
 			nCore4impute=40, nCore4gtool=40, 
 			infoScore=0.6, outputInfoFile, 
-			impRefDIR, tmpImputeDir="tmpImpute222", keepTmpDir=TRUE)
+			impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE)
 
 
 ##################################################### ###### After imputation
