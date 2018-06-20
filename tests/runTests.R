@@ -7,64 +7,79 @@
 
 library(Gimpute)
  
-
-## Define the directory where you place the required/downloaded tools.
-## required tools
-plink <- "/home/junfang.chen/Gimpute/tools/plink"
-gcta <- "/home/junfang.chen/Gimpute/tools/gcta64" 
-shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
-impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
-gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
-
-## configuration files/. 
-## configuration directory: where you put all your files in this folder for the configuration. 
-chipAnnoFile <- NULL 
-chipType <- "illumina"
-dupSampleIDFile <- NULL ## if it's not NULL, then the file stores the duplicated sample IDs should be placed in this directory.
-excludedProbeIdsFile <- NULL ## if it's not NULL, then the file stores the probes which have to be excluded should be placed in this directory.
-
-## The directory where you specify your imputation reference files:
-impRefDIR <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef/1000Gphase1/"
- 
-## global parameters/variables
-ancestrySymbol <- NULL
-  
-############################################################
-## code chunk number 1: SNP information update  
-############################################################
-
-## go to the directory where you"d like to generate the data
-# make the following directories    
+## Start an R session in a directory where you'd like to generate the data.
+system("mkdir 0-rawData")
 system("mkdir 1-conversion")
 system("mkdir 2-QC")
 system("mkdir 3-lifting")
 system("mkdir 4-imputation")
 system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
- 
-## step 1
-## copy plink files and meta information file
+
+## Go to ./0-rawData, where you want to place the original data.
+setwd("0-rawData")
+system("mkdir plinkFiles") ## Original PLINK data 
+system("mkdir sampleInfo") ## Metadata 
+setwd("..")
+
+## Define the directory where you place the imputation reference files 
+impRefdir <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
+
+## Genotyping chip annotation file 
+## chipAnnoFile <- "/home/junfang.chen/Gimpute/config/Illumina/Human1M-Duov3_B-b37.Illmn.strand"
+chipAnnoFile <- NULL 
+
+
+## Self-defined configuration files
+## if it's not NULL, then the file stores the duplicated sample IDs 
+## should be placed in this directory.
+dupSampleIDFile <- NULL 
+## if it's not NULL, then the file stores the probes 
+## which have to be excluded should be placed in this directory.
+excludedProbeIdsFile <- NULL 
+
+
+
+## Define required tools
+plink <- "/home/junfang.chen/Gimpute/tools/plink"
+gcta <- "/home/junfang.chen/Gimpute/tools/gcta64" 
+shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
+impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
+gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
+
+  
+  
+############################################################
+## code chunk number 1: SNP information update  
+############################################################
+
+## step 0
+## Load PLINK binary files and metadata information from Gimpute package
 bedFile <- system.file("extdata", "study.bed", package="Gimpute")
 bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
 famFile <- system.file("extdata", "study.fam", package="Gimpute")
 metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
 
-system(paste0("scp ", bedFile, " ", bimFile, " ", famFile, " ./1-conversion/"))
-system(paste0("scp ", metadataFile, " ./1-conversion/"))   
+## Copy into the "0-rawData" directory
+system(paste0("scp ", bedFile, " ./0-rawData/plinkFiles/")) 
+system(paste0("scp ", bimFile, " ./0-rawData/plinkFiles/")) 
+system(paste0("scp ", famFile, " ./0-rawData/plinkFiles/")) 
+system(paste0("scp ", metadataFile, " ./0-rawData/sampleInfo/"))
+
+ 
+
+
+## step 1
+system( paste0("scp ./0-rawData/plinkFiles/study.*  ./1-conversion/") ) 
+system( paste0("scp ./0-rawData/sampleInfo/1_01_metaData.txt ./1-conversion/") ) 
 setwd("./1-conversion/") 
-  
-
-source("/home/junfang.chen/Gimpute/R/genotypeInfoUpdate.R")
-source("/home/junfang.chen/Gimpute/R/genotypeQC.R")
-source("/home/junfang.chen/Gimpute/R/align2reference.R")
-source("/home/junfang.chen/Gimpute/R/phasingImpute.R") 
-source("/home/junfang.chen/Gimpute/R/extend2genipe.R")
-source("/home/junfang.chen/Gimpute/R/managePlinkData.R")
 
 
+ 
 ############################################################ 
 ## module function
 inputPrefix <- "study"
+ancestrySymbol <- "EA"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
 updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
