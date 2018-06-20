@@ -19,15 +19,15 @@
 
 renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 
-	if (action == "copy"){
-		system(paste0("scp ", inputPrefix, ".bed ", outputPrefix, ".bed"))
-		system(paste0("scp ", inputPrefix, ".bim ", outputPrefix, ".bim"))
-		system(paste0("scp ", inputPrefix, ".fam ", outputPrefix, ".fam"))
-	} else if (action == "move"){
-		system(paste0("mv ", inputPrefix, ".bed ", outputPrefix, ".bed"))
-		system(paste0("mv ", inputPrefix, ".bim ", outputPrefix, ".bim"))
-		system(paste0("mv ", inputPrefix, ".fam ", outputPrefix, ".fam"))
-	}
+    if (action == "copy"){
+        system(paste0("scp ", inputPrefix, ".bed ", outputPrefix, ".bed"))
+        system(paste0("scp ", inputPrefix, ".bim ", outputPrefix, ".bim"))
+        system(paste0("scp ", inputPrefix, ".fam ", outputPrefix, ".fam"))
+    } else if (action == "move"){
+        system(paste0("mv ", inputPrefix, ".bed ", outputPrefix, ".bed"))
+        system(paste0("mv ", inputPrefix, ".bim ", outputPrefix, ".bim"))
+        system(paste0("mv ", inputPrefix, ".fam ", outputPrefix, ".fam"))
+    }
 }
  
 
@@ -50,20 +50,20 @@ renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 
 getGroupLabel <- function(inputFAMfile){ 
 
-	## check case control label: (1=unaff, 2=aff, 0=miss)
-	fam <- read.table(file=inputFAMfile, stringsAsFactors=FALSE)
-	groupIDs <- names(table(fam[,6]))
+    ## check case control label: (1=unaff, 2=aff, 0=miss)
+    fam <- read.table(file=inputFAMfile, stringsAsFactors=FALSE)
+    groupIDs <- names(table(fam[,6]))
 
-	if (length(groupIDs) == 1) {
-		if (groupIDs == "1") {label <- "control"} 
-		if (groupIDs == "2") {label <- "case"} 
-		print(label)
-	} else if (length(groupIDs) == 2) {
-		label <- "caseControl"
-		print(label)
-	} else {
-		print("ERROR: more than two groups!")
-	}
+    if (length(groupIDs) == 1) {
+        if (groupIDs == "1") {label <- "control"} 
+        if (groupIDs == "2") {label <- "case"} 
+        print(label)
+    } else if (length(groupIDs) == 2) {
+        label <- "caseControl"
+        print(label)
+    } else {
+        print("ERROR: more than two groups!")
+    }
 
-	return(label)
+    return(label)
 }

@@ -50,27 +50,27 @@
  
 removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
 
-	if (!is.null(dupSampleIDFile)){ 
+    if (!is.null(dupSampleIDFile)){ 
 
-		famv0 <- read.table(file=paste0(inputPrefix, ".fam"), 
-							stringsAsFactors=FALSE)  
-		dupIDs <- read.table(file=dupSampleIDFile, stringsAsFactors=FALSE)  
-		## write into plink format .txt for removal
-		dupIDs4plink <- famv0[is.element(famv0[,2], dupIDs[,1]), 1:2] 
-		dupIDsfn <- paste0(outputPrefix, ".txt")
-		write.table(dupIDs4plink, file=dupIDsfn, quote=FALSE, row.names=FALSE, 
-				    col.names=FALSE, eol="\r\n", sep=" ") 
-		system(paste0(plink, " --bfile ", inputPrefix, 
-			   " --remove ", dupIDsfn, " --make-bed --out ", outputPrefix))
-		system(paste0("rm ", dupSampleIDFile, " ", dupIDsfn)) 
-		# system(paste0("rm ", inputPrefix, ".*") )
+        famv0 <- read.table(file=paste0(inputPrefix, ".fam"), 
+                            stringsAsFactors=FALSE)  
+        dupIDs <- read.table(file=dupSampleIDFile, stringsAsFactors=FALSE)  
+        ## write into plink format .txt for removal
+        dupIDs4plink <- famv0[is.element(famv0[,2], dupIDs[,1]), 1:2] 
+        dupIDsfn <- paste0(outputPrefix, ".txt")
+        write.table(dupIDs4plink, file=dupIDsfn, quote=FALSE, row.names=FALSE, 
+                    col.names=FALSE, eol="\r\n", sep=" ") 
+        system(paste0(plink, " --bfile ", inputPrefix, 
+               " --remove ", dupIDsfn, " --make-bed --out ", outputPrefix))
+        system(paste0("rm ", dupSampleIDFile, " ", dupIDsfn)) 
+        # system(paste0("rm ", inputPrefix, ".*") )
 
-	} else { 
-		## copy/rename all snp info updated plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")
-		## remove the raw genotype plink files
-		# system(paste0("rm ", inputPrefix, ".*"))
-	} 
+    } else { 
+        ## copy/rename all snp info updated plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy")
+        ## remove the raw genotype plink files
+        # system(paste0("rm ", inputPrefix, ".*"))
+    } 
 }
  
 
@@ -104,46 +104,46 @@ removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
  
 
 updateGroupIdAndSex <- function(plink, inputPrefix, metaDataFile, outputPrefix){
-	     
-	fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
-	metaData <- read.table(metaDataFile, stringsAsFactors=FALSE, header=TRUE) 
-	## to make sure only compare with the same set of plIndID --> IID
-	interIDs <- intersect(fam[,2], metaData[,"IID"]) 	# the shared IDs 
-	metadataSub <- metaData[is.element(metaData[,"IID"], interIDs),]
+         
+    fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
+    metaData <- read.table(metaDataFile, stringsAsFactors=FALSE, header=TRUE) 
+    ## to make sure only compare with the same set of plIndID --> IID
+    interIDs <- intersect(fam[,2], metaData[,"IID"])     # the shared IDs 
+    metadataSub <- metaData[is.element(metaData[,"IID"], interIDs),]
 
-	## one must keep the order of .fam unchanged!
-	metadataSubsort <- metadataSub[match(fam[,2], metadataSub[,"IID"]),]
-	## IID is in the 1st col; 
-	missIDsIndex <- which(is.na(metadataSubsort[,1]) == TRUE) 
-	fam[,6] <- metadataSubsort[,"group"] + 1 # update to the correct format.
-	## keep the IDs of no missing group info as -9
-	fam[missIDsIndex, 6] <- -9  
-	## a pheno file that contains 3 columns (one row per individual)
- 	newPheno <- fam[,c(1,2,6)]  
- 	write.table(newPheno, file="pheno.txt", quote=FALSE, row.names=FALSE, 
- 				col.names=FALSE, eol="\r\n", sep=" ")  
+    ## one must keep the order of .fam unchanged!
+    metadataSubsort <- metadataSub[match(fam[,2], metadataSub[,"IID"]),]
+    ## IID is in the 1st col; 
+    missIDsIndex <- which(is.na(metadataSubsort[,1]) == TRUE) 
+    fam[,6] <- metadataSubsort[,"group"] + 1 # update to the correct format.
+    ## keep the IDs of no missing group info as -9
+    fam[missIDsIndex, 6] <- -9  
+    ## a pheno file that contains 3 columns (one row per individual)
+     newPheno <- fam[,c(1,2,6)]  
+     write.table(newPheno, file="pheno.txt", quote=FALSE, row.names=FALSE, 
+                 col.names=FALSE, eol="\r\n", sep=" ")  
 
-	## Alternate phenotype files
-	outputPrefixVgroup <- paste0(outputPrefix, "_chGroup")
-	system(paste0(plink, " --bfile ", inputPrefix, 
-		   " --pheno pheno.txt --make-bed --out ", outputPrefixVgroup) )
-	system("rm pheno.txt" ) 
+    ## Alternate phenotype files
+    outputPrefixVgroup <- paste0(outputPrefix, "_chGroup")
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --pheno pheno.txt --make-bed --out ", outputPrefixVgroup) )
+    system("rm pheno.txt" ) 
 
-	## update the sex information according to the metaData file 
-	## keep the IDs of no missing sex info as 0
-	fam[,5] <- metadataSubsort[,"sex"]  
-	fam[missIDsIndex, 5] <- 0  
-	##  a pheno file that contains 3 columns (one row per individual)
- 	updateSex <- fam[,c(1,2,5)]  
- 	write.table(updateSex, file="updateSex.txt", quote=FALSE, 
- 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+    ## update the sex information according to the metaData file 
+    ## keep the IDs of no missing sex info as 0
+    fam[,5] <- metadataSubsort[,"sex"]  
+    fam[missIDsIndex, 5] <- 0  
+    ##  a pheno file that contains 3 columns (one row per individual)
+     updateSex <- fam[,c(1,2,5)]  
+     write.table(updateSex, file="updateSex.txt", quote=FALSE, 
+                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
  
-	## --update-sex expects a file with FIDs and IIDs in the first two columns, 
-	## the 3rd column is the sex information.
-	system(paste0(plink, " --bfile ", outputPrefixVgroup, 
-		   " --update-sex updateSex.txt --make-bed --out ", outputPrefix) )
-	system("rm updateSex.txt" )
-	system(paste0("rm ", outputPrefixVgroup, "*"))
+    ## --update-sex expects a file with FIDs and IIDs in the first two columns, 
+    ## the 3rd column is the sex information.
+    system(paste0(plink, " --bfile ", outputPrefixVgroup, 
+           " --update-sex updateSex.txt --make-bed --out ", outputPrefix) )
+    system("rm updateSex.txt" )
+    system(paste0("rm ", outputPrefixVgroup, "*"))
 }
 
 
@@ -173,16 +173,16 @@ updateGroupIdAndSex <- function(plink, inputPrefix, metaDataFile, outputPrefix){
 
 removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
  
-	fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
-	## 1. check if any sample without phenotypes
-	noGroupIds <- fam[which(fam[,6] == -9), 1:2] 
-	## if any then remove and afterwards add phenotypes
-	noGroupIdsfn <- paste0(outputPrefix, ".txt")
-	write.table(noGroupIds, file=noGroupIdsfn, quote=FALSE, 
-		        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
-	system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
-		   noGroupIdsfn, " --make-bed --out ", outputPrefix) )  
-	system(paste0("rm ",  noGroupIdsfn) )
+    fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
+    ## 1. check if any sample without phenotypes
+    noGroupIds <- fam[which(fam[,6] == -9), 1:2] 
+    ## if any then remove and afterwards add phenotypes
+    noGroupIdsfn <- paste0(outputPrefix, ".txt")
+    write.table(noGroupIds, file=noGroupIdsfn, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
+    system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
+           noGroupIdsfn, " --make-bed --out ", outputPrefix) )  
+    system(paste0("rm ",  noGroupIdsfn) )
 }
  
  
@@ -211,25 +211,25 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
 
 
 removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile, 
-	 							 ancestrySymbol, outputPrefix){
+                                  ancestrySymbol, outputPrefix){
 
-	if (is.null(ancestrySymbol)) { 
-		## copy/rename all snp info updated plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	} else {
-		metaData <- read.table(metaDataFile, stringsAsFactors=FALSE, header=TRUE) 
-		ids <- metaData[which(metaData[,"ance"] == ancestrySymbol),"IID"]
-		fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
-		famEA <- fam[is.element(fam[,2], ids), 1:2]
-		plinkFormatDat <- famEA
-		write.table(plinkFormatDat, file=paste0(outputPrefix,".txt"), quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+    if (is.null(ancestrySymbol)) { 
+        ## copy/rename all snp info updated plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    } else {
+        metaData <- read.table(metaDataFile, stringsAsFactors=FALSE, header=TRUE) 
+        ids <- metaData[which(metaData[,"ance"] == ancestrySymbol),"IID"]
+        fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
+        famEA <- fam[is.element(fam[,2], ids), 1:2]
+        plinkFormatDat <- famEA
+        write.table(plinkFormatDat, file=paste0(outputPrefix,".txt"), quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
 
-		system(paste0(plink, " --bfile ", inputPrefix, " --keep ", 
-			   paste0(outputPrefix,".txt"), " --make-bed --out ", outputPrefix) )
-		system(paste0("rm ",  outputPrefix, ".txt") )
-	}	
-	
+        system(paste0(plink, " --bfile ", inputPrefix, " --keep ", 
+               paste0(outputPrefix,".txt"), " --make-bed --out ", outputPrefix) )
+        system(paste0("rm ",  outputPrefix, ".txt") )
+    }    
+    
 }
 
 
@@ -260,15 +260,15 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
  
 removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPrefix){
  
-	if (!is.null(excludedProbeIdsFile)) {
-		system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-			   excludedProbeIdsFile, " --make-bed --out ", outputPrefix) )
-		## remove .txt
-		system(paste0("rm ", excludedProbeIdsFile) )
-	} else { 
-		## copy/rename all snp info updated plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")   
-	}
+    if (!is.null(excludedProbeIdsFile)) {
+        system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+               excludedProbeIdsFile, " --make-bed --out ", outputPrefix) )
+        ## remove .txt
+        system(paste0("rm ", excludedProbeIdsFile) )
+    } else { 
+        ## copy/rename all snp info updated plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy")   
+    }
 }
    
 
@@ -301,33 +301,33 @@ removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPre
  
 
 removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile, 
-							   outputPrefix, outputSNPfile){
+                               outputPrefix, outputSNPfile){
 
-	if (!is.null(chipAnnoFile)){ 
+    if (!is.null(chipAnnoFile)){ 
  
-	 	annoFile <- "chipAnnoRefb37.txt"
-	 	if (chipType == "affymetrix") { 
-	 		prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
-	 	} else if (chipType == "illumina"){ 
-	 		prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
-	 	} else if (chipType == "PsychChip"){ 
-	 		prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
-	 	}
+         annoFile <- "chipAnnoRefb37.txt"
+         if (chipType == "affymetrix") { 
+             prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
+         } else if (chipType == "illumina"){ 
+             prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
+         } else if (chipType == "PsychChip"){ 
+             prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
+         }
 
-		## find the overlapping
-		chipAnno <- read.table(file=annoFile, header=TRUE, stringsAsFactors=FALSE)
-		## check the overlapping SNPs
-		bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-		interSNPs <- intersect(bim[,2], chipAnno[,"chipSnpID"])  
-		unmapped <- setdiff(bim[,2], interSNPs) 
-		write.table(unmapped, file=outputSNPfile, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-		system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", outputSNPfile, 
-			   " --make-bed --out ", outputPrefix) )
- 	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
-	}
+        ## find the overlapping
+        chipAnno <- read.table(file=annoFile, header=TRUE, stringsAsFactors=FALSE)
+        ## check the overlapping SNPs
+        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
+        interSNPs <- intersect(bim[,2], chipAnno[,"chipSnpID"])  
+        unmapped <- setdiff(bim[,2], interSNPs) 
+        write.table(unmapped, file=outputSNPfile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", outputSNPfile, 
+               " --make-bed --out ", outputPrefix) )
+     } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
+    }
 }
 
 
@@ -363,65 +363,65 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
  
 
 removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile, 
-								chipType, outputSNPdupFile, outputPrefix){
- 	
- 	if (!is.null(chipAnnoFile)){ 
+                                chipType, outputSNPdupFile, outputPrefix){
+     
+     if (!is.null(chipAnnoFile)){ 
 
-	 	annoFile <- "chipAnnoRefb37.txt"
-	 	if (chipType == "affymetrix") { 
-	 		prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
-	 	} else if (chipType == "illumina"){ 
-	 		prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
-	 	} else if (chipType == "PsychChip"){ 
-	 		prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
-	 	}
-	         
-		## find the overlapping
-		chipAnno <- read.table(file=annoFile, header=TRUE, stringsAsFactors=FALSE)  
-		bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-		## cbind (combine) bim and chip annotation files  
-		sharedSNP = intersect(chipAnno[,"chipSnpID"], bim[,2])
-		# chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], sharedSNP,]
-		chipAnnoV1sort <- chipAnno[match(sharedSNP, chipAnno[,"chipSnpID"]),]
-		bimV1 <- bim[match(sharedSNP, bim[,2]), ]
-		comb <- cbind(bimV1, chipAnnoV1sort)   
+         annoFile <- "chipAnnoRefb37.txt"
+         if (chipType == "affymetrix") { 
+             prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
+         } else if (chipType == "illumina"){ 
+             prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
+         } else if (chipType == "PsychChip"){ 
+             prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
+         }
+             
+        ## find the overlapping
+        chipAnno <- read.table(file=annoFile, header=TRUE, stringsAsFactors=FALSE)  
+        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
+        ## cbind (combine) bim and chip annotation files  
+        sharedSNP = intersect(chipAnno[,"chipSnpID"], bim[,2])
+        # chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], sharedSNP,]
+        chipAnnoV1sort <- chipAnno[match(sharedSNP, chipAnno[,"chipSnpID"]),]
+        bimV1 <- bim[match(sharedSNP, bim[,2]), ]
+        comb <- cbind(bimV1, chipAnnoV1sort)   
  
-		## remove SNPs with duplicated position first
-		chrNames <- names(table(comb[,1]))
-		dupPos <- c()
-		for (i in chrNames) { 
-			print(i)
-			subData <- comb[which(comb[,1] == i), ]  
-			## Remove the 1st duplicated ID (or 2nd if there are three replicates)
-	  		subDup <- subData[duplicated(subData[,"pos"], fromLast=TRUE), ] 
-	  		# print(dim(subDup))
-	 		dupPos <- rbind(dupPos, subDup)
-		}  
-		snpWithdupPos <- dupPos[,"chipSnpID"]  
-		## return all the duplicated rs-names (not only either one)
+        ## remove SNPs with duplicated position first
+        chrNames <- names(table(comb[,1]))
+        dupPos <- c()
+        for (i in chrNames) { 
+            print(i)
+            subData <- comb[which(comb[,1] == i), ]  
+            ## Remove the 1st duplicated ID (or 2nd if there are three replicates)
+              subDup <- subData[duplicated(subData[,"pos"], fromLast=TRUE), ] 
+              # print(dim(subDup))
+             dupPos <- rbind(dupPos, subDup)
+        }  
+        snpWithdupPos <- dupPos[,"chipSnpID"]  
+        ## return all the duplicated rs-names (not only either one)
 
-		if (chipType == "affymetrix") { 
-			whDup <- duplicated(comb[,"rsID"]) | duplicated(comb[,"rsID"], fromLast=TRUE)
-	 		snpdup <- comb[whDup, "chipSnpID"] 
-	 	} else if (chipType == "illumina"){ 
-	 		whDup <- duplicated(comb[,"V2"]) | duplicated(comb[,"V2"], fromLast=TRUE)
-	 		snpdup <- comb[whDup, "chipSnpID"]  
-	 	} else if (chipType == "PsychChip"){ 
-	 		whDup <- duplicated(comb[,"V2"]) | duplicated(comb[,"V2"], fromLast=TRUE)
-	 		snpdup <- comb[whDup, "chipSnpID"]  
-	 	}
+        if (chipType == "affymetrix") { 
+            whDup <- duplicated(comb[,"rsID"]) | duplicated(comb[,"rsID"], fromLast=TRUE)
+             snpdup <- comb[whDup, "chipSnpID"] 
+         } else if (chipType == "illumina"){ 
+             whDup <- duplicated(comb[,"V2"]) | duplicated(comb[,"V2"], fromLast=TRUE)
+             snpdup <- comb[whDup, "chipSnpID"]  
+         } else if (chipType == "PsychChip"){ 
+             whDup <- duplicated(comb[,"V2"]) | duplicated(comb[,"V2"], fromLast=TRUE)
+             snpdup <- comb[whDup, "chipSnpID"]  
+         }
 
-	 	allDupSNPs <- c(snpWithdupPos, snpdup) 
-	 	allDupSNPs <- unique(allDupSNPs)
-		write.table(allDupSNPs, file=outputSNPdupFile, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
-		system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-			   outputSNPdupFile, " --make-bed --out ", outputPrefix))
+         allDupSNPs <- c(snpWithdupPos, snpdup) 
+         allDupSNPs <- unique(allDupSNPs)
+        write.table(allDupSNPs, file=outputSNPdupFile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+        system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+               outputSNPdupFile, " --make-bed --out ", outputPrefix))
 
- 	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
-	}
+     } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
+    }
 }
 
 
@@ -454,89 +454,89 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' @author Junfang Chen 
   
 updatedSnpInfo <- function(plink, inputPrefix, 
-						   chipAnnoFile, chipType, outputPrefix){
- 	
- 	if (!is.null(chipAnnoFile)){ 
-	 	annoFile <- "chipAnnoRefb37.txt"
-	 	if (chipType == "affymetrix") { 
-	 		prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
-	 									   outputFile=annoFile)
-	 	} else if (chipType == "illumina"){ 
-	 		prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
-	 									 outputFile=annoFile)
-	 	} else if (chipType == "PsychChip"){ 
-	 		prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
-	 									  outputFile=annoFile)
-	 	} 
+                           chipAnnoFile, chipType, outputPrefix){
+     
+     if (!is.null(chipAnnoFile)){ 
+         annoFile <- "chipAnnoRefb37.txt"
+         if (chipType == "affymetrix") { 
+             prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
+                                            outputFile=annoFile)
+         } else if (chipType == "illumina"){ 
+             prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
+                                          outputFile=annoFile)
+         } else if (chipType == "PsychChip"){ 
+             prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
+                                           outputFile=annoFile)
+         } 
 
-		## find the overlapping
-		chipAnno <- read.table(file=annoFile, 
-							   header=TRUE, stringsAsFactors=FALSE)
-		system(paste0("rm ", annoFile)) ## 
+        ## find the overlapping
+        chipAnno <- read.table(file=annoFile, 
+                               header=TRUE, stringsAsFactors=FALSE)
+        system(paste0("rm ", annoFile)) ## 
 
-		# ## cbind (combine) bim and chip annotation files 
-		bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-		interSNPs <- intersect(bim[,2], chipAnno[,"chipSnpID"]) 
-		bimV1 <- bim[is.element(bim[,2], interSNPs),]
-		chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], interSNPs),]
-		annoV1sort <- chipAnnoV1[match(bimV1[,2], chipAnnoV1[,"chipSnpID"]),]
-		comV2 <- cbind(bimV1, annoV1sort) 
-	 
-		## Update main info  
-		if (chipType == "affymetrix") {  	
- 			updateSNP2rs <- subset(comV2, select=c(V2, rsID))
-			updateSNPchr <- subset(comV2, select=c(rsID, chr))
-			updateSNPpos <- subset(comV2, select=c(rsID, pos)) 
-			## strand 
-			updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "rsID"] 
-	 	} else if (chipType == "illumina"){ 
-	    	updateSNP2rs <- subset(comV2, select=c(V2, V2))  
-			updateSNPchr <- subset(comV2, select=c(V2, chr))
-			updateSNPpos <- subset(comV2, select=c(V2, pos)) 
-			## strand
-			updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "V2"]  
-	 	} else if (chipType == "PsychChip"){ 
-	    	updateSNP2rs <- subset(comV2, select=c(V2, V2))  
-			updateSNPchr <- subset(comV2, select=c(V2, chr))
-			updateSNPpos <- subset(comV2, select=c(V2, pos)) 
-			## strand 
-			updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "V2"]  
-	 	}
+        # ## cbind (combine) bim and chip annotation files 
+        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
+        interSNPs <- intersect(bim[,2], chipAnno[,"chipSnpID"]) 
+        bimV1 <- bim[is.element(bim[,2], interSNPs),]
+        chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], interSNPs),]
+        annoV1sort <- chipAnnoV1[match(bimV1[,2], chipAnnoV1[,"chipSnpID"]),]
+        comV2 <- cbind(bimV1, annoV1sort) 
+     
+        ## Update main info  
+        if (chipType == "affymetrix") {      
+             updateSNP2rs <- subset(comV2, select=c(V2, rsID))
+            updateSNPchr <- subset(comV2, select=c(rsID, chr))
+            updateSNPpos <- subset(comV2, select=c(rsID, pos)) 
+            ## strand 
+            updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "rsID"] 
+         } else if (chipType == "illumina"){ 
+            updateSNP2rs <- subset(comV2, select=c(V2, V2))  
+            updateSNPchr <- subset(comV2, select=c(V2, chr))
+            updateSNPpos <- subset(comV2, select=c(V2, pos)) 
+            ## strand
+            updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "V2"]  
+         } else if (chipType == "PsychChip"){ 
+            updateSNP2rs <- subset(comV2, select=c(V2, V2))  
+            updateSNPchr <- subset(comV2, select=c(V2, chr))
+            updateSNPpos <- subset(comV2, select=c(V2, pos)) 
+            ## strand 
+            updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "V2"]  
+         }
 
-	 	inputPrefix.rs <- "1_09.updatedSnp2rs" ## tobeRemoved
-		inputPrefix.chr <- "1_09.updatedSnpchr" ## tobeRemoved
-		inputPrefix.pos <- "1_09.updatedSnppos" ## tobeRemoved
-		inputPrefix.strand <- "1_09.updatedSnpstrand" ## tobeRemoved
-		 
-		write.table(updateSNP2rs, file=paste0(inputPrefix.rs, ".txt"), 
-				    quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
-		write.table(updateSNPchr, file=paste0(inputPrefix.chr, ".txt"), 
-			 		quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
-		write.table(updateSNPpos, file=paste0(inputPrefix.pos, ".txt"), 
-			  		quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
-		write.table(updateSNPbackward, file=paste0(inputPrefix.strand, ".txt"), 
-					quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
-		
-		## update rs, chr, and pos one by one 	## flip to the forward strand
-		system(paste0(plink, " --bfile ", inputPrefix,    " --update-name ", 
-			   inputPrefix.rs, ".txt 2 1  --make-bed --out ", inputPrefix.rs))  
-		system(paste0(plink, " --bfile ", inputPrefix.rs,  " --update-chr ", 
-			   inputPrefix.chr, ".txt 2 1 --make-bed --out ", inputPrefix.chr))  
-		system(paste0(plink, " --bfile ", inputPrefix.chr, " --update-map ", 
-			   inputPrefix.pos, ".txt 2 1 --make-bed --out ", inputPrefix.pos))   
-		system(paste0(plink, " --bfile ", inputPrefix.pos, " --flip ", 
-			   inputPrefix.strand, ".txt --make-bed --out ", inputPrefix.strand))  
+         inputPrefix.rs <- "1_09.updatedSnp2rs" ## tobeRemoved
+        inputPrefix.chr <- "1_09.updatedSnpchr" ## tobeRemoved
+        inputPrefix.pos <- "1_09.updatedSnppos" ## tobeRemoved
+        inputPrefix.strand <- "1_09.updatedSnpstrand" ## tobeRemoved
+         
+        write.table(updateSNP2rs, file=paste0(inputPrefix.rs, ".txt"), 
+                    quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
+        write.table(updateSNPchr, file=paste0(inputPrefix.chr, ".txt"), 
+                     quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
+        write.table(updateSNPpos, file=paste0(inputPrefix.pos, ".txt"), 
+                      quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
+        write.table(updateSNPbackward, file=paste0(inputPrefix.strand, ".txt"), 
+                    quote=F, row.names=F, col.names=F, eol="\r\n", sep=" ") 
+        
+        ## update rs, chr, and pos one by one     ## flip to the forward strand
+        system(paste0(plink, " --bfile ", inputPrefix,    " --update-name ", 
+               inputPrefix.rs, ".txt 2 1  --make-bed --out ", inputPrefix.rs))  
+        system(paste0(plink, " --bfile ", inputPrefix.rs,  " --update-chr ", 
+               inputPrefix.chr, ".txt 2 1 --make-bed --out ", inputPrefix.chr))  
+        system(paste0(plink, " --bfile ", inputPrefix.chr, " --update-map ", 
+               inputPrefix.pos, ".txt 2 1 --make-bed --out ", inputPrefix.pos))   
+        system(paste0(plink, " --bfile ", inputPrefix.pos, " --flip ", 
+               inputPrefix.strand, ".txt --make-bed --out ", inputPrefix.strand))  
 
-		## copy/rename all snp info updated plink files
-		renamePlinkBFile(inputPrefix.strand, outputPrefix, action="copy")   
-	 	## remove all tmp files (rs, chr, pos)
-		system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
-		system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
- 	
- 	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	}
+        ## copy/rename all snp info updated plink files
+        renamePlinkBFile(inputPrefix.strand, outputPrefix, action="copy")   
+         ## remove all tmp files (rs, chr, pos)
+        system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
+        system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
+     
+     } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    }
 }
 
 
@@ -565,18 +565,18 @@ updatedSnpInfo <- function(plink, inputPrefix,
 
 splitXchr <- function(plink, inputPrefix, outputPrefix){
 
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=F)  
-	chrDist <- table(bim[,1])
-	chr23check <- is.element(names(chrDist), 23)
-	if (chr23check == TRUE) {
-		## split X chr into PAR(chr25) and non-PAR (chr23)
- 		system(paste0(plink, " --bfile ", inputPrefix, 
- 			   " --split-x hg19 --make-bed --out ", outputPrefix))
-	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	}
- 	
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=F)  
+    chrDist <- table(bim[,1])
+    chr23check <- is.element(names(chrDist), 23)
+    if (chr23check == TRUE) {
+        ## split X chr into PAR(chr25) and non-PAR (chr23)
+         system(paste0(plink, " --bfile ", inputPrefix, 
+                " --split-x hg19 --make-bed --out ", outputPrefix))
+    } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    }
+     
 }
 
 
@@ -608,15 +608,15 @@ splitXchr <- function(plink, inputPrefix, outputPrefix){
  
 removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 
- 	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
- 	snpChrY <-  bim[which(bim[,1]== 24), 2]   
-	snpChrMt <- bim[which(bim[,1] == 26), 2] 
-	snpChrYMt <- c(snpChrY, snpChrMt) 
-	write.table(snpChrYMt, file=paste0(outputPrefix, ".txt"), quote=FALSE,
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
-	system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-		   paste0(outputPrefix, ".txt"), " --make-bed --out ", outputPrefix))  
-	system(paste0("rm ", paste0(outputPrefix, ".txt")))
+     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
+     snpChrY <-  bim[which(bim[,1]== 24), 2]   
+    snpChrMt <- bim[which(bim[,1] == 26), 2] 
+    snpChrYMt <- c(snpChrY, snpChrMt) 
+    write.table(snpChrYMt, file=paste0(outputPrefix, ".txt"), quote=FALSE,
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+    system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+           paste0(outputPrefix, ".txt"), " --make-bed --out ", outputPrefix))  
+    system(paste0("rm ", paste0(outputPrefix, ".txt")))
 }
 
   
@@ -652,28 +652,28 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 
 prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
 
-	inputNew <- paste0(inputFile, "New")
-	system(paste0("sed 1d ", inputFile, " > ", inputNew) )
-	chipAnnoRefraw <- read.table(file=inputNew, stringsAsFactors=FALSE)  
-	colnames(chipAnnoRefraw) <- c("chipSnpID", "rsID", "chr", "pos", "strand")
+    inputNew <- paste0(inputFile, "New")
+    system(paste0("sed 1d ", inputFile, " > ", inputNew) )
+    chipAnnoRefraw <- read.table(file=inputNew, stringsAsFactors=FALSE)  
+    colnames(chipAnnoRefraw) <- c("chipSnpID", "rsID", "chr", "pos", "strand")
 
-	## remove SNPs with strange strand 
-	whUnknown <- which(chipAnnoRefraw[,"strand"] == "---") 
-	chipAnnoRefraw2 <- chipAnnoRefraw[-whUnknown,]
+    ## remove SNPs with strange strand 
+    whUnknown <- which(chipAnnoRefraw[,"strand"] == "---") 
+    chipAnnoRefraw2 <- chipAnnoRefraw[-whUnknown,]
 
-	## only see 3 different cases (if 25--> XY)
-	whX <- which(chipAnnoRefraw2[,"chr"] == "X")
-	whY <- which(chipAnnoRefraw2[,"chr"] == "Y")
-	whMT <- which(chipAnnoRefraw2[,"chr"] == "MT")
+    ## only see 3 different cases (if 25--> XY)
+    whX <- which(chipAnnoRefraw2[,"chr"] == "X")
+    whY <- which(chipAnnoRefraw2[,"chr"] == "Y")
+    whMT <- which(chipAnnoRefraw2[,"chr"] == "MT")
 
-	chipAnnoRefraw2[whX,"chr"] <- 23 
-	chipAnnoRefraw2[whY,"chr"] <- 24
-	chipAnnoRefraw2[whMT,"chr"] <- 26
+    chipAnnoRefraw2[whX,"chr"] <- 23 
+    chipAnnoRefraw2[whY,"chr"] <- 24
+    chipAnnoRefraw2[whMT,"chr"] <- 26
   
-  	whAFF <- grep("AFFX-SNP", chipAnnoRefraw2[,"chipSnpID"]) 
-	chipAnnoRefraw3 <- chipAnnoRefraw2[-whAFF,]
-	write.table(chipAnnoRefraw3, file=outputFile, quote=FALSE, 
-				row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
+      whAFF <- grep("AFFX-SNP", chipAnnoRefraw2[,"chipSnpID"]) 
+    chipAnnoRefraw3 <- chipAnnoRefraw2[-whAFF,]
+    write.table(chipAnnoRefraw3, file=outputFile, quote=FALSE, 
+                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
 
 }
  
@@ -706,24 +706,24 @@ prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
  
 prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
 
-	chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE)
-	# print(colnames(chipAnnoRefraw))
-	## c("chipSnpID", "chr", "pos", "match2genom", "strand", "allele")
-	chipAnnoRefraw <- chipAnnoRefraw[,-c(4, 6)]
-	colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", "strand")
+    chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE)
+    # print(colnames(chipAnnoRefraw))
+    ## c("chipSnpID", "chr", "pos", "match2genom", "strand", "allele")
+    chipAnnoRefraw <- chipAnnoRefraw[,-c(4, 6)]
+    colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", "strand")
 
-	## only see 3 different cases (if 25--> XY)
-	whX <- which(chipAnnoRefraw[,"chr"] == "X")
-	whY <- which(chipAnnoRefraw[,"chr"] == "Y")
-	whMT <- which(chipAnnoRefraw[,"chr"] == "MT")
+    ## only see 3 different cases (if 25--> XY)
+    whX <- which(chipAnnoRefraw[,"chr"] == "X")
+    whY <- which(chipAnnoRefraw[,"chr"] == "Y")
+    whMT <- which(chipAnnoRefraw[,"chr"] == "MT")
 
-	chipAnnoRefraw[whX,"chr"] <- 23 
-	chipAnnoRefraw[whY,"chr"] <- 24
-	chipAnnoRefraw[whMT,"chr"] <- 26 
+    chipAnnoRefraw[whX,"chr"] <- 23 
+    chipAnnoRefraw[whY,"chr"] <- 24
+    chipAnnoRefraw[whMT,"chr"] <- 26 
 
-	chipAnnoNew <- chipAnnoRefraw
-	write.table(chipAnnoNew, file=outputFile, quote=FALSE, 
-				row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
+    chipAnnoNew <- chipAnnoRefraw
+    write.table(chipAnnoNew, file=outputFile, quote=FALSE, 
+                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
 
 }
 
@@ -754,22 +754,22 @@ prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
  
 prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 
-	chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE) 
-	colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", 
-								  "match2genom", "strand", "allele") 
-	chipAnnoRefraw <- chipAnnoRefraw[,-c(4, 6)]
-	colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", "strand")
+    chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE) 
+    colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", 
+                                  "match2genom", "strand", "allele") 
+    chipAnnoRefraw <- chipAnnoRefraw[,-c(4, 6)]
+    colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", "strand")
  
-	## only see 3 different cases (if 25--> XY)
-	whX <- which(chipAnnoRefraw[,"chr"] == "X")
-	whY <- which(chipAnnoRefraw[,"chr"] == "Y")
-	whMT <- which(chipAnnoRefraw[,"chr"] == "MT") 
-	chipAnnoRefraw[whX,"chr"] <- 23 
-	chipAnnoRefraw[whY,"chr"] <- 24
-	chipAnnoRefraw[whMT,"chr"] <- 26  
+    ## only see 3 different cases (if 25--> XY)
+    whX <- which(chipAnnoRefraw[,"chr"] == "X")
+    whY <- which(chipAnnoRefraw[,"chr"] == "Y")
+    whMT <- which(chipAnnoRefraw[,"chr"] == "MT") 
+    chipAnnoRefraw[whX,"chr"] <- 23 
+    chipAnnoRefraw[whY,"chr"] <- 24
+    chipAnnoRefraw[whMT,"chr"] <- 26  
 
-	write.table(chipAnnoRefraw, file=outputFile, quote=FALSE, 
-				row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
+    write.table(chipAnnoRefraw, file=outputFile, quote=FALSE, 
+                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
 
 }
 
@@ -827,69 +827,69 @@ prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 
  
 updateGenoInfo <- function(plink, inputPrefix, metaDataFile, dupSampleIDFile,
-							   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-							   chipType, outputPrefix){
+                               ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+                               chipType, outputPrefix){
  
-	## step 2
-	outputPrefix2 <- "1_02_removedExclInst" 
-	removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix=outputPrefix2)
-	# step 3 replace group IDs 
-	metaDataFile <- "1_01_metaData.txt" 
-	outputPrefix3 <- "1_03_replacedGroupAndSex"
-	updateGroupIdAndSex(plink, inputPrefix=outputPrefix2, 
-						metaDataFile, outputPrefix=outputPrefix3)
-	# step 4 remove instances without group IDs 
-	outputPrefix4 <- "1_04_removedNoGroupId"
-	removeNoGroupId(plink, inputPrefix=outputPrefix3, outputPrefix=outputPrefix4)
+    ## step 2
+    outputPrefix2 <- "1_02_removedExclInst" 
+    removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix=outputPrefix2)
+    # step 3 replace group IDs 
+    metaDataFile <- "1_01_metaData.txt" 
+    outputPrefix3 <- "1_03_replacedGroupAndSex"
+    updateGroupIdAndSex(plink, inputPrefix=outputPrefix2, 
+                        metaDataFile, outputPrefix=outputPrefix3)
+    # step 4 remove instances without group IDs 
+    outputPrefix4 <- "1_04_removedNoGroupId"
+    removeNoGroupId(plink, inputPrefix=outputPrefix3, outputPrefix=outputPrefix4)
 
-	## step5 remove instances with improper ancestry  
-	outputPrefix5 <- "1_05_removedWrongAnceInst"
-	removedWrongAnceInst(plink, inputPrefix=outputPrefix4, metaDataFile,  
-						 ancestrySymbol, outputPrefix=outputPrefix5)
-	## step 6   
-	outputPrefix6 <- "1_06_removedExclProbe"  
-	removedExclProbe(plink, inputPrefix=outputPrefix5, 
-					 excludedProbeIdsFile, outputPrefix=outputPrefix6) 
-	## step 7 (Optional, if chip annotation file is not given) 
-	outputPrefix7 <- "1_07_removedUnmapProbes"   
-	outputSNPfile7 <- "1_07_probesUnmapped2ChipRef.txt"
-	removedUnmapProbes(plink, inputPrefix=outputPrefix6, chipAnnoFile,
-					   outputPrefix=outputPrefix7, outputSNPfile=outputSNPfile7)
-	## step 8 (Optional, if chip annotation file is not given) 
-	outputSNPdupFile8 <- "1_08_probesDouble.txt"
-	outputPrefix8 <- "1_08_removedDoubleProbes"   
-	removedDoubleProbes(plink, inputPrefix=outputPrefix7, chipAnnoFile, 
-					    chipType, outputSNPdupFile=outputSNPdupFile8, 
-					    outputPrefix=outputPrefix8) 
-	## step 9 (Optional, if chip annotation file is not given) 
-	outputPrefix9 <- "1_09_updatedSnpInfo"   
-	updatedSnpInfo(plink, inputPrefix=outputPrefix8, 
-				   chipAnnoFile, chipType, outputPrefix=outputPrefix9)
-	## step 10 	 
-	outputPrefix10 <- "1_10_splitXchr"
-	splitXchr(plink, inputPrefix=outputPrefix9, outputPrefix=outputPrefix10)
-	## step 11  
-	outputPrefix11 <- "1_11_removedYMtSnp"
-	removedYMtSnp(plink, inputPrefix=outputPrefix10, outputPrefix=outputPrefix11)
+    ## step5 remove instances with improper ancestry  
+    outputPrefix5 <- "1_05_removedWrongAnceInst"
+    removedWrongAnceInst(plink, inputPrefix=outputPrefix4, metaDataFile,  
+                         ancestrySymbol, outputPrefix=outputPrefix5)
+    ## step 6   
+    outputPrefix6 <- "1_06_removedExclProbe"  
+    removedExclProbe(plink, inputPrefix=outputPrefix5, 
+                     excludedProbeIdsFile, outputPrefix=outputPrefix6) 
+    ## step 7 (Optional, if chip annotation file is not given) 
+    outputPrefix7 <- "1_07_removedUnmapProbes"   
+    outputSNPfile7 <- "1_07_probesUnmapped2ChipRef.txt"
+    removedUnmapProbes(plink, inputPrefix=outputPrefix6, chipAnnoFile,
+                       outputPrefix=outputPrefix7, outputSNPfile=outputSNPfile7)
+    ## step 8 (Optional, if chip annotation file is not given) 
+    outputSNPdupFile8 <- "1_08_probesDouble.txt"
+    outputPrefix8 <- "1_08_removedDoubleProbes"   
+    removedDoubleProbes(plink, inputPrefix=outputPrefix7, chipAnnoFile, 
+                        chipType, outputSNPdupFile=outputSNPdupFile8, 
+                        outputPrefix=outputPrefix8) 
+    ## step 9 (Optional, if chip annotation file is not given) 
+    outputPrefix9 <- "1_09_updatedSnpInfo"   
+    updatedSnpInfo(plink, inputPrefix=outputPrefix8, 
+                   chipAnnoFile, chipType, outputPrefix=outputPrefix9)
+    ## step 10      
+    outputPrefix10 <- "1_10_splitXchr"
+    splitXchr(plink, inputPrefix=outputPrefix9, outputPrefix=outputPrefix10)
+    ## step 11  
+    outputPrefix11 <- "1_11_removedYMtSnp"
+    removedYMtSnp(plink, inputPrefix=outputPrefix10, outputPrefix=outputPrefix11)
 
-	## remove intermediate files
-	system(paste0("rm ", outputPrefix2, ".*"))
-	system(paste0("rm ", outputPrefix3, ".*"))
-	system(paste0("rm ", outputPrefix4, ".*"))
-	system(paste0("rm ", outputPrefix5, ".*"))
-	system(paste0("rm ", outputPrefix6, ".*"))
-	system(paste0("rm ", outputPrefix7, ".*"))
-	system(paste0("rm ", outputPrefix8, ".*"))
-	system(paste0("rm ", outputPrefix9, ".*"))
-	system(paste0("rm ", outputPrefix10, ".*"))
+    ## remove intermediate files
+    system(paste0("rm ", outputPrefix2, ".*"))
+    system(paste0("rm ", outputPrefix3, ".*"))
+    system(paste0("rm ", outputPrefix4, ".*"))
+    system(paste0("rm ", outputPrefix5, ".*"))
+    system(paste0("rm ", outputPrefix6, ".*"))
+    system(paste0("rm ", outputPrefix7, ".*"))
+    system(paste0("rm ", outputPrefix8, ".*"))
+    system(paste0("rm ", outputPrefix9, ".*"))
+    system(paste0("rm ", outputPrefix10, ".*"))
 
-	if (file.exists(outputSNPfile7)) {  
-		system(paste0("rm ", outputSNPfile7))
-	}
+    if (file.exists(outputSNPfile7)) {  
+        system(paste0("rm ", outputSNPfile7))
+    }
 
-	if (file.exists(outputSNPdupFile8)) {  
-		system(paste0("rm ", outputSNPdupFile8))
-	}	
+    if (file.exists(outputSNPdupFile8)) {  
+        system(paste0("rm ", outputSNPdupFile8))
+    }    
  
 }
  

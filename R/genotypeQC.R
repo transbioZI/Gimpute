@@ -63,63 +63,63 @@
    
   
 removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix, 
-						   outputHetSNPfile, outputRetainSNPfile){
+                           outputHetSNPfile, outputRetainSNPfile){
 
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-	chrDist <- table(bim[,1])
-	chr23check <- is.element(names(chrDist), 23)
-	if (chr23check == TRUE) { 
-		## just to get .hh file and .fam file 
-		system(paste0(plink, " --bfile ", inputPrefix, 
-			   " --chr 23 --filter-males --make-bed --out male23nonPAR"))
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
+    chrDist <- table(bim[,1])
+    chr23check <- is.element(names(chrDist), 23)
+    if (chr23check == TRUE) { 
+        ## just to get .hh file and .fam file 
+        system(paste0(plink, " --bfile ", inputPrefix, 
+               " --chr 23 --filter-males --make-bed --out male23nonPAR"))
 
-		if (is.na(file.size("male23nonPAR.hh"))) { 
-			## copy/rename all snp info updated plink files
-			renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
-	    } else { 	 
+        if (is.na(file.size("male23nonPAR.hh"))) { 
+            ## copy/rename all snp info updated plink files
+            renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
+        } else {      
 
-			## *.hh: A text file with one line per error (sorted primarily by 
-			## variant ID, secondarily by sample ID) with the following three fields:
-			# Family ID  Within-family ID Variant ID
-			hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
-			fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
+            ## *.hh: A text file with one line per error (sorted primarily by 
+            ## variant ID, secondarily by sample ID) with the following three fields:
+            # Family ID  Within-family ID Variant ID
+            hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
+            fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
 
-			hetSNPsFreq <- table(hh[,3])
-			# hetSNPFreqFreq <- table(hetSNPs) 
+            hetSNPsFreq <- table(hh[,3])
+            # hetSNPFreqFreq <- table(hetSNPs) 
 
-			cutoff4removeHetSNP <- nrow(fam) * hhCutOff
-			mostFakeSNPs <- hetSNPsFreq[which(hetSNPsFreq >= cutoff4removeHetSNP)] 
-			mostFakeSNPs <- names(mostFakeSNPs)
-			str(mostFakeSNPs)
-			write.table(mostFakeSNPs, file="mostFakeSNPs.txt", quote=FALSE, 
-					    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
-			## remove these fake SNPs
-			system(paste0(plink, " --bfile ", inputPrefix, 
-				   " --exclude mostFakeSNPs.txt --make-bed --out ", outputPrefix))
-			## remove unwanted files
-			system(paste0("rm mostFakeSNPs.txt"))
+            cutoff4removeHetSNP <- nrow(fam) * hhCutOff
+            mostFakeSNPs <- hetSNPsFreq[which(hetSNPsFreq >= cutoff4removeHetSNP)] 
+            mostFakeSNPs <- names(mostFakeSNPs)
+            str(mostFakeSNPs)
+            write.table(mostFakeSNPs, file="mostFakeSNPs.txt", quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+            ## remove these fake SNPs
+            system(paste0(plink, " --bfile ", inputPrefix, 
+                   " --exclude mostFakeSNPs.txt --make-bed --out ", outputPrefix))
+            ## remove unwanted files
+            system(paste0("rm mostFakeSNPs.txt"))
 
-			## generate hetSNPsFreq in .txt file 
-			hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
-			hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
-			## all heterozygous SNPs 
-			write.table(hetSNPinstNum, file=outputHetSNPfile, quote=FALSE, 
-						row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+            ## generate hetSNPsFreq in .txt file 
+            hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
+            hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
+            ## all heterozygous SNPs 
+            write.table(hetSNPinstNum, file=outputHetSNPfile, quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
-			## remaining heterozygous SNPs 
-			hetSNPinstNumSub <- hetSNPinstNum[!is.element(hetSNPinstNum[,1], mostFakeSNPs), ]
-			write.table(hetSNPinstNumSub, file=outputRetainSNPfile, 
-					    quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
-	    } 
+            ## remaining heterozygous SNPs 
+            hetSNPinstNumSub <- hetSNPinstNum[!is.element(hetSNPinstNum[,1], mostFakeSNPs), ]
+            write.table(hetSNPinstNumSub, file=outputRetainSNPfile, 
+                        quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+        } 
 
-		system(paste0("rm male23nonPAR.* ", inputPrefix,".*")) 
+        system(paste0("rm male23nonPAR.* ", inputPrefix,".*")) 
 
-	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-		system(paste0("rm ", inputPrefix,".*"))
-	}
-}	
+    } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+        system(paste0("rm ", inputPrefix,".*"))
+    }
+}    
 
  
   
@@ -167,77 +167,77 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
  
 
 removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix, 
-							outputSubjHetFile, outputRetainSubjectFile, 
-							outputHetSNPfile){		
+                            outputSubjHetFile, outputRetainSubjectFile, 
+                            outputHetSNPfile){        
 
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-	chrDist <- table(bim[,1])
-	chr23check <- is.element(names(chrDist), 23)
-	if (chr23check == TRUE) { 
-		## just to get .hh file and .fam file 
-		system(paste0(plink, " --bfile ", inputPrefix, 
-			   " --chr 23 --filter-males --make-bed --out male23nonPAR"))
-		if ( is.na(file.size("male23nonPAR.hh")) ){  
-			## copy/rename all snp info updated plink files
-			renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-			system(paste0("touch ", outputSubjHetFile) )
-			system(paste0("touch ", outputRetainSubjectFile) )
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
+    chrDist <- table(bim[,1])
+    chr23check <- is.element(names(chrDist), 23)
+    if (chr23check == TRUE) { 
+        ## just to get .hh file and .fam file 
+        system(paste0(plink, " --bfile ", inputPrefix, 
+               " --chr 23 --filter-males --make-bed --out male23nonPAR"))
+        if ( is.na(file.size("male23nonPAR.hh")) ){  
+            ## copy/rename all snp info updated plink files
+            renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+            system(paste0("touch ", outputSubjHetFile) )
+            system(paste0("touch ", outputRetainSubjectFile) )
   
-	    } else { 	
+        } else {     
 
-			## .hh: A text file with one line per error (sorted primarily by  
-			## variant ID,secondarily by sample ID) with the following three fields:
-			## Family ID  Within-family ID Variant ID
-			hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
-			fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
-							
-			hetInstFreq <- table(hh[,2])  
-			str(unique(hh[,2]))
-			mostFakeInst <- hetInstFreq[which(hetInstFreq >= hhSubjCutOff)]  
-			mostFakeInst4plink <- fam[is.element(fam[,2], names(mostFakeInst)), 1:2]
+            ## .hh: A text file with one line per error (sorted primarily by  
+            ## variant ID,secondarily by sample ID) with the following three fields:
+            ## Family ID  Within-family ID Variant ID
+            hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
+            fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
+                            
+            hetInstFreq <- table(hh[,2])  
+            str(unique(hh[,2]))
+            mostFakeInst <- hetInstFreq[which(hetInstFreq >= hhSubjCutOff)]  
+            mostFakeInst4plink <- fam[is.element(fam[,2], names(mostFakeInst)), 1:2]
 
-			write.table(mostFakeInst4plink, file="mostFakeInst4plink.txt", quote=FALSE, 
-				        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
-			## remove these fake SNPs
-			system(paste0(plink, " --bfile ", inputPrefix, 
-				   " --remove mostFakeInst4plink.txt --make-bed --out ", outputPrefix))
-			system(paste0("rm mostFakeInst4plink.txt"))
+            write.table(mostFakeInst4plink, file="mostFakeInst4plink.txt", quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+            ## remove these fake SNPs
+            system(paste0(plink, " --bfile ", inputPrefix, 
+                   " --remove mostFakeInst4plink.txt --make-bed --out ", outputPrefix))
+            system(paste0("rm mostFakeInst4plink.txt"))
 
-			## generate hetSNPsFreq in .txt file 
-			InstHetSNP <- as.data.frame(hetInstFreq, stringsAsFactors=FALSE) 
-			InstHetSNP <- InstHetSNP[order(InstHetSNP[,2], decreasing=T),] 
-			write.table(InstHetSNP, file=outputSubjHetFile, quote=FALSE, 
-					    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+            ## generate hetSNPsFreq in .txt file 
+            InstHetSNP <- as.data.frame(hetInstFreq, stringsAsFactors=FALSE) 
+            InstHetSNP <- InstHetSNP[order(InstHetSNP[,2], decreasing=T),] 
+            write.table(InstHetSNP, file=outputSubjHetFile, quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
-			## remaining males with heterozygous SNPs 
-			InstHetSNPsub <- InstHetSNP[!is.element(InstHetSNP[,1], names(mostFakeInst)), ] 
-			write.table(InstHetSNPsub, file=outputRetainSubjectFile, 
-					    quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
-  		} 
+            ## remaining males with heterozygous SNPs 
+            InstHetSNPsub <- InstHetSNP[!is.element(InstHetSNP[,1], names(mostFakeInst)), ] 
+            write.table(InstHetSNPsub, file=outputRetainSubjectFile, 
+                        quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+          } 
 
-		system(paste0("rm male23nonPAR.*")) 
-		## output a text file that stores all heterozygous SNPs 
-		## with their frequency after the above steps; 
-		system(paste0(plink, " --bfile ", outputPrefix, 
-			   " --chr 23 --filter-males --make-bed --out male23nonPAR"))
+        system(paste0("rm male23nonPAR.*")) 
+        ## output a text file that stores all heterozygous SNPs 
+        ## with their frequency after the above steps; 
+        system(paste0(plink, " --bfile ", outputPrefix, 
+               " --chr 23 --filter-males --make-bed --out male23nonPAR"))
 
-		if (is.na(file.size("male23nonPAR.hh"))) {  
-			system(paste0("touch ", outputHetSNPfile)) ## with empty output	  
-	    } else { 	 
-			hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)  
-			hetSNPsFreq <- table(hh[,3])  
-			hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
-			hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
-			## all heterozygous SNPs 
-			write.table(hetSNPinstNum, file=outputHetSNPfile, 
-					    quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
-		}
- 		system(paste0("rm male23nonPAR.*"))	
- 	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	}
-}	
+        if (is.na(file.size("male23nonPAR.hh"))) {  
+            system(paste0("touch ", outputHetSNPfile)) ## with empty output      
+        } else {      
+            hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)  
+            hetSNPsFreq <- table(hh[,3])  
+            hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
+            hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
+            ## all heterozygous SNPs 
+            write.table(hetSNPinstNum, file=outputHetSNPfile, 
+                        quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
+        }
+         system(paste0("rm male23nonPAR.*"))    
+     } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    }
+}    
  
 
 
@@ -263,9 +263,9 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 ###' @examples  
   
 setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
-	 
-	system(paste0(plink, " --bfile ", inputPrefix, 
-		   " --set-hh-missing --make-bed --out ", outputPrefix))  
+     
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --set-hh-missing --make-bed --out ", outputPrefix))  
  
 }  
 
@@ -294,9 +294,9 @@ setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
  
 removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
  
-	system(paste0(plink, " --bfile ", inputPrefix, " --geno ", snpMissCutOff, 
-		   " --make-bed --out ", outputPrefix))  
-	 
+    system(paste0(plink, " --bfile ", inputPrefix, " --geno ", snpMissCutOff, 
+           " --make-bed --out ", outputPrefix))  
+     
 }  
    
 
@@ -328,16 +328,16 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
  
 removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
  
-	system(paste0(plink, " --bfile ", inputPrefix, " --mind ", sampleMissCutOff, 
-		   " --make-bed --out ", outputPrefix)) 
-	system(paste0("rm ", outputPrefix, ".irem"))
+    system(paste0(plink, " --bfile ", inputPrefix, " --mind ", sampleMissCutOff, 
+           " --make-bed --out ", outputPrefix)) 
+    system(paste0("rm ", outputPrefix, ".irem"))
 
 }   
 
 
 
 ##########################################   
-##########################################	
+##########################################    
 #' Remove subjects with abnormal autosomal heterozygosity deviation
 #'
 #' @description
@@ -362,20 +362,20 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 
 removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){ 
 
-	system(paste0(plink, " --bfile ", inputPrefix, " --het --out ", outputPrefix))
-	##  F inbreeding coefficient estimate
-	autoHet <- read.table(file=paste0(outputPrefix, ".het"), header=T)  
-	fhet <- autoHet[, "F"]
-	qc_data_fhet <- autoHet[which(abs(fhet) >= Fhet), c(1, 2)]  
-	## the individual IDs to be removed  
-	write.table(qc_data_fhet, file=paste0(outputPrefix, ".txt"), quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    system(paste0(plink, " --bfile ", inputPrefix, " --het --out ", outputPrefix))
+    ##  F inbreeding coefficient estimate
+    autoHet <- read.table(file=paste0(outputPrefix, ".het"), header=T)  
+    fhet <- autoHet[, "F"]
+    qc_data_fhet <- autoHet[which(abs(fhet) >= Fhet), c(1, 2)]  
+    ## the individual IDs to be removed  
+    write.table(qc_data_fhet, file=paste0(outputPrefix, ".txt"), quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
   
-	## To remove certain individuals 
-	system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
-		   paste0(outputPrefix, ".txt"), " --make-bed --out ", outputPrefix))
-	system(paste0("rm ", outputPrefix, ".het"))
-	system(paste0("rm ", outputPrefix, ".txt"))
+    ## To remove certain individuals 
+    system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
+           paste0(outputPrefix, ".txt"), " --make-bed --out ", outputPrefix))
+    system(paste0("rm ", outputPrefix, ".het"))
+    system(paste0("rm ", outputPrefix, ".txt"))
  
 }   
 
@@ -413,9 +413,9 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
  
 removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){ 
 
-	# Remove the parent IDs which do not belong to subjects
-	system(paste0(plink, " --bfile ", inputPrefix, 
-		   " --make-founders require-2-missing --make-bed --out ", outputPrefix)) 
+    # Remove the parent IDs which do not belong to subjects
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --make-founders require-2-missing --make-bed --out ", outputPrefix)) 
  
 }   
  
@@ -447,35 +447,35 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 
 removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff, 
-							   outputPrefix, groupLabel){
+                               outputPrefix, groupLabel){
 
 
-	if (groupLabel != "caseControl"){   
-		## this is only for the control data set
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    if (groupLabel != "caseControl"){   
+        ## this is only for the control data set
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
 
-	} else if (groupLabel == "caseControl") { 
-		outputPrefix.tmp <- paste0(outputPrefix, "tmp")
-		system (paste0(plink, " --bfile ", inputPrefix, 
-				" --test-missing --out ", outputPrefix.tmp) ) 
-		## Write case/control missingness test to [ *.missing ]  
-		## compute differential call rates 
-		## between cases and controls for each SNP 
-		ccmissing <- read.table(file=paste0(outputPrefix.tmp, ".missing"), 
-								header=T, sep="")  
-		fmiss <- abs(ccmissing[, "F_MISS_A"] - ccmissing[, "F_MISS_U"])
-		whmiss <- which(fmiss >= snpMissDifCutOff) 
-		SNPmissCC <- ccmissing[whmiss, "SNP"]
-		SNPdifCallrate <- paste0(outputPrefix, ".txt")
-		write.table(SNPmissCC, file=SNPdifCallrate, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    } else if (groupLabel == "caseControl") { 
+        outputPrefix.tmp <- paste0(outputPrefix, "tmp")
+        system (paste0(plink, " --bfile ", inputPrefix, 
+                " --test-missing --out ", outputPrefix.tmp) ) 
+        ## Write case/control missingness test to [ *.missing ]  
+        ## compute differential call rates 
+        ## between cases and controls for each SNP 
+        ccmissing <- read.table(file=paste0(outputPrefix.tmp, ".missing"), 
+                                header=T, sep="")  
+        fmiss <- abs(ccmissing[, "F_MISS_A"] - ccmissing[, "F_MISS_U"])
+        whmiss <- which(fmiss >= snpMissDifCutOff) 
+        SNPmissCC <- ccmissing[whmiss, "SNP"]
+        SNPdifCallrate <- paste0(outputPrefix, ".txt")
+        write.table(SNPmissCC, file=SNPdifCallrate, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 
-		## exclude SNPs 
-		system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-			   SNPdifCallrate, " --make-bed --out ", outputPrefix))  
-		system(paste0("rm ", outputPrefix.tmp, ".*"))
-		system(paste0("rm ", SNPdifCallrate))
-	}
+        ## exclude SNPs 
+        system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+               SNPdifCallrate, " --make-bed --out ", outputPrefix))  
+        system(paste0("rm ", outputPrefix.tmp, ".*"))
+        system(paste0("rm ", SNPdifCallrate))
+    }
 }   
  
 
@@ -503,41 +503,41 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
 
 
 removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff, 
-	 								 inputPrefix, outputPrefix){ 
+                                      inputPrefix, outputPrefix){ 
 
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-	chrCodes <- names(table(bim[,1]))
-	chr23check <- length(grep(23, chrCodes))
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
+    chrCodes <- names(table(bim[,1]))
+    chr23check <- length(grep(23, chrCodes))
 
-	if (chr23check == 1) { 
-	  	## additional QC (female-chrX SNPs, missingness ok?)  
-	 	outputPrefix.tmp1 <- paste0(outputPrefix, "tmp1")
-		outputPrefix.tmp2 <- paste0(outputPrefix, "tmp2")
-		system(paste0(plink, " --bfile ", inputPrefix, 
-			   " --filter-females --chr 23 --make-bed --out ", 
-			   outputPrefix.tmp1))
-		system(paste0(plink, " --bfile ", inputPrefix, 
-			   " --filter-females --chr 23 --geno ", femaleChrXmissCutoff, 
-			   " --make-bed --out ", outputPrefix.tmp2) )
+    if (chr23check == 1) { 
+          ## additional QC (female-chrX SNPs, missingness ok?)  
+         outputPrefix.tmp1 <- paste0(outputPrefix, "tmp1")
+        outputPrefix.tmp2 <- paste0(outputPrefix, "tmp2")
+        system(paste0(plink, " --bfile ", inputPrefix, 
+               " --filter-females --chr 23 --make-bed --out ", 
+               outputPrefix.tmp1))
+        system(paste0(plink, " --bfile ", inputPrefix, 
+               " --filter-females --chr 23 --geno ", femaleChrXmissCutoff, 
+               " --make-bed --out ", outputPrefix.tmp2) )
 
-		 ## check if equal  
-		femaleChrXorig <- read.table(paste0(outputPrefix.tmp1, ".bim"), 
-									 stringsAsFactors=FALSE) 
-		femaleChrXMiss <- read.table(paste0(outputPrefix.tmp2, ".bim"), 
-									 stringsAsFactors=FALSE)  
-		snps2removed <- setdiff(femaleChrXorig[,2], femaleChrXMiss[,2]) 
-		snps2removedfile <- paste0(outputPrefix, ".txt")
-		write.table(snps2removed, file=snps2removedfile, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+         ## check if equal  
+        femaleChrXorig <- read.table(paste0(outputPrefix.tmp1, ".bim"), 
+                                     stringsAsFactors=FALSE) 
+        femaleChrXMiss <- read.table(paste0(outputPrefix.tmp2, ".bim"), 
+                                     stringsAsFactors=FALSE)  
+        snps2removed <- setdiff(femaleChrXorig[,2], femaleChrXMiss[,2]) 
+        snps2removedfile <- paste0(outputPrefix, ".txt")
+        write.table(snps2removed, file=snps2removedfile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
-		system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-			   snps2removedfile, " --make-bed --out ", outputPrefix))
-		system(paste0("rm ", outputPrefix.tmp1, ".* ", outputPrefix.tmp2, ".*")) 
-		system(paste0("rm ", snps2removedfile)) 
-	} else { 
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	}
+        system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+               snps2removedfile, " --make-bed --out ", outputPrefix))
+        system(paste0("rm ", outputPrefix.tmp1, ".* ", outputPrefix.tmp2, ".*")) 
+        system(paste0("rm ", snps2removedfile)) 
+    } else { 
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    }
 }
 
 
@@ -570,41 +570,41 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 ##' @examples  
 
 removedSnpHWEauto <- function(groupLabel, plink, inputPrefix, 
-						  	  pval, outputPvalFile, 
-							  outputSNPfile, outputPrefix){ 
+                                pval, outputPvalFile, 
+                              outputSNPfile, outputPrefix){ 
  
- 	if (groupLabel == "control"){ 
-	 	groupStatus <- "filter-controls"
-	 	affection <- "UNAFF" 
- 	} else if (groupLabel == "case"){
- 		groupStatus <- "filter-cases"
-	 	affection <- "AFF" 
- 	} else {
- 		"ERROR: during HWE test on autosome! Wrong label warning!"
- 	}
+     if (groupLabel == "control"){ 
+         groupStatus <- "filter-controls"
+         affection <- "UNAFF" 
+     } else if (groupLabel == "case"){
+         groupStatus <- "filter-cases"
+         affection <- "AFF" 
+     } else {
+         "ERROR: during HWE test on autosome! Wrong label warning!"
+     }
 
-	outputPrefix.tmp <- paste0(outputPrefix, "tmp")
-	system(paste0(plink, " --bfile ", inputPrefix, " --",
-		   groupStatus, " --hardy --autosome --make-bed --out ", 
-		   outputPrefix.tmp))  
+    outputPrefix.tmp <- paste0(outputPrefix, "tmp")
+    system(paste0(plink, " --bfile ", inputPrefix, " --",
+           groupStatus, " --hardy --autosome --make-bed --out ", 
+           outputPrefix.tmp))  
 
-	## read HWE p values 
-	hweCheck <- read.table(file=paste0(outputPrefix.tmp, ".hwe"), 
-						   header=TRUE, stringsAsFactors=FALSE) 
+    ## read HWE p values 
+    hweCheck <- read.table(file=paste0(outputPrefix.tmp, ".hwe"), 
+                           header=TRUE, stringsAsFactors=FALSE) 
 
-	hwe <- hweCheck[which(hweCheck$TEST == affection), ]  
-	snpHweValAuto <- subset(hwe, select=c(SNP, P))
-	snpHweValAuto <- snpHweValAuto[order(snpHweValAuto[,"P"]),] 
-	write.table(snpHweValAuto, file=outputPvalFile, quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	removedSNPhwe <- hwe[which(hwe$P <= pval), "SNP"]
-	write.table(removedSNPhwe, file=outputSNPfile, quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    hwe <- hweCheck[which(hweCheck$TEST == affection), ]  
+    snpHweValAuto <- subset(hwe, select=c(SNP, P))
+    snpHweValAuto <- snpHweValAuto[order(snpHweValAuto[,"P"]),] 
+    write.table(snpHweValAuto, file=outputPvalFile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    removedSNPhwe <- hwe[which(hwe$P <= pval), "SNP"]
+    write.table(removedSNPhwe, file=outputSNPfile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 
-	## exclude SNPs 
-	system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-		   outputSNPfile, " --make-bed --out ", outputPrefix)) 
-	system(paste0("rm ", outputPrefix.tmp, ".*"))
+    ## exclude SNPs 
+    system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+           outputSNPfile, " --make-bed --out ", outputPrefix)) 
+    system(paste0("rm ", outputPrefix.tmp, ".*"))
 
 }
  
@@ -636,41 +636,41 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 
  
 removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval, 
-										   outputPvalFile, outputSNPfile, 
-										   outputPrefix){ 
-	
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-	chrCodes <- names(table(bim[,1]))
-	chr23check <- length(grep(23, chrCodes))
+                                           outputPvalFile, outputSNPfile, 
+                                           outputPrefix){ 
+    
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
+    chrCodes <- names(table(bim[,1]))
+    chr23check <- length(grep(23, chrCodes))
 
-	if (chr23check == 1) { 
-	 
-		outputPrefix.tmp <- paste0(outputPrefix, "tmp") 
-		system(paste0(plink, " --bfile ", inputPrefix, 
-			   " --filter-females --filter-controls --chr 23 --hardy ", 
-			   " --make-bed --out ", outputPrefix.tmp) )
-		## read p values
-		hweCheck <- read.table(file=paste0(outputPrefix.tmp, ".hwe"), 
-							   header=TRUE, stringsAsFactors=FALSE) 
-		## for controls 
-		hweControl <- hweCheck[which(hweCheck$TEST == "UNAFF"), ] # 
-		snpHweValChrXCt <- subset(hweControl, select=c(SNP, P))
-		snpHweValChrXCt <- snpHweValChrXCt[order(snpHweValChrXCt[,"P"]),]
-		write.table(snpHweValChrXCt, file=outputPvalFile, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-		## remove bad SNPs
-		removedSNPhweControl <- hweControl[which(hweControl$P <= pval), "SNP"]
-		write.table(removedSNPhweControl, file=outputSNPfile, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    if (chr23check == 1) { 
+     
+        outputPrefix.tmp <- paste0(outputPrefix, "tmp") 
+        system(paste0(plink, " --bfile ", inputPrefix, 
+               " --filter-females --filter-controls --chr 23 --hardy ", 
+               " --make-bed --out ", outputPrefix.tmp) )
+        ## read p values
+        hweCheck <- read.table(file=paste0(outputPrefix.tmp, ".hwe"), 
+                               header=TRUE, stringsAsFactors=FALSE) 
+        ## for controls 
+        hweControl <- hweCheck[which(hweCheck$TEST == "UNAFF"), ] # 
+        snpHweValChrXCt <- subset(hweControl, select=c(SNP, P))
+        snpHweValChrXCt <- snpHweValChrXCt[order(snpHweValChrXCt[,"P"]),]
+        write.table(snpHweValChrXCt, file=outputPvalFile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        ## remove bad SNPs
+        removedSNPhweControl <- hweControl[which(hweControl$P <= pval), "SNP"]
+        write.table(removedSNPhweControl, file=outputSNPfile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
 
-		system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-				outputSNPfile, " --make-bed --out ", outputPrefix))
-		system(paste0("rm ", outputPrefix.tmp, ".*")) 
+        system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+                outputSNPfile, " --make-bed --out ", outputPrefix))
+        system(paste0("rm ", outputPrefix.tmp, ".*")) 
 
-	} else {
-		## copy/rename plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
-	}
+    } else {
+        ## copy/rename plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
+    }
 }
   
 
@@ -707,27 +707,27 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
  
 
 plotPCA4plink <- function(gcta, inputPrefix, nThread, 
-						  outputPC4subjFile, outputPCplotFile){ 
+                          outputPC4subjFile, outputPCplotFile){ 
 
-	autosomefn <- paste0(inputPrefix, "Autosome")
-	system(paste0(gcta, " --bfile ", inputPrefix, 
-		   " --make-grm --autosome --out ", autosomefn, " --thread-num ", nThread))
-	system(paste0(gcta, " --grm ", autosomefn, " --pca 20 --out ", 
-		   autosomefn, " --thread-num ", nThread))
+    autosomefn <- paste0(inputPrefix, "Autosome")
+    system(paste0(gcta, " --bfile ", inputPrefix, 
+           " --make-grm --autosome --out ", autosomefn, " --thread-num ", nThread))
+    system(paste0(gcta, " --grm ", autosomefn, " --pca 20 --out ", 
+           autosomefn, " --thread-num ", nThread))
 
-	eigen <- read.table(file=paste0(autosomefn,".eigenvec"), stringsAsFactors=FALSE)
-	pcs <- eigen[,1:4] ## first two PCs in the 3rd and 4th column.
-	write.table(pcs, outputPC4subjFile, quote=FALSE, row.names=FALSE, 
-			    col.names=FALSE, eol="\r\n", sep=" ")
-	pcWithGroup <- cbind(pcs, stringsAsFactors=FALSE)
+    eigen <- read.table(file=paste0(autosomefn,".eigenvec"), stringsAsFactors=FALSE)
+    pcs <- eigen[,1:4] ## first two PCs in the 3rd and 4th column.
+    write.table(pcs, outputPC4subjFile, quote=FALSE, row.names=FALSE, 
+                col.names=FALSE, eol="\r\n", sep=" ")
+    pcWithGroup <- cbind(pcs, stringsAsFactors=FALSE)
 
-	png(outputPCplotFile, width=8, height=6, units="in", res=800)
-	print( xyplot(pcWithGroup[,4] ~ pcWithGroup[,3], data=pcWithGroup, 
-	       auto.key=list(space="right"),  
-	       jitter.x=TRUE, jitter.y=TRUE, xlab="PC1", ylab="PC2") )
-	dev.off()
-	## remove unwanted files
-	system(paste0("rm ", autosomefn, ".*"))
+    png(outputPCplotFile, width=8, height=6, units="in", res=800)
+    print( xyplot(pcWithGroup[,4] ~ pcWithGroup[,3], data=pcWithGroup, 
+           auto.key=list(space="right"),  
+           jitter.x=TRUE, jitter.y=TRUE, xlab="PC1", ylab="PC2") )
+    dev.off()
+    ## remove unwanted files
+    system(paste0("rm ", autosomefn, ".*"))
 }
 
 
@@ -778,46 +778,46 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread,
   
  
 removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign, 
-							   inputPC4subjFile, outputPC4outlierFile, 
-							   outputPCplotFile, outputPrefix){
+                               inputPC4subjFile, outputPC4outlierFile, 
+                               outputPCplotFile, outputPrefix){
 
-	## if no outliers or no need to remove PC outliers. 
-	if (is.null(cutoff) == TRUE) { 
-		## copy/rename all snp info updated plink files
-		renamePlinkBFile(inputPrefix, outputPrefix, action="copy")
-	} else {  
-		subjID_PCs <- read.table(file=inputPC4subjFile, stringsAsFactors=FALSE)   
-		if (length(cutoff) > 1) { 
-			## if the outliers should be removed on both side of the cluster
-			## detected by PC1
-			outliersPC1v1 <- subjID_PCs[which(subjID_PCs[,3] <= cutoff[1]), ] 
-			outliersPC1v2 <- subjID_PCs[which(subjID_PCs[,3] >= cutoff[2]), ]  
-			subjID_PCs4outlier <- rbind(outliersPC1v1, outliersPC1v2)
-		} else {
-	  	    if (cutoffSign == "smaller"){ 
-	  	    	## detected by PC1
-	  	  	    subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] <= cutoff), ] 
-	  	    } else if (cutoffSign == "greater"){
-	  	    	## detected by PC1
-	  	  	    subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
-	  	    }
-		}	  
-		## sorted by first PC.
-	 	subjID_PCs4outlierSorted <- subjID_PCs4outlier[order(subjID_PCs4outlier[,3]), ] 
-	 	write.table(subjID_PCs4outlierSorted, file=outputPC4outlierFile, quote=FALSE, 
-	 				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	 	subjID4outlierTmp  <- subjID_PCs4outlierSorted[,1:2]
-	 	subjID4outlierTmpFile <- "subjID4outlierTmp.txt"
-		write.table(subjID4outlierTmp, file=subjID4outlierTmpFile, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-		system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
-			   subjID4outlierTmpFile, " --make-bed --out ", outputPrefix))
-		system(paste0("rm ", subjID4outlierTmpFile)) 
-		## Plot first two PCs again
-		outputPC4subjFiletmp <- "outputPC4subjFile.txt" ## PCs for the retained subjects 
-		plotPCA4plink(gcta, inputPrefix=outputPrefix, outputPC4subjFiletmp, outputPCplotFile)
-		system(paste0("rm ", outputPC4subjFiletmp))
-	}	
+    ## if no outliers or no need to remove PC outliers. 
+    if (is.null(cutoff) == TRUE) { 
+        ## copy/rename all snp info updated plink files
+        renamePlinkBFile(inputPrefix, outputPrefix, action="copy")
+    } else {  
+        subjID_PCs <- read.table(file=inputPC4subjFile, stringsAsFactors=FALSE)   
+        if (length(cutoff) > 1) { 
+            ## if the outliers should be removed on both side of the cluster
+            ## detected by PC1
+            outliersPC1v1 <- subjID_PCs[which(subjID_PCs[,3] <= cutoff[1]), ] 
+            outliersPC1v2 <- subjID_PCs[which(subjID_PCs[,3] >= cutoff[2]), ]  
+            subjID_PCs4outlier <- rbind(outliersPC1v1, outliersPC1v2)
+        } else {
+              if (cutoffSign == "smaller"){ 
+                  ## detected by PC1
+                    subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] <= cutoff), ] 
+              } else if (cutoffSign == "greater"){
+                  ## detected by PC1
+                    subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
+              }
+        }      
+        ## sorted by first PC.
+         subjID_PCs4outlierSorted <- subjID_PCs4outlier[order(subjID_PCs4outlier[,3]), ] 
+         write.table(subjID_PCs4outlierSorted, file=outputPC4outlierFile, quote=FALSE, 
+                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+         subjID4outlierTmp  <- subjID_PCs4outlierSorted[,1:2]
+         subjID4outlierTmpFile <- "subjID4outlierTmp.txt"
+        write.table(subjID4outlierTmp, file=subjID4outlierTmpFile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
+               subjID4outlierTmpFile, " --make-bed --out ", outputPrefix))
+        system(paste0("rm ", subjID4outlierTmpFile)) 
+        ## Plot first two PCs again
+        outputPC4subjFiletmp <- "outputPC4subjFile.txt" ## PCs for the retained subjects 
+        plotPCA4plink(gcta, inputPrefix=outputPrefix, outputPC4subjFiletmp, outputPCplotFile)
+        system(paste0("rm ", outputPC4subjFiletmp))
+    }    
 }
  
 
@@ -880,83 +880,83 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
    
 
 genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05, 
-				   sampleMissCutOff=0.02, Fhet=0.2, 
-				   snpMissCutOffpost=0.02, snpMissDifCutOff=0.02,
-				   femaleChrXmissCutoff=0.05, pval4autoCtl=0.000001, 
-				   pval4femaleXctl=0.000001, outputPrefix) {
+                   sampleMissCutOff=0.02, Fhet=0.2, 
+                   snpMissCutOffpost=0.02, snpMissDifCutOff=0.02,
+                   femaleChrXmissCutoff=0.05, pval4autoCtl=0.000001, 
+                   pval4femaleXctl=0.000001, outputPrefix) {
 
-	## check case control status
-	groupLabel <- getGroupLabel(inputFAMfile=paste0(inputPrefix, ".fam"))
-	## step 3 
-	# 3. Set all heterozygous alleles of SNPs of the chr 23 for males
-	outputPrefix3 <- "2_03_setHeteroHaploMissing" 
-	setHeteroHaploMissing(plink, inputPrefix, outputPrefix=outputPrefix3) 
-	## step 4  SNP missingness < 0.05 (before sample removal);  
-	outputPrefix4 <- "2_04_removedSnpMissPre" 
-	removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpre, 
-				   inputPrefix=outputPrefix3, outputPrefix=outputPrefix4) 	   
-	## step 5 
-	# subject missingness < 0.02;  
-	outputPrefix5 <- "2_05_removedInstMiss" 
-	removedInstMiss(plink, sampleMissCutOff,  
-					inputPrefix=outputPrefix4, outputPrefix=outputPrefix5)
-	## step 6  
-	outputPrefix6 <- "2_06_removedInstFhet" 
-	removedInstFhet(plink, Fhet, 
-					inputPrefix=outputPrefix5, outputPrefix=outputPrefix6)
-	## step 7
-	outputPrefix7 <- "2_07_removedParentIdsMiss" 
-	removedParentIdsMiss(plink, inputPrefix=outputPrefix6, 
-						 outputPrefix=outputPrefix7)
-	## step 8  
-	outputPrefix8 <- "2_08_removedSnpMissPost" 
-	removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
-				   inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
-	## step 9 
-	## Remove SNPs with difference >= 0.02 of SNP missingness between cases and controls.
-	outputPrefix9 <- "2_09_removedSnpMissDiff" 
-	removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
-					   snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
-	## step 10
-	outputPrefix10 <- "2_10_removedSnpFemaleChrXmiss" 
-	removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
-							 inputPrefix=outputPrefix9, 
-							 outputPrefix=outputPrefix10) 
-	## step 11
-	outputPvalFile <- "2_11_snpHwePvalAuto.txt" 
-	outputSNPfile <-  "2_11_snpRemovedHweAuto.txt" 
-	outputPrefix11 <- "2_11_removedSnpHweAuto" 
-	if (groupLabel == "control" | groupLabel == "caseControl"){
-		removedSnpHWEauto(groupLabel="control", plink, 
-						  inputPrefix=outputPrefix10, 
-			 		 	  pval=pval4autoCtl, outputPvalFile, 
-					      outputSNPfile, outputPrefix=outputPrefix11)
-	## HWE test is only performed on control data 
-	} else { print("ERROR: HWE test on autosome!") }
-	## step 12 
-	outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
-	outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
-	# outputPrefix12 <- "2_12_removedSnpHweFemaleXct" 
-	removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
-								   pval=pval4femaleXctl, outputPvalFile,
-								    outputSNPfile, outputPrefix=outputPrefix)
+    ## check case control status
+    groupLabel <- getGroupLabel(inputFAMfile=paste0(inputPrefix, ".fam"))
+    ## step 3 
+    # 3. Set all heterozygous alleles of SNPs of the chr 23 for males
+    outputPrefix3 <- "2_03_setHeteroHaploMissing" 
+    setHeteroHaploMissing(plink, inputPrefix, outputPrefix=outputPrefix3) 
+    ## step 4  SNP missingness < 0.05 (before sample removal);  
+    outputPrefix4 <- "2_04_removedSnpMissPre" 
+    removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpre, 
+                   inputPrefix=outputPrefix3, outputPrefix=outputPrefix4)        
+    ## step 5 
+    # subject missingness < 0.02;  
+    outputPrefix5 <- "2_05_removedInstMiss" 
+    removedInstMiss(plink, sampleMissCutOff,  
+                    inputPrefix=outputPrefix4, outputPrefix=outputPrefix5)
+    ## step 6  
+    outputPrefix6 <- "2_06_removedInstFhet" 
+    removedInstFhet(plink, Fhet, 
+                    inputPrefix=outputPrefix5, outputPrefix=outputPrefix6)
+    ## step 7
+    outputPrefix7 <- "2_07_removedParentIdsMiss" 
+    removedParentIdsMiss(plink, inputPrefix=outputPrefix6, 
+                         outputPrefix=outputPrefix7)
+    ## step 8  
+    outputPrefix8 <- "2_08_removedSnpMissPost" 
+    removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
+                   inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
+    ## step 9 
+    ## Remove SNPs with difference >= 0.02 of SNP missingness between cases and controls.
+    outputPrefix9 <- "2_09_removedSnpMissDiff" 
+    removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
+                       snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
+    ## step 10
+    outputPrefix10 <- "2_10_removedSnpFemaleChrXmiss" 
+    removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
+                             inputPrefix=outputPrefix9, 
+                             outputPrefix=outputPrefix10) 
+    ## step 11
+    outputPvalFile <- "2_11_snpHwePvalAuto.txt" 
+    outputSNPfile <-  "2_11_snpRemovedHweAuto.txt" 
+    outputPrefix11 <- "2_11_removedSnpHweAuto" 
+    if (groupLabel == "control" | groupLabel == "caseControl"){
+        removedSnpHWEauto(groupLabel="control", plink, 
+                          inputPrefix=outputPrefix10, 
+                            pval=pval4autoCtl, outputPvalFile, 
+                          outputSNPfile, outputPrefix=outputPrefix11)
+    ## HWE test is only performed on control data 
+    } else { print("ERROR: HWE test on autosome!") }
+    ## step 12 
+    outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
+    outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
+    # outputPrefix12 <- "2_12_removedSnpHweFemaleXct" 
+    removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
+                                   pval=pval4femaleXctl, outputPvalFile,
+                                    outputSNPfile, outputPrefix=outputPrefix)
 
-	## remove intermediate files 
-	system(paste0("rm ", outputPrefix3, ".*"))
-	system(paste0("rm ", outputPrefix4, ".*"))
-	system(paste0("rm ", outputPrefix5, ".*"))
-	system(paste0("rm ", outputPrefix6, ".*"))
-	system(paste0("rm ", outputPrefix7, ".*"))
-	system(paste0("rm ", outputPrefix8, ".*"))
-	system(paste0("rm ", outputPrefix9, ".*"))
-	system(paste0("rm ", outputPrefix10, ".*"))
-	system(paste0("rm ", outputPrefix11, ".*")) 
+    ## remove intermediate files 
+    system(paste0("rm ", outputPrefix3, ".*"))
+    system(paste0("rm ", outputPrefix4, ".*"))
+    system(paste0("rm ", outputPrefix5, ".*"))
+    system(paste0("rm ", outputPrefix6, ".*"))
+    system(paste0("rm ", outputPrefix7, ".*"))
+    system(paste0("rm ", outputPrefix8, ".*"))
+    system(paste0("rm ", outputPrefix9, ".*"))
+    system(paste0("rm ", outputPrefix10, ".*"))
+    system(paste0("rm ", outputPrefix11, ".*")) 
 
-	if (file.exists(outputPvalFile)) {  
-		system(paste0("rm ", outputPvalFile))
-	}
-	if (file.exists(outputSNPfile)) {  
-		system(paste0("rm ", outputSNPfile))
-	}	
-	 
-}	 
+    if (file.exists(outputPvalFile)) {  
+        system(paste0("rm ", outputPvalFile))
+    }
+    if (file.exists(outputSNPfile)) {  
+        system(paste0("rm ", outputSNPfile))
+    }    
+     
+}     

@@ -49,14 +49,14 @@
 
 removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){  
 
-	## input BIM file  
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
-	monoSNPs <- bim[which(bim[,5] == 0),2]  
-	write.table(monoSNPs, file=outputSNPfile, quote=FALSE, row.names=FALSE, 
-		 		col.names=FALSE, eol="\r\n", sep=" ") 
+    ## input BIM file  
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
+    monoSNPs <- bim[which(bim[,5] == 0),2]  
+    write.table(monoSNPs, file=outputSNPfile, quote=FALSE, row.names=FALSE, 
+                 col.names=FALSE, eol="\r\n", sep=" ") 
   
-	system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", outputSNPfile, 
-		   " --make-bed --out ", outputPrefix)) 
+    system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", outputSNPfile, 
+           " --make-bed --out ", outputPrefix)) 
 }
 
 
@@ -93,8 +93,8 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' into PAR1 and PAR2 according to the genomic coordination GRCh37
 #' from https://en.wikipedia.org/wiki/Pseudoautosomal_region.
 #' The locations of the PARs within GRCh37 are:  
-#' PAR1	X	60001	2699520; 
-#' PAR2	X	154931044	155260560.   
+#' PAR1    X    60001    2699520; 
+#' PAR2    X    154931044    155260560.   
 
 #' @export 
 #' @import doParallel  
@@ -103,64 +103,64 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 
 
 chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix, 
-						 chrXPAR2suffix, nCore=25){ 
+                         chrXPAR2suffix, nCore=25){ 
 
     ## check which chromosomes are available to be splitted from the .bim file
-	bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
-	chrs <- as.integer(names(table(bim[,1])))
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
+    chrs <- as.integer(names(table(bim[,1])))
  
-	chrslist <- as.list(chrs)
-	mclapply(chrslist, function(i){
-		cmd <- paste0(plink, " --bfile ", inputPrefix, " --chr ", i, 
-			          " --make-bed --out ", inputPrefix, i)  
-		system(cmd)
-	}, mc.cores=nCore)
+    chrslist <- as.list(chrs)
+    mclapply(chrslist, function(i){
+        cmd <- paste0(plink, " --bfile ", inputPrefix, " --chr ", i, 
+                      " --make-bed --out ", inputPrefix, i)  
+        system(cmd)
+    }, mc.cores=nCore)
 
-	## if chromosome 25 is also available then re-arrange it
- 	if (is.element(25, chrs)){  
+    ## if chromosome 25 is also available then re-arrange it
+     if (is.element(25, chrs)){  
 
- 		print("PAR is available in chrX!") 
-		bim25 <- read.table(paste0(inputPrefix, "25.bim"), stringsAsFactors=FALSE) 
-		pos4PAR1 <- c(60001, 2699520) 
-		## first check for PAR1 and afterwards for PAR2
-		if ( length(which(bim25[,4] <= pos4PAR1[2]))!= 0 ){ 
-	   
-	   		print("PAR1 is available in chrX!")
-	   		bimPos4par1 <- which(bim25[,4]<= pos4PAR1[2])
-			rs4PAR1 <- bim25[bimPos4par1,2]
-			write.table(rs4PAR1, file="rs4PAR1.txt", quote=FALSE, 
-						row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-			system(paste0(plink, " --bfile ", inputPrefix, 
-				   "25 --extract rs4PAR1.txt --make-bed --out ", 
-				   inputPrefix, chrXPAR1suffix))
-			par1 <- TRUE  
-			## check for PAR2, if any SNPs out of PAR1, PAR2 also available 
-			if (length(bimPos4par1)<nrow(bim25)){
-				print("PAR2 is available in chrX!") 
-				## just to exclude rs4PAR1.txt
-				system(paste0(plink, " --bfile ", inputPrefix, 
-					   "25 --exclude rs4PAR1.txt --make-bed --out ", 
-					   inputPrefix, chrXPAR2suffix))
-				par2 <- TRUE 
-			} else { 
-				print("PAR2 is NOT available in chrX!") 
-			}
+         print("PAR is available in chrX!") 
+        bim25 <- read.table(paste0(inputPrefix, "25.bim"), stringsAsFactors=FALSE) 
+        pos4PAR1 <- c(60001, 2699520) 
+        ## first check for PAR1 and afterwards for PAR2
+        if ( length(which(bim25[,4] <= pos4PAR1[2]))!= 0 ){ 
+       
+               print("PAR1 is available in chrX!")
+               bimPos4par1 <- which(bim25[,4]<= pos4PAR1[2])
+            rs4PAR1 <- bim25[bimPos4par1,2]
+            write.table(rs4PAR1, file="rs4PAR1.txt", quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+            system(paste0(plink, " --bfile ", inputPrefix, 
+                   "25 --extract rs4PAR1.txt --make-bed --out ", 
+                   inputPrefix, chrXPAR1suffix))
+            par1 <- TRUE  
+            ## check for PAR2, if any SNPs out of PAR1, PAR2 also available 
+            if (length(bimPos4par1)<nrow(bim25)){
+                print("PAR2 is available in chrX!") 
+                ## just to exclude rs4PAR1.txt
+                system(paste0(plink, " --bfile ", inputPrefix, 
+                       "25 --exclude rs4PAR1.txt --make-bed --out ", 
+                       inputPrefix, chrXPAR2suffix))
+                par2 <- TRUE 
+            } else { 
+                print("PAR2 is NOT available in chrX!") 
+            }
 
-		} else { 
-			print("PAR2 is available in chrX! But NOT PAR1, all chr25 on PAR2")
-			par1 <- FALSE
-			par2 <- TRUE 
-			renamePlinkBFile(inputPrefix=paste0(inputPrefix, "25"), 
-							 outputPrefix=paste0(inputPrefix, chrXPAR2suffix), 
-							 action="copy") 
-		} 
-	} else {  
-		print("PAR is NOT available in chrX!") 
-		par1 <- FALSE
-		par2 <- FALSE
-	} 
+        } else { 
+            print("PAR2 is available in chrX! But NOT PAR1, all chr25 on PAR2")
+            par1 <- FALSE
+            par2 <- TRUE 
+            renamePlinkBFile(inputPrefix=paste0(inputPrefix, "25"), 
+                             outputPrefix=paste0(inputPrefix, chrXPAR2suffix), 
+                             action="copy") 
+        } 
+    } else {  
+        print("PAR is NOT available in chrX!") 
+        par1 <- FALSE
+        par2 <- FALSE
+    } 
 
-	return(par=list(par1, par2)) 
+    return(par=list(par1, par2)) 
 }
  
 
@@ -183,7 +183,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' @param outputPrefix the prefix of the output pure text files that keep 
 #' all the chunks for each chromosome separately.
 #' @param chrs specifiy the chromosome codes for chunking.
-#' @param windowSize  the window size of each chunk. 
+#' @param windowSize the window size of each chunk. 
 #' The default value is 3000000.
 
 #' @return The output pure text files include all the chunks 
@@ -196,55 +196,55 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 
 chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){  
 
-	for (i in chrs){ 
+    for (i in chrs){ 
 
-		bim <- paste0(inputPrefix, i, ".bim")
-		bimdata <- read.table(file=bim, sep="\t", stringsAsFactors=FALSE)
-		position <- bimdata[,4]
-		posStart <- head(position,1)
-		posEnd <- tail(position,1)
-		chunkStart <- seq(posStart, posEnd, windowSize)
-		chunkEnd <- chunkStart + windowSize -1
-		chunkMatrix <- cbind(chunkStart, chunkEnd)
+        bim <- paste0(inputPrefix, i, ".bim")
+        bimdata <- read.table(file=bim, sep="\t", stringsAsFactors=FALSE)
+        position <- bimdata[,4]
+        posStart <- head(position,1)
+        posEnd <- tail(position,1)
+        chunkStart <- seq(posStart, posEnd, windowSize)
+        chunkEnd <- chunkStart + windowSize -1
+        chunkMatrix <- cbind(chunkStart, chunkEnd)
 
-		## positions are only within a chunk
-		if (nrow(chunkMatrix) == 1){
-			chunks <- chunkMatrix
-		} else {  
-			##  it may happen that only a few SNPs from the last chunk; 
-			## but if the last chunk is large, then specify -allow_large_regions 
-			chunks <- head(chunkMatrix, -1) ## merge last-second to last  
-			chunks[nrow(chunks), 2] <- posEnd
-		}
-		
-		## check if any chunk with NO snps within it   
-		SNPcountsPerChunk <- c() 
-		for (j in seq_len(nrow(chunks))){
-			chunkbottom <- chunks[j,1]
-			chunkup <- chunks[j,2]
-			## ## which fall within chunk 
-			tmp <- which(position >= chunkbottom & position <= chunkup)  
-			tmp <- length(tmp)
-			SNPcountsPerChunk <- c(SNPcountsPerChunk, tmp) 
-		} 
+        ## positions are only within a chunk
+        if (nrow(chunkMatrix) == 1){
+            chunks <- chunkMatrix
+        } else {  
+            ##  it may happen that only a few SNPs from the last chunk; 
+            ## but if the last chunk is large, then specify -allow_large_regions 
+            chunks <- head(chunkMatrix, -1) ## merge last-second to last  
+            chunks[nrow(chunks), 2] <- posEnd
+        }
+        
+        ## check if any chunk with NO snps within it   
+        SNPcountsPerChunk <- c() 
+        for (j in seq_len(nrow(chunks))){
+            chunkbottom <- chunks[j,1]
+            chunkup <- chunks[j,2]
+            ## ## which fall within chunk 
+            tmp <- which(position >= chunkbottom & position <= chunkup)  
+            tmp <- length(tmp)
+            SNPcountsPerChunk <- c(SNPcountsPerChunk, tmp) 
+        } 
 
-	 	wh0 <- which(SNPcountsPerChunk == 0)
-	 	print(paste0("chr",i))
-	 	print(wh0)
-	 	chunkLength <- nrow(chunks) - length(wh0)
-	 	## remove such chunks if wh0  
+         wh0 <- which(SNPcountsPerChunk == 0)
+         print(paste0("chr",i))
+         print(wh0)
+         chunkLength <- nrow(chunks) - length(wh0)
+         ## remove such chunks if wh0  
 
-	 	if (length(wh0) != 0){ chunks <- chunks[-wh0,] }
-	 	print(nrow(chunks) == chunkLength)
-		chunkfilename <- paste0(outputPrefix, i, ".txt")
-		write.table(chunks, file=chunkfilename, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	}
+         if (length(wh0) != 0){ chunks <- chunks[-wh0,] }
+         print(nrow(chunks) == chunkLength)
+        chunkfilename <- paste0(outputPrefix, i, ".txt")
+        write.table(chunks, file=chunkfilename, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    }
 }
 
 
 
-	
+    
 
 ##########################################################################
 ## prePhasingByShapeit.R
@@ -282,52 +282,52 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @author Junfang Chen   
 
 prePhasingByShapeit <- function(shapeit, chrs, dataDIR, 
-								prefix4plinkEachChr, impRefDIR, phaseDIR, 
-								nThread=40, effectiveSize=20000, nCore=1){
+                                prefix4plinkEachChr, impRefDIR, phaseDIR, 
+                                nThread=40, effectiveSize=20000, nCore=1){
 
-	chrslist <- as.list(chrs)
-	mclapply(chrslist, function(i){
+    chrslist <- as.list(chrs)
+    mclapply(chrslist, function(i){
 
-		# GWAS data files in PLINK binary format
-		GWASDATA_BED <- paste0(dataDIR, prefix4plinkEachChr, i, ".bed ") 
-		GWASDATA_BIM <- paste0(dataDIR, prefix4plinkEachChr, i, ".bim ")
-		GWASDATA_FAM <- paste0(dataDIR, prefix4plinkEachChr, i, ".fam ")
-		# reference data files
-		GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
-							  "_combined_b37.txt ")
-		HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-							"_impute_macGT1.hap.gz ") 
-		LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-							  "_impute_macGT1.legend.gz ")
-		SAMPLE_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3.sample ")
+        # GWAS data files in PLINK binary format
+        GWASDATA_BED <- paste0(dataDIR, prefix4plinkEachChr, i, ".bed ") 
+        GWASDATA_BIM <- paste0(dataDIR, prefix4plinkEachChr, i, ".bim ")
+        GWASDATA_FAM <- paste0(dataDIR, prefix4plinkEachChr, i, ".fam ")
+        # reference data files
+        GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
+                              "_combined_b37.txt ")
+        HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
+                            "_impute_macGT1.hap.gz ") 
+        LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
+                              "_impute_macGT1.legend.gz ")
+        SAMPLE_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3.sample ")
 
-		# main output file
-		OUTPUT_HAPS <- paste0(phaseDIR, "chr", i, ".haps ")     
-		OUTPUT_SAMPLE <- paste0(phaseDIR, "chr", i, ".sample ")     
-		OUTPUT_LOG <- paste0(phaseDIR, "chr", i, ".log ")    
+        # main output file
+        OUTPUT_HAPS <- paste0(phaseDIR, "chr", i, ".haps ")     
+        OUTPUT_SAMPLE <- paste0(phaseDIR, "chr", i, ".sample ")     
+        OUTPUT_LOG <- paste0(phaseDIR, "chr", i, ".log ")    
 
-		if (i != 23){  ## prePhasing for the autosome
-			system(paste0(shapeit, 
-			" --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
-			" --input-map ", GENMAP_FILE, " \ ",  
-			"--input-ref ", HAPS_FILE, LEGEND_FILE, SAMPLE_FILE, " \ ", 
-			"--thread ", nThread, " \ ", 
-			"--effective-size ", effectiveSize, " \ ", 
-			"--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
-			"--output-log ", OUTPUT_LOG) )
-		} else if (i == 23){
-			system(paste0(shapeit, 
-			" --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
-			" --input-map ", GENMAP_FILE, " \ ", 
-			" --chrX \ ", 
-			"--input-ref ", HAPS_FILE, LEGEND_FILE, SAMPLE_FILE, " \ ", 
-			"--thread ", nThread, " \ ", 
-			"--effective-size ", effectiveSize, " \ ", 
-			"--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
-			"--output-log ", OUTPUT_LOG) ) 
-		}
+        if (i != 23){  ## prePhasing for the autosome
+            system(paste0(shapeit, 
+            " --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
+            " --input-map ", GENMAP_FILE, " \ ",  
+            "--input-ref ", HAPS_FILE, LEGEND_FILE, SAMPLE_FILE, " \ ", 
+            "--thread ", nThread, " \ ", 
+            "--effective-size ", effectiveSize, " \ ", 
+            "--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
+            "--output-log ", OUTPUT_LOG) )
+        } else if (i == 23){
+            system(paste0(shapeit, 
+            " --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
+            " --input-map ", GENMAP_FILE, " \ ", 
+            " --chrX \ ", 
+            "--input-ref ", HAPS_FILE, LEGEND_FILE, SAMPLE_FILE, " \ ", 
+            "--thread ", nThread, " \ ", 
+            "--effective-size ", effectiveSize, " \ ", 
+            "--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
+            "--output-log ", OUTPUT_LOG) ) 
+        }
 
-	}, mc.cores=nCore)	 
+    }, mc.cores=nCore)     
 } 
 
  
@@ -367,96 +367,96 @@ prePhasingByShapeit <- function(shapeit, chrs, dataDIR,
  
 
 imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR, 
-						     impRefDIR, imputedDIR, prefix4plinkEachChr, 
-						     nCore, effectiveSize){ 
+                             impRefDIR, imputedDIR, prefix4plinkEachChr, 
+                             nCore, effectiveSize){ 
  
-	for (i in chrs){ 	
+    for (i in chrs){     
 
-		chunkfn <- paste0(prefixChunk, i, ".txt")
-		chunks <- read.table(chunkfn, sep=" ")
+        chunkfn <- paste0(prefixChunk, i, ".txt")
+        chunks <- read.table(chunkfn, sep=" ")
  
-		chunklist <- as.list(seq_len(nrow(chunks)))
-		mclapply(chunklist, function(j){
+        chunklist <- as.list(seq_len(nrow(chunks)))
+        mclapply(chunklist, function(j){
 
-			chunkSTART <- chunks[j,1]
-			chunkEND   <- chunks[j,2] 
-			## Input: haplotypes from SHAPEIT phasing (method B)
-			GWAS_HAPS_FILE <- paste0(phaseDIR, "chr", i, ".haps ") 
-			GWAS_SAMP_FILE <- paste0(phaseDIR, "chr", i, ".sample ") 
-			## reference data files
-			## For other reference panels you want to modify the following setting  
-			GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
-								  "_combined_b37.txt ")
-			HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-							    "_impute_macGT1.hap.gz ") 
-			LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-							      "_impute_macGT1.legend.gz ")
+            chunkSTART <- chunks[j,1]
+            chunkEND   <- chunks[j,2] 
+            ## Input: haplotypes from SHAPEIT phasing (method B)
+            GWAS_HAPS_FILE <- paste0(phaseDIR, "chr", i, ".haps ") 
+            GWAS_SAMP_FILE <- paste0(phaseDIR, "chr", i, ".sample ") 
+            ## reference data files
+            ## For other reference panels you want to modify the following setting  
+            GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
+                                  "_combined_b37.txt ")
+            HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
+                                "_impute_macGT1.hap.gz ") 
+            LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
+                                  "_impute_macGT1.legend.gz ")
  
-			## main output file    
-			OUTPUT_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
-								  ".pos", chunkSTART, "-", chunkEND, ".impute2 ")   
-			################## impute genotypes from GWAS haplotypes 
-			autosomeCode = seq_len(22)
-			if (is.element(i, autosomeCode)) { 
-				## impute for the autosomes
-				system(paste0(impute2, 
-				" -iter 30  \ ", 
-				" -burnin 10  \ ", 
-				" -k_hap 500  \ ", 
-				" -use_prephased_g  \ ",  
-				" -m ", GENMAP_FILE, " \ ",  
-				" -h ", HAPS_FILE, " \ ", 
-				" -l ", LEGEND_FILE, " \ ", 
-				" -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
-				" -Ne ", effectiveSize, " \ ", 
-				" -int ", chunkSTART, " ", chunkEND, " \ ", 
-				" -buffer 1000  \ ",
-				" -o ", OUTPUT_FILE, " \ ", 
-				" -allow_large_regions \ ",
-				" -seed 367946 \ " ))
-			} else if (is.element(i, c("X_PAR1", "X_PAR2"))){  
-				## impute for chrX PAR >> with an additional flag: --Xpar.
-				system(paste0(impute2, 
-				" -iter 30  \ ", 
-				" -burnin 10  \ ", 
-				" -k_hap 500  \ ", 
-				" -use_prephased_g  \ ", 
-				" -Xpar \ ",     #################
-				" -m ", GENMAP_FILE, " \ ",  
-				" -h ", HAPS_FILE, " \ ", 
-				" -l ", LEGEND_FILE, " \ ", 
-				" -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
-				" -Ne ", effectiveSize, " \ ", 
-				" -int ", chunkSTART, " ", chunkEND, " \ ", 
-				" -buffer 1000  \ ",
-				" -o ", OUTPUT_FILE, " \ ", 
-				" -allow_large_regions \ ",
-				" -seed 367946 \ " ))
-			} else if (i == 23){ 
-				## impute for chrX 
-				## >> with an additional flag: --chrX, and sample_known_haps_g
-				system(paste0(impute2, 
-				" -iter 30  \ ", 
-				" -burnin 10  \ ", 
-				" -k_hap 500  \ ", 
-				" -use_prephased_g  \ ", 
-				" -chrX \ ",   #################     
-				" -m ", GENMAP_FILE, " \ ",  
-				" -h ", HAPS_FILE, " \ ", 
-				" -l ", LEGEND_FILE, " \ ", 
-				" -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
-				" -sample_known_haps_g ", GWAS_SAMP_FILE, " \ ",   
-				" -Ne ", effectiveSize, " \ ", 
-				" -int ", chunkSTART, " ", chunkEND, " \ ", 
-				" -buffer 1000  \ ",
-				" -o ", OUTPUT_FILE, " \ ", 
-				" -allow_large_regions \ ",
-				" -seed 367946 \ " ))
-			}
+            ## main output file    
+            OUTPUT_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
+                                  ".pos", chunkSTART, "-", chunkEND, ".impute2 ")   
+            ################## impute genotypes from GWAS haplotypes 
+            autosomeCode = seq_len(22)
+            if (is.element(i, autosomeCode)) { 
+                ## impute for the autosomes
+                system(paste0(impute2, 
+                " -iter 30  \ ", 
+                " -burnin 10  \ ", 
+                " -k_hap 500  \ ", 
+                " -use_prephased_g  \ ",  
+                " -m ", GENMAP_FILE, " \ ",  
+                " -h ", HAPS_FILE, " \ ", 
+                " -l ", LEGEND_FILE, " \ ", 
+                " -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
+                " -Ne ", effectiveSize, " \ ", 
+                " -int ", chunkSTART, " ", chunkEND, " \ ", 
+                " -buffer 1000  \ ",
+                " -o ", OUTPUT_FILE, " \ ", 
+                " -allow_large_regions \ ",
+                " -seed 367946 \ " ))
+            } else if (is.element(i, c("X_PAR1", "X_PAR2"))){  
+                ## impute for chrX PAR >> with an additional flag: --Xpar.
+                system(paste0(impute2, 
+                " -iter 30  \ ", 
+                " -burnin 10  \ ", 
+                " -k_hap 500  \ ", 
+                " -use_prephased_g  \ ", 
+                " -Xpar \ ",     #################
+                " -m ", GENMAP_FILE, " \ ",  
+                " -h ", HAPS_FILE, " \ ", 
+                " -l ", LEGEND_FILE, " \ ", 
+                " -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
+                " -Ne ", effectiveSize, " \ ", 
+                " -int ", chunkSTART, " ", chunkEND, " \ ", 
+                " -buffer 1000  \ ",
+                " -o ", OUTPUT_FILE, " \ ", 
+                " -allow_large_regions \ ",
+                " -seed 367946 \ " ))
+            } else if (i == 23){ 
+                ## impute for chrX 
+                ## >> with an additional flag: --chrX, and sample_known_haps_g
+                system(paste0(impute2, 
+                " -iter 30  \ ", 
+                " -burnin 10  \ ", 
+                " -k_hap 500  \ ", 
+                " -use_prephased_g  \ ", 
+                " -chrX \ ",   #################     
+                " -m ", GENMAP_FILE, " \ ",  
+                " -h ", HAPS_FILE, " \ ", 
+                " -l ", LEGEND_FILE, " \ ", 
+                " -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
+                " -sample_known_haps_g ", GWAS_SAMP_FILE, " \ ",   
+                " -Ne ", effectiveSize, " \ ", 
+                " -int ", chunkSTART, " ", chunkEND, " \ ", 
+                " -buffer 1000  \ ",
+                " -o ", OUTPUT_FILE, " \ ", 
+                " -allow_large_regions \ ",
+                " -seed 367946 \ " ))
+            }
 
-		}, mc.cores=nCore)  
- 	} 
-} 		
+        }, mc.cores=nCore)  
+     } 
+}         
  
  
 
@@ -497,40 +497,40 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
   
 
 convertImpute2ByGtool <- function(gtool, chrs, prefixChunk, 
-							      phaseDIR, imputedDIR, prefix4plinkEachChr, 
-							      suffix4imputed, postImputeDIR, nCore){
+                                  phaseDIR, imputedDIR, prefix4plinkEachChr, 
+                                  suffix4imputed, postImputeDIR, nCore){
 
-	for (i in chrs){ 
-		chunkfn <- paste0(prefixChunk, i, ".txt")
-		chunks <- read.table(chunkfn, sep=" ") 
-		chunklist <- as.list(seq_len(nrow(chunks)))
+    for (i in chrs){ 
+        chunkfn <- paste0(prefixChunk, i, ".txt")
+        chunks <- read.table(chunkfn, sep=" ") 
+        chunklist <- as.list(seq_len(nrow(chunks)))
 
-		mclapply(chunklist, function(j){ 
-			chunkSTART <- chunks[j,1]
-			chunkEND   <- chunks[j,2] 
-			## INPUT data files
-			SAM_FILE <- paste0(phaseDIR, "chr", i, ".sample")  
-			GEN_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
-							   ".pos", chunkSTART, "-", chunkEND, suffix4imputed) 
-			## output PLINK binary files
-			PED_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
-							   chunkSTART, "-", chunkEND, ".ped") 
-			MAP_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
-				  			   chunkSTART, "-", chunkEND, ".map") 
-			## converting chunk-wise
-			system( paste0(gtool, " -G ",
-							" --g ", GEN_FILE, " \ ", 
-							" --s ", SAM_FILE, " \ ",  
-							"--phenotype plink_pheno \ ", 
-							"--chr ", i, " \ ", 
-							"--ped ", PED_FILE, " \ ", 
-							"--map ", MAP_FILE, " \ ", 
-							"--snp ") )  
-		}, mc.cores=nCore)
-	} 
+        mclapply(chunklist, function(j){ 
+            chunkSTART <- chunks[j,1]
+            chunkEND   <- chunks[j,2] 
+            ## INPUT data files
+            SAM_FILE <- paste0(phaseDIR, "chr", i, ".sample")  
+            GEN_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
+                               ".pos", chunkSTART, "-", chunkEND, suffix4imputed) 
+            ## output PLINK binary files
+            PED_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
+                               chunkSTART, "-", chunkEND, ".ped") 
+            MAP_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
+                                 chunkSTART, "-", chunkEND, ".map") 
+            ## converting chunk-wise
+            system( paste0(gtool, " -G ",
+                            " --g ", GEN_FILE, " \ ", 
+                            " --s ", SAM_FILE, " \ ",  
+                            "--phenotype plink_pheno \ ", 
+                            "--chr ", i, " \ ", 
+                            "--ped ", PED_FILE, " \ ", 
+                            "--map ", MAP_FILE, " \ ", 
+                            "--snp ") )  
+        }, mc.cores=nCore)
+    } 
 } 
   
-	 
+     
    
   
 
@@ -569,72 +569,72 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
  
  
 mergePlinkData <- function(plink, chrs, prefix4plinkEachChr, 
-						   prefix4mergedPlink, nCore){ 
+                           prefix4mergedPlink, nCore){ 
 
-	## firstly, only consider chromosomes from 1:23; as Xpar chrs 
-	## are slightly different for processing.
-	pureAutoChrs <- setdiff(chrs, c("X_PAR1", "X_PAR2")) 
-	chrslist <- as.list(pureAutoChrs)   
-	mclapply(chrslist, function(i){
+    ## firstly, only consider chromosomes from 1:23; as Xpar chrs 
+    ## are slightly different for processing.
+    pureAutoChrs <- setdiff(chrs, c("X_PAR1", "X_PAR2")) 
+    chrslist <- as.list(pureAutoChrs)   
+    mclapply(chrslist, function(i){
 
-		pedFile_chr <- system(paste0("ls ", prefix4plinkEachChr, i, ".*.ped"), 
-							  intern=TRUE)
-		mapFile_chr <- system(paste0("ls ", prefix4plinkEachChr, i, ".*.map"), 
-							  intern=TRUE)	
-		pedmap_chr <- paste0(pedFile_chr, " ", mapFile_chr)
-		fA <- gsub(".ped", "", pedFile_chr[1])
-		pedmap_tobeMerged <- pedmap_chr[-1]
-		filesetname <- paste0("fileset_chr", i, ".txt")
-		write.table(pedmap_tobeMerged, file=filesetname, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	    system(paste0(plink, " --file ", fA, " --merge-list ", filesetname, 
-	    	   " --make-bed --out gwasImputed_chr", i)) 
+        pedFile_chr <- system(paste0("ls ", prefix4plinkEachChr, i, ".*.ped"), 
+                              intern=TRUE)
+        mapFile_chr <- system(paste0("ls ", prefix4plinkEachChr, i, ".*.map"), 
+                              intern=TRUE)    
+        pedmap_chr <- paste0(pedFile_chr, " ", mapFile_chr)
+        fA <- gsub(".ped", "", pedFile_chr[1])
+        pedmap_tobeMerged <- pedmap_chr[-1]
+        filesetname <- paste0("fileset_chr", i, ".txt")
+        write.table(pedmap_tobeMerged, file=filesetname, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        system(paste0(plink, " --file ", fA, " --merge-list ", filesetname, 
+               " --make-bed --out gwasImputed_chr", i)) 
 
-	}, mc.cores=nCore)
+    }, mc.cores=nCore)
 
-	## combine chrX_PAR and convert into chr25 
-	if (is.element(c("X_PAR1"), chrs) | is.element(c("X_PAR2"), chrs) ){  
+    ## combine chrX_PAR and convert into chr25 
+    if (is.element(c("X_PAR1"), chrs) | is.element(c("X_PAR2"), chrs) ){  
 
-		pedFile_chr <- system(paste0("ls ", prefix4plinkEachChr, "X_PAR*.ped"), 
-						      intern=TRUE)
-		mapFile_chr <- system(paste0("ls ", prefix4plinkEachChr, "X_PAR*.map"), 
-							  intern=TRUE)	
-		pedmap_chr <- paste0(pedFile_chr, " ", mapFile_chr)
-		fA <- gsub(".ped", "", pedFile_chr[1])
-		pedmap_tobeMerged <- pedmap_chr[-1]
-		filesetname <- paste0("fileset_chr25.txt")
-		write.table(pedmap_tobeMerged, file=filesetname, quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-		 
-		arg <- paste0(plink, " --file ", fA, " --merge-list ", filesetname, 
-					  " --allow-extra-chr --make-bed --out gwasImputed_oldchr25")
-		system(arg) 
-		## update chr code for XPAR --> 25
-		bim <- read.table("gwasImputed_oldchr25.bim", stringsAsFactors=FALSE)
-		updateSNPchr <- cbind(bim[,2], rep(25, length=nrow(bim))) 
-		write.table(updateSNPchr, file="gwasImputed_newchr25.txt", quote=FALSE, 
-					row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+        pedFile_chr <- system(paste0("ls ", prefix4plinkEachChr, "X_PAR*.ped"), 
+                              intern=TRUE)
+        mapFile_chr <- system(paste0("ls ", prefix4plinkEachChr, "X_PAR*.map"), 
+                              intern=TRUE)    
+        pedmap_chr <- paste0(pedFile_chr, " ", mapFile_chr)
+        fA <- gsub(".ped", "", pedFile_chr[1])
+        pedmap_tobeMerged <- pedmap_chr[-1]
+        filesetname <- paste0("fileset_chr25.txt")
+        write.table(pedmap_tobeMerged, file=filesetname, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+         
+        arg <- paste0(plink, " --file ", fA, " --merge-list ", filesetname, 
+                      " --allow-extra-chr --make-bed --out gwasImputed_oldchr25")
+        system(arg) 
+        ## update chr code for XPAR --> 25
+        bim <- read.table("gwasImputed_oldchr25.bim", stringsAsFactors=FALSE)
+        updateSNPchr <- cbind(bim[,2], rep(25, length=nrow(bim))) 
+        write.table(updateSNPchr, file="gwasImputed_newchr25.txt", quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
 
-		system(paste0(plink, " --bfile gwasImputed_oldchr25 --allow-extra-chr ", 
-			   " --update-chr gwasImputed_newchr25.txt 2 1",
-			   " --make-bed --out gwasImputed_chr25"))  
-		system("rm gwasImputed_oldchr25.* gwasImputed_newchr25.txt")
-		# system( paste0("rm ", filesetname))
-	}	 
-	## combine all bed files
-	bedFile_chr <- system(paste0("ls gwasImputed_chr*.bed"), intern=TRUE)
-	bimFile_chr <- system(paste0("ls gwasImputed_chr*.bim"), intern=TRUE)	
-	famFile_chr <- system(paste0("ls gwasImputed_chr*.fam"), intern=TRUE)	
-	bfile_chr <- paste0(bedFile_chr, " ", bimFile_chr, " ", famFile_chr)
-	fA <- paste0(gsub(".bed", "", bedFile_chr[1]))
-	tobeMerged <- bfile_chr[-1]
-	mergefilesetname <- paste0("mergeGwasImputed.txt")
-	write.table(tobeMerged, file=mergefilesetname, quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        system(paste0(plink, " --bfile gwasImputed_oldchr25 --allow-extra-chr ", 
+               " --update-chr gwasImputed_newchr25.txt 2 1",
+               " --make-bed --out gwasImputed_chr25"))  
+        system("rm gwasImputed_oldchr25.* gwasImputed_newchr25.txt")
+        # system( paste0("rm ", filesetname))
+    }     
+    ## combine all bed files
+    bedFile_chr <- system(paste0("ls gwasImputed_chr*.bed"), intern=TRUE)
+    bimFile_chr <- system(paste0("ls gwasImputed_chr*.bim"), intern=TRUE)    
+    famFile_chr <- system(paste0("ls gwasImputed_chr*.fam"), intern=TRUE)    
+    bfile_chr <- paste0(bedFile_chr, " ", bimFile_chr, " ", famFile_chr)
+    fA <- paste0(gsub(".bed", "", bedFile_chr[1]))
+    tobeMerged <- bfile_chr[-1]
+    mergefilesetname <- paste0("mergeGwasImputed.txt")
+    write.table(tobeMerged, file=mergefilesetname, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
  
-	system(paste0(plink, " --bfile ", fA, " --merge-list ", mergefilesetname, 
-		   " --make-bed --out ", prefix4mergedPlink))
+    system(paste0(plink, " --bfile ", fA, " --merge-list ", mergefilesetname, 
+           " --make-bed --out ", prefix4mergedPlink))
  
 } 
 
@@ -678,37 +678,37 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 
 
 filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
-							 infoScore=0.6, badImputeSNPfile, inputPrefix, 
-							 outputPrefix){ 
+                             infoScore=0.6, badImputeSNPfile, inputPrefix, 
+                             outputPrefix){ 
 
-	## read each .impute2_info file, remove 1st line, add to another file and repeat   
-	## get all impute2_info files for each chunk
-	files <- system(paste0("ls *", suffix4impute2info), intern=TRUE) 
-	for (i in seq_len(length(files))) { 
-		## impute2infoAllvariants.txt is the temporal file
-	 	system(paste0("sed 1d ", files[i], "  >> impute2infoAllvariants.txt")) 
-	}  
-	 
-	## only keep SNPs and SNPs with two alleles  
-	## impute2infoUpdateTmp.txt > temporal file
-	arg1 = paste0("grep 'rs' impute2infoAllvariants.txt ")
-	arg2 = paste0("awk '{if(length($4) == 1 && length($5) == 1) print}' ")
-	arg3 = paste0("awk '{print $2, $7}' > impute2infoUpdateTmp.txt")
-	system(paste0(arg1, " | ", arg2, " | ", arg3))
-	system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
-	## added colnames 
-	impute2info <- read.table(file=outputInfoFile, stringsAsFactors=FALSE)  
-	colnames(impute2info) <- c("rs_id", "info") 
+    ## read each .impute2_info file, remove 1st line, add to another file and repeat   
+    ## get all impute2_info files for each chunk
+    files <- system(paste0("ls *", suffix4impute2info), intern=TRUE) 
+    for (i in seq_len(length(files))) { 
+        ## impute2infoAllvariants.txt is the temporal file
+         system(paste0("sed 1d ", files[i], "  >> impute2infoAllvariants.txt")) 
+    }  
+     
+    ## only keep SNPs and SNPs with two alleles  
+    ## impute2infoUpdateTmp.txt > temporal file
+    arg1 = paste0("grep 'rs' impute2infoAllvariants.txt ")
+    arg2 = paste0("awk '{if(length($4) == 1 && length($5) == 1) print}' ")
+    arg3 = paste0("awk '{print $2, $7}' > impute2infoUpdateTmp.txt")
+    system(paste0(arg1, " | ", arg2, " | ", arg3))
+    system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
+    ## added colnames 
+    impute2info <- read.table(file=outputInfoFile, stringsAsFactors=FALSE)  
+    colnames(impute2info) <- c("rs_id", "info") 
 
-	## filtering   
-	snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
-	write.table(snpWithBadInfo, file=badImputeSNPfile, quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	## extract filtered SNPs  
-	system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-		   badImputeSNPfile, " --make-bed --out ", outputPrefix)) 
-	system("rm impute2infoAllvariants.txt")
-	
+    ## filtering   
+    snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
+    write.table(snpWithBadInfo, file=badImputeSNPfile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    ## extract filtered SNPs  
+    system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+           badImputeSNPfile, " --make-bed --out ", outputPrefix)) 
+    system("rm impute2infoAllvariants.txt")
+    
 }
 
 
@@ -738,21 +738,21 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
 
 
 removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff, 
-								  outputSNPfile, outputPrefix){ 
+                                  outputSNPfile, outputPrefix){ 
 
-	## get the missing info 
-	system(paste0(plink, " --bfile ", inputPrefix, 
-		   " --missing --out ", inputPrefix)) 
+    ## get the missing info 
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --missing --out ", inputPrefix)) 
 
-	missSNPinfo <- read.table(paste0(inputPrefix, ".lmiss"), 
-							  stringsAsFactors=FALSE, header=TRUE)
-	missSNPinfo[,6] <- missSNPinfo[,"N_GENO"] - missSNPinfo[,"N_MISS"] 
-	snpWithManyMissSNPs <- missSNPinfo[which(missSNPinfo[,6] < missCutoff), "SNP"] 
-	write.table(snpWithManyMissSNPs, file=outputSNPfile, quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-	system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-		   outputSNPfile, " --make-bed --out ", outputPrefix))
-	system( "rm *.imiss *.lmiss *.log") 
+    missSNPinfo <- read.table(paste0(inputPrefix, ".lmiss"), 
+                              stringsAsFactors=FALSE, header=TRUE)
+    missSNPinfo[,6] <- missSNPinfo[,"N_GENO"] - missSNPinfo[,"N_MISS"] 
+    snpWithManyMissSNPs <- missSNPinfo[which(missSNPinfo[,6] < missCutoff), "SNP"] 
+    write.table(snpWithManyMissSNPs, file=outputSNPfile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+           outputSNPfile, " --make-bed --out ", outputPrefix))
+    system( "rm *.imiss *.lmiss *.log") 
 
 }
 # 
@@ -824,136 +824,136 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 
 
 phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
-						plink, shapeit, impute2, gtool, 
-						windowSize=3000000, effectiveSize=20000, 
-						nCore4phase=1, nThread=40, 
-						nCore4impute=40, nCore4gtool=40, 
-						infoScore=0.6, outputInfoFile,
-						impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE){
+                        plink, shapeit, impute2, gtool, 
+                        windowSize=3000000, effectiveSize=20000, 
+                        nCore4phase=1, nThread=40, 
+                        nCore4impute=40, nCore4gtool=40, 
+                        infoScore=0.6, outputInfoFile,
+                        impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE){
 
-	## One must create directories for storing temporary imputation output files 
-	## The name of these directories must be fixed for the sake of the subsequent steps.
-	system(paste0("mkdir ", tmpImputeDir))
-	setwd(tmpImputeDir) ## 
-	## sub-directories  
-	system("mkdir 1-dataFiles")
-	system("mkdir 2-chunkFile") 
-	system("mkdir 3-phaseResults")
-	system("mkdir 4-imputeResults")
-	system("mkdir 5-postImpute")
-	system("mkdir 6-finalResults")  
-	# define directories
-	dataDIR <- "./1-dataFiles/"  
-	chunkDIR <- "./2-chunkFile/"
-	phaseDIR <- "./3-phaseResults/"  
-	imputedDIR <- "./4-imputeResults/"  
-	postImputeDIR <- "./5-postImpute/" 
-	finalImputeDIR <- "./6-finalResults/"  
-	setwd("..")  
-	## step 2.1 
-	## copy plink files without monomorphic SNPs; prepare for the imputation.
-	prefixGWchr <- "gwas_data_chr"  
-	system( paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
-	setwd(paste0("./", tmpImputeDir, "/1-dataFiles/"))  
-	renamePlinkBFile(inputPrefix, outputPrefix=prefixGWchr, action="move")
-	bimCurrent <- read.table(file=paste0(prefixGWchr, ".bim"), 
-							 stringsAsFactors=FALSE)  
-	currentChr <- names(table(bimCurrent[,1]))
-	print(currentChr)  
-	chrXPAR1suffix <- "X_PAR1"
-	chrXPAR2suffix <- "X_PAR2"
-	## nCore is chosen as the number of chromosomes available 
-	PAR <- chrWiseSplit(plink, inputPrefix=prefixGWchr, chrXPAR1suffix, 
-						chrXPAR2suffix, nCore=length(currentChr))
-	print(PAR)  
-	if (PAR[[1]]) {par1 <- "X_PAR1"} else {par1 <- NULL}
-	if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
-	## step 2.2
-	chunkPrefix <- "chunks_chr" 
-	chrs <- c(currentChr, par1, par2)    
-	chunk4eachChr(inputPrefix=prefixGWchr, 
-				  outputPrefix=chunkPrefix, chrs, windowSize) 
+    ## One must create directories for storing temporary imputation output files 
+    ## The name of these directories must be fixed for the sake of the subsequent steps.
+    system(paste0("mkdir ", tmpImputeDir))
+    setwd(tmpImputeDir) ## 
+    ## sub-directories  
+    system("mkdir 1-dataFiles")
+    system("mkdir 2-chunkFile") 
+    system("mkdir 3-phaseResults")
+    system("mkdir 4-imputeResults")
+    system("mkdir 5-postImpute")
+    system("mkdir 6-finalResults")  
+    # define directories
+    dataDIR <- "./1-dataFiles/"  
+    chunkDIR <- "./2-chunkFile/"
+    phaseDIR <- "./3-phaseResults/"  
+    imputedDIR <- "./4-imputeResults/"  
+    postImputeDIR <- "./5-postImpute/" 
+    finalImputeDIR <- "./6-finalResults/"  
+    setwd("..")  
+    ## step 2.1 
+    ## copy plink files without monomorphic SNPs; prepare for the imputation.
+    prefixGWchr <- "gwas_data_chr"  
+    system( paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
+    setwd(paste0("./", tmpImputeDir, "/1-dataFiles/"))  
+    renamePlinkBFile(inputPrefix, outputPrefix=prefixGWchr, action="move")
+    bimCurrent <- read.table(file=paste0(prefixGWchr, ".bim"), 
+                             stringsAsFactors=FALSE)  
+    currentChr <- names(table(bimCurrent[,1]))
+    print(currentChr)  
+    chrXPAR1suffix <- "X_PAR1"
+    chrXPAR2suffix <- "X_PAR2"
+    ## nCore is chosen as the number of chromosomes available 
+    PAR <- chrWiseSplit(plink, inputPrefix=prefixGWchr, chrXPAR1suffix, 
+                        chrXPAR2suffix, nCore=length(currentChr))
+    print(PAR)  
+    if (PAR[[1]]) {par1 <- "X_PAR1"} else {par1 <- NULL}
+    if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
+    ## step 2.2
+    chunkPrefix <- "chunks_chr" 
+    chrs <- c(currentChr, par1, par2)    
+    chunk4eachChr(inputPrefix=prefixGWchr, 
+                  outputPrefix=chunkPrefix, chrs, windowSize) 
 
-	setwd("..") 
-	system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
-	## step 2.3     
-	prePhasingByShapeit(shapeit, chrs, dataDIR, 
-						prefix4plinkEachChr=prefixGWchr, 
-						impRefDIR, phaseDIR, nThread, 
-						effectiveSize, nCore4phase)
-	## step 2.4   
-	prefixChunk <- paste0(chunkDIR, chunkPrefix)        
-	imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
-					 imputedDIR, prefix4plinkEachChr=prefixGWchr, 
-					 nCore4impute, effectiveSize)
-	## step 2.5   
-	## extract only SNPs (without INDELs)
-	#######################################################
-	setwd(imputedDIR)  
-	## extract only SNPs starting with "rs";  .
-	ls <- system("ls gwas*.impute2", intern=T)
-	snpPrefix <- "rs" 
-	biglists <- as.list(ls)
-	mclapply(biglists, function(i){ 
-		arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
-		arg2 <- paste0(i, "noINDEL.impute2")   
-		system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
-	}, mc.cores=length(biglists)) 
-	setwd("..") 
-	suffix4imputed <- ".impute2noINDEL.impute2"   
-	convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
-					      prefix4plinkEachChr=prefixGWchr, suffix4imputed, 
-					      postImputeDIR, nCore4gtool)
+    setwd("..") 
+    system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
+    ## step 2.3     
+    prePhasingByShapeit(shapeit, chrs, dataDIR, 
+                        prefix4plinkEachChr=prefixGWchr, 
+                        impRefDIR, phaseDIR, nThread, 
+                        effectiveSize, nCore4phase)
+    ## step 2.4   
+    prefixChunk <- paste0(chunkDIR, chunkPrefix)        
+    imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
+                     imputedDIR, prefix4plinkEachChr=prefixGWchr, 
+                     nCore4impute, effectiveSize)
+    ## step 2.5   
+    ## extract only SNPs (without INDELs)
+    #######################################################
+    setwd(imputedDIR)  
+    ## extract only SNPs starting with "rs";  .
+    ls <- system("ls gwas*.impute2", intern=T)
+    snpPrefix <- "rs" 
+    biglists <- as.list(ls)
+    mclapply(biglists, function(i){ 
+        arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
+        arg2 <- paste0(i, "noINDEL.impute2")   
+        system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
+    }, mc.cores=length(biglists)) 
+    setwd("..") 
+    suffix4imputed <- ".impute2noINDEL.impute2"   
+    convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
+                          prefix4plinkEachChr=prefixGWchr, suffix4imputed, 
+                          postImputeDIR, nCore4gtool)
   
-	## step 2.6  
-	####################################################### 
-	## Modify missing genotype format.
-	setwd(postImputeDIR)   
-	## replace 'N' in the .ped files into 0 > missing values.
-	chrslist <- as.list(chrs) 
-	fn <- mclapply(chrslist, function(i){
-		system(paste0("sed -i 's/N/0/g' ", prefixGWchr, i, ".*ped "))
-	}, mc.cores=length(chrslist)) 
-	prefixMerge <- "gwasMerged" 
-	mergePlinkData(plink, chrs, prefix4plinkEachChr=prefixGWchr, 
-				   prefixMerge, nCore=length(chrslist))
-	## fam IDs might be changed: a.) if IDs have 'N'; b.) IID, FID may be switched.
-	## >> update this as below 
-	## the original PLINK files before imputation
-	setwd("..")
-	system(paste0("scp ", dataDIR, prefixGWchr, ".fam ", postImputeDIR)) 
-	setwd(postImputeDIR) 
-	## update FAM IDs in the imputed PLINK files
-	famOrig <- read.table(paste0(prefixGWchr, ".fam"), stringsAsFactors=FALSE) 
-	famImpute <- read.table(paste0(prefixMerge,".fam"), 
-							stringsAsFactors=FALSE) 
-	## changes ID codes for individuals specified in recoded.txt, 
-	## which should be in the format of 4 cols per row: 
-	## old FID, old IID, new FID, new IID, e.g.
-	recodMat <- cbind(famImpute[,1:2], famOrig[,1:2]) 
-	write.table(recodMat, file="recoded.txt", quote=FALSE, 
-				row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
-	 
-	system(paste0(plink, " --bfile ", prefixMerge, 
-		   " --update-ids recoded.txt --make-bed --out ", prefix4final)) 
-	#######################################################
-	setwd("..")
-	system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
-	system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
-	## step 2.7    
-	setwd(finalImputeDIR)
-	suffix4impute2info <- ".impute2_info"
-	badImputeSNPfile <- "badImputeSNPs.txt" 
-	filterImputeData(plink, suffix4impute2info, 
-					 outputInfoFile, infoScore, badImputeSNPfile, 
-					 inputPrefix=prefix4final, outputPrefix)
-	setwd("..")
-	setwd("..")
-	if (keepTmpDir == FALSE){
-		system(paste0("rm -r ", tmpImputeDir))
-	} else if (keepTmpDir == TRUE){
-		print("Keep the temporary imputation folder.")
-	}
+    ## step 2.6  
+    ####################################################### 
+    ## Modify missing genotype format.
+    setwd(postImputeDIR)   
+    ## replace 'N' in the .ped files into 0 > missing values.
+    chrslist <- as.list(chrs) 
+    fn <- mclapply(chrslist, function(i){
+        system(paste0("sed -i 's/N/0/g' ", prefixGWchr, i, ".*ped "))
+    }, mc.cores=length(chrslist)) 
+    prefixMerge <- "gwasMerged" 
+    mergePlinkData(plink, chrs, prefix4plinkEachChr=prefixGWchr, 
+                   prefixMerge, nCore=length(chrslist))
+    ## fam IDs might be changed: a.) if IDs have 'N'; b.) IID, FID may be switched.
+    ## >> update this as below 
+    ## the original PLINK files before imputation
+    setwd("..")
+    system(paste0("scp ", dataDIR, prefixGWchr, ".fam ", postImputeDIR)) 
+    setwd(postImputeDIR) 
+    ## update FAM IDs in the imputed PLINK files
+    famOrig <- read.table(paste0(prefixGWchr, ".fam"), stringsAsFactors=FALSE) 
+    famImpute <- read.table(paste0(prefixMerge,".fam"), 
+                            stringsAsFactors=FALSE) 
+    ## changes ID codes for individuals specified in recoded.txt, 
+    ## which should be in the format of 4 cols per row: 
+    ## old FID, old IID, new FID, new IID, e.g.
+    recodMat <- cbind(famImpute[,1:2], famOrig[,1:2]) 
+    write.table(recodMat, file="recoded.txt", quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+     
+    system(paste0(plink, " --bfile ", prefixMerge, 
+           " --update-ids recoded.txt --make-bed --out ", prefix4final)) 
+    #######################################################
+    setwd("..")
+    system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
+    system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
+    ## step 2.7    
+    setwd(finalImputeDIR)
+    suffix4impute2info <- ".impute2_info"
+    badImputeSNPfile <- "badImputeSNPs.txt" 
+    filterImputeData(plink, suffix4impute2info, 
+                     outputInfoFile, infoScore, badImputeSNPfile, 
+                     inputPrefix=prefix4final, outputPrefix)
+    setwd("..")
+    setwd("..")
+    if (keepTmpDir == FALSE){
+        system(paste0("rm -r ", tmpImputeDir))
+    } else if (keepTmpDir == TRUE){
+        print("Keep the temporary imputation folder.")
+    }
 
 }
 
