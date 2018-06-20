@@ -194,7 +194,7 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
             hetInstFreq <- table(hh[,2])  
             str(unique(hh[,2]))
             mostFakeInst <- hetInstFreq[which(hetInstFreq >= hhSubjCutOff)]  
-            mostFakeInst4plink <- fam[is.element(fam[,2], names(mostFakeInst)), 1:2]
+            mostFakeInst4plink <- fam[is.element(fam[,2], names(mostFakeInst)), c("V1", "V2")]
 
             write.table(mostFakeInst4plink, file="mostFakeInst4plink.txt", quote=FALSE, 
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
@@ -232,7 +232,7 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
             write.table(hetSNPinstNum, file=outputHetSNPfile, 
                         quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
         }
-         system(paste0("rm male23nonPAR.*"))    
+        system(paste0("rm male23nonPAR.*"))    
      } else { 
         ## copy/rename plink files
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
@@ -364,7 +364,7 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
 
     system(paste0(plink, " --bfile ", inputPrefix, " --het --out ", outputPrefix))
     ##  F inbreeding coefficient estimate
-    autoHet <- read.table(file=paste0(outputPrefix, ".het"), header=T)  
+    autoHet <- read.table(file=paste0(outputPrefix, ".het"), header=TRUE)  
     fhet <- autoHet[, "F"]
     qc_data_fhet <- autoHet[which(abs(fhet) >= Fhet), c(1, 2)]  
     ## the individual IDs to be removed  
@@ -462,7 +462,7 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
         ## compute differential call rates 
         ## between cases and controls for each SNP 
         ccmissing <- read.table(file=paste0(outputPrefix.tmp, ".missing"), 
-                                header=T, sep="")  
+                                header=TRUE, sep="")  
         fmiss <- abs(ccmissing[, "F_MISS_A"] - ccmissing[, "F_MISS_U"])
         whmiss <- which(fmiss >= snpMissDifCutOff) 
         SNPmissCC <- ccmissing[whmiss, "SNP"]
@@ -510,8 +510,8 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
     chr23check <- length(grep(23, chrCodes))
 
     if (chr23check == 1) { 
-          ## additional QC (female-chrX SNPs, missingness ok?)  
-         outputPrefix.tmp1 <- paste0(outputPrefix, "tmp1")
+        ## additional QC (female-chrX SNPs, missingness ok?)  
+        outputPrefix.tmp1 <- paste0(outputPrefix, "tmp1")
         outputPrefix.tmp2 <- paste0(outputPrefix, "tmp2")
         system(paste0(plink, " --bfile ", inputPrefix, 
                " --filter-females --chr 23 --make-bed --out ", 
@@ -573,15 +573,15 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
                                 pval, outputPvalFile, 
                               outputSNPfile, outputPrefix){ 
  
-     if (groupLabel == "control"){ 
-         groupStatus <- "filter-controls"
-         affection <- "UNAFF" 
-     } else if (groupLabel == "case"){
-         groupStatus <- "filter-cases"
-         affection <- "AFF" 
-     } else {
-         "ERROR: during HWE test on autosome! Wrong label warning!"
-     }
+    if (groupLabel == "control"){ 
+        groupStatus <- "filter-controls"
+        affection <- "UNAFF" 
+    } else if (groupLabel == "case"){
+        groupStatus <- "filter-cases"
+        affection <- "AFF" 
+    } else {
+        "ERROR: during HWE test on autosome! Wrong label warning!"
+    }
 
     outputPrefix.tmp <- paste0(outputPrefix, "tmp")
     system(paste0(plink, " --bfile ", inputPrefix, " --",
@@ -716,7 +716,7 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread,
            autosomefn, " --thread-num ", nThread))
 
     eigen <- read.table(file=paste0(autosomefn,".eigenvec"), stringsAsFactors=FALSE)
-    pcs <- eigen[,1:4] ## first two PCs in the 3rd and 4th column.
+    pcs <- eigen[,seq_len(4)] ## first two PCs in the 3rd and 4th column.
     write.table(pcs, outputPC4subjFile, quote=FALSE, row.names=FALSE, 
                 col.names=FALSE, eol="\r\n", sep=" ")
     pcWithGroup <- cbind(pcs, stringsAsFactors=FALSE)
@@ -793,21 +793,21 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
             outliersPC1v1 <- subjID_PCs[which(subjID_PCs[,3] <= cutoff[1]), ] 
             outliersPC1v2 <- subjID_PCs[which(subjID_PCs[,3] >= cutoff[2]), ]  
             subjID_PCs4outlier <- rbind(outliersPC1v1, outliersPC1v2)
-        } else {
-              if (cutoffSign == "smaller"){ 
-                  ## detected by PC1
-                    subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] <= cutoff), ] 
-              } else if (cutoffSign == "greater"){
-                  ## detected by PC1
-                    subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
-              }
+        } else { 
+            if (cutoffSign == "smaller"){ 
+                ## detected by PC1
+                subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] <= cutoff), ] 
+            } else if (cutoffSign == "greater"){
+                ## detected by PC1
+                subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
+            }
         }      
         ## sorted by first PC.
-         subjID_PCs4outlierSorted <- subjID_PCs4outlier[order(subjID_PCs4outlier[,3]), ] 
-         write.table(subjID_PCs4outlierSorted, file=outputPC4outlierFile, quote=FALSE, 
-                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-         subjID4outlierTmp  <- subjID_PCs4outlierSorted[,1:2]
-         subjID4outlierTmpFile <- "subjID4outlierTmp.txt"
+        subjID_PCs4outlierSorted <- subjID_PCs4outlier[order(subjID_PCs4outlier[,3]), ] 
+        write.table(subjID_PCs4outlierSorted, file=outputPC4outlierFile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        subjID4outlierTmp  <- subjID_PCs4outlierSorted[,c("V1", "V2")]
+        subjID4outlierTmpFile <- "subjID4outlierTmp.txt"
         write.table(subjID4outlierTmp, file=subjID4outlierTmpFile, quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
         system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 

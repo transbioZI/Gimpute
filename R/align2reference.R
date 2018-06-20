@@ -12,7 +12,7 @@
 #' @param nCore the number of cores used for computation.  
 
 #' @return Prepare a bim-like reference file. Note that the column names 
-#' are already defined, i.e. "chr", "rsID", "pos", "a0",    "a1."
+#' are already defined, i.e. "chr", "rsID", "pos", "a0", "a1."
 #' @details To prepare a bim-like reference file from legend files. 
 #' One should first extract the specific content from these legend files 
 #' after downloading. Note that extract only biallelic SNPs (only 1 allele 
@@ -116,8 +116,8 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' @import doParallel  
  
 checkAlign2ref <- function(plink, inputPrefix, referenceFile,
-                            out2, out2.snp, out3, out3.snp,   
-                            out4, out4.snp, out4.snpRetained, nCore=25){  
+                           out2, out2.snp, out3, out3.snp,   
+                           out4, out4.snp, out4.snpRetained, nCore=25){  
 
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
     impRef <- read.table(file=referenceFile, header=TRUE, stringsAsFactors=FALSE)  
@@ -150,7 +150,7 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 
     sharePosList <- mclapply(as.list(currentChr), function(i){
 
-         print(i)
+        print(i)
         bimSubSet <- bimSubV2[which(bimSubV2[,1] == i), ]
         impRefSubSet <- impRef[which(impRef[,"chr"] == i), ]
         sharedPos <- intersect(bimSubSet[,4], impRefSubSet[,"pos"])
@@ -173,8 +173,8 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 
     }, mc.cores=nCore)
  
-     snpSharedPos <- unique(unlist(lapply(sharePosList, function(i){i[1]})))
-     snpSharedPosAllele <- unique(unlist(lapply(sharePosList, function(i){i[2]}))) 
+    snpSharedPos <- unique(unlist(lapply(sharePosList, function(i){i[1]})))
+    snpSharedPosAllele <- unique(unlist(lapply(sharePosList, function(i){i[2]}))) 
 
     ## find the different genomic position
     snpDifpos <- bimSubV2[!is.element(bimSubV2[,2], snpSharedPos), 2] 
@@ -201,8 +201,8 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 
     snpSharedPosAllele <- c(snpSharedPosAllele, snpDifAllel4mono)
     ## keep those SNPs with same genomic position and alleles
-    write.table(snpSharedPosAllele, file=paste0(out4.snpRetained, ".txt"), quote=F, 
-                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+    write.table(snpSharedPosAllele, file=paste0(out4.snpRetained, ".txt"), 
+                quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
 }
 
@@ -245,7 +245,7 @@ snpSharedPos <- function(inputFile1, inputFile2, outputFile, nCore=25){
     }, mc.cores=nCore) 
     
     snpSharedPos <- unique(unlist(snpSharedPosList))
-      write.table(snpSharedPos, file=outputFile, quote=FALSE, 
-                  row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+    write.table(snpSharedPos, file=outputFile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 }
 

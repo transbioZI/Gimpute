@@ -117,16 +117,16 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
     }, mc.cores=nCore)
 
     ## if chromosome 25 is also available then re-arrange it
-     if (is.element(25, chrs)){  
+    if (is.element(25, chrs)){  
 
-         print("PAR is available in chrX!") 
+        print("PAR is available in chrX!") 
         bim25 <- read.table(paste0(inputPrefix, "25.bim"), stringsAsFactors=FALSE) 
         pos4PAR1 <- c(60001, 2699520) 
         ## first check for PAR1 and afterwards for PAR2
         if ( length(which(bim25[,4] <= pos4PAR1[2]))!= 0 ){ 
-       
-               print("PAR1 is available in chrX!")
-               bimPos4par1 <- which(bim25[,4]<= pos4PAR1[2])
+            
+            print("PAR1 is available in chrX!")
+            bimPos4par1 <- which(bim25[,4]<= pos4PAR1[2])
             rs4PAR1 <- bim25[bimPos4par1,2]
             write.table(rs4PAR1, file="rs4PAR1.txt", quote=FALSE, 
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
@@ -228,14 +228,13 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             SNPcountsPerChunk <- c(SNPcountsPerChunk, tmp) 
         } 
 
-         wh0 <- which(SNPcountsPerChunk == 0)
-         print(paste0("chr",i))
-         print(wh0)
-         chunkLength <- nrow(chunks) - length(wh0)
-         ## remove such chunks if wh0  
-
-         if (length(wh0) != 0){ chunks <- chunks[-wh0,] }
-         print(nrow(chunks) == chunkLength)
+        wh0 <- which(SNPcountsPerChunk == 0)
+        print(paste0("chr",i))
+        print(wh0)
+        chunkLength <- nrow(chunks) - length(wh0)
+        ## remove such chunks if wh0  
+        if (length(wh0) != 0){ chunks <- chunks[-wh0,] }
+        print(nrow(chunks) == chunkLength)
         chunkfilename <- paste0(outputPrefix, i, ".txt")
         write.table(chunks, file=chunkfilename, quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
@@ -453,9 +452,8 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
                 " -allow_large_regions \ ",
                 " -seed 367946 \ " ))
             }
-
         }, mc.cores=nCore)  
-     } 
+    } 
 }         
  
  
@@ -891,7 +889,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     #######################################################
     setwd(imputedDIR)  
     ## extract only SNPs starting with "rs";  .
-    ls <- system("ls gwas*.impute2", intern=T)
+    ls <- system("ls gwas*.impute2", intern=TRUE)
     snpPrefix <- "rs" 
     biglists <- as.list(ls)
     mclapply(biglists, function(i){ 
