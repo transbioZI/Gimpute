@@ -1,18 +1,27 @@
 Package: Gimpute
+Type: Package
 Title: Gimpute: An efficient genetic data processing and imputation pipeline
-Version: 0.99.4
+Version: 0.99.5
 Date: 2018-06-19 
 Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"),
     email="junfang.chen33@gmail.com"),
     person("Dietmar", "Lippold", role=c("aut")),
     person("Emanuel", "Schwarz", role=c("aut")))
-Description: Genotype imputation is essential for genome-wide association studies (GWAS) to retrieve information of untyped variants and facilitate comparability across studies. 
+Description: Genotype imputation is essential for genome-wide association studies 
+	(GWAS) to retrieve information of untyped variants and facilitate comparability 
+	across studies. Based on widely used and freely available tools, 
+	we have developed Gimpute, an automated processing and imputation pipeline 
+	for genome-wide association data. Gimpute includes pro-cessing steps for 
+	genotype liftOver, quality control, population outlier detection, 
+	haplotype pre-phasing, imputation, post imputation, data management 
+	and the extension to other existing pipeline. 
+License: GPL-3
 Imports:
     doParallel, lattice
 Depends: R (>= 3.5.0)
-License: GPL-3
-Suggests: knitr
+Suggests: BiocStyle, knitr, testthat 
 VignetteBuilder: knitr
+biocViews: genetics, GenomicVariation, SNP
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
