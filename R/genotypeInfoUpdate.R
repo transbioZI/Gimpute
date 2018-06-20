@@ -55,8 +55,8 @@ removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
         famv0 <- read.table(file=paste0(inputPrefix, ".fam"), 
                             stringsAsFactors=FALSE)  
         dupIDs <- read.table(file=dupSampleIDFile, stringsAsFactors=FALSE)  
-        ## write into plink format .txt for removal
-        dupIDs4plink <- famv0[is.element(famv0[,2], dupIDs[,1]), 1:2] 
+        ## write into plink format .txt for removal 
+        dupIDs4plink <- famv0[is.element(famv0[,2], dupIDs[,1]), c("V1", "V2")] 
         dupIDsfn <- paste0(outputPrefix, ".txt")
         write.table(dupIDs4plink, file=dupIDsfn, quote=FALSE, row.names=FALSE, 
                     col.names=FALSE, eol="\r\n", sep=" ") 
@@ -175,7 +175,7 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
  
     fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
     ## 1. check if any sample without phenotypes
-    noGroupIds <- fam[which(fam[,6] == -9), 1:2] 
+    noGroupIds <- fam[which(fam[,6] == -9), c("V1", "V2")] 
     ## if any then remove and afterwards add phenotypes
     noGroupIdsfn <- paste0(outputPrefix, ".txt")
     write.table(noGroupIds, file=noGroupIdsfn, quote=FALSE, 
@@ -220,7 +220,7 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
         metaData <- read.table(metaDataFile, stringsAsFactors=FALSE, header=TRUE) 
         ids <- metaData[which(metaData[,"ance"] == ancestrySymbol),"IID"]
         fam <- read.table(file=paste0(inputPrefix, ".fam"), stringsAsFactors=FALSE) 
-        famEA <- fam[is.element(fam[,2], ids), 1:2]
+        famEA <- fam[is.element(fam[,2], ids), c("V1", "V2")]
         plinkFormatDat <- famEA
         write.table(plinkFormatDat, file=paste0(outputPrefix,".txt"), quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  

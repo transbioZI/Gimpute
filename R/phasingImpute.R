@@ -930,7 +930,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     ## changes ID codes for individuals specified in recoded.txt, 
     ## which should be in the format of 4 cols per row: 
     ## old FID, old IID, new FID, new IID, e.g.
-    recodMat <- cbind(famImpute[,1:2], famOrig[,1:2]) 
+    recodMat <- cbind(famImpute[,c("V1", "V2")], famOrig[,c("V1", "V2")]) 
     write.table(recodMat, file="recoded.txt", quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
      
