@@ -1,6 +1,6 @@
 Package: Gimpute
 Title: Gimpute: An efficient genetic data processing and imputation pipeline
-Version: 0.99.3
+Version: 0.99.4
 Date: 2018-06-19 
 Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"),
     email="junfang.chen33@gmail.com"),
