@@ -205,7 +205,7 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 
             ## generate hetSNPsFreq in .txt file 
             InstHetSNP <- as.data.frame(hetInstFreq, stringsAsFactors=FALSE) 
-            InstHetSNP <- InstHetSNP[order(InstHetSNP[,2], decreasing=T),] 
+            InstHetSNP <- InstHetSNP[order(InstHetSNP[,2], decreasing=TRUE),] 
             write.table(InstHetSNP, file=outputSubjHetFile, quote=FALSE, 
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
