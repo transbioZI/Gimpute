@@ -281,8 +281,8 @@ inputPrefix <- "study"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
 updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
-			   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-			   chipType, outputPrefix)
+               ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+               chipType, outputPrefix)
 ```
 
 
@@ -599,17 +599,17 @@ system( paste0("scp ./", tmp4imputeDIR, "/6-finalResults/", badImputeSNPfile, " 
 filteredImputedDatasetfn <- "4_3_removedSnpInfoPostImp" 
 removedMonoSnpAfter <- "4_4_removedMonoSnpAfter"
 ## extract PLINK files contain only monomorphic SNPs from the original aligned (lifted and QC-ed) data set.
-	system( paste0(plink, " --bfile ", inputPrefix4aligned2impRef, " --extract ", outputMonoSNPfile, " --make-bed --out ", inputPrefix4aligned2impRef, "Tmp") ) 
-	system( paste0(perl4snpsWithSamePos, " ", filteredImputedDatasetfn, ".bim ", inputPrefix4aligned2impRef, "Tmp", ".bim > tmp.txt" ))
-	bim1 <- read.table(paste0(inputPrefix4aligned2impRef, "Tmp.bim"), stringsAsFactors=F)
-	system(paste0("awk '{print $1, $2, $4}' ", filteredImputedDatasetfn, ".bim > tmpFilterImp.txt"))
-	bim2 <- read.table('tmpFilterImp.txt', stringsAsFactors=F) 
-	colnames(bim1) <- c('chr', 'rsID', 'gd', 'pos', 'a0', 'a1') 
-	colnames(bim2) <- c('chr', 'rsID', 'pos')
-	outputFile <- 'tmp.txt'
-	snpSharedPos(inputFile1=bim1, inputFile2=bim2, outputFile, nCore=25) 
-	system( paste0(plink, " --bfile ", filteredImputedDatasetfn, " --exclude tmp.txt --make-bed --out ", removedMonoSnpAfter) )
-	system('rm tmpFilterImp.txt tmp.txt')
+    system( paste0(plink, " --bfile ", inputPrefix4aligned2impRef, " --extract ", outputMonoSNPfile, " --make-bed --out ", inputPrefix4aligned2impRef, "Tmp") ) 
+    system( paste0(perl4snpsWithSamePos, " ", filteredImputedDatasetfn, ".bim ", inputPrefix4aligned2impRef, "Tmp", ".bim > tmp.txt" ))
+    bim1 <- read.table(paste0(inputPrefix4aligned2impRef, "Tmp.bim"), stringsAsFactors=F)
+    system(paste0("awk '{print $1, $2, $4}' ", filteredImputedDatasetfn, ".bim > tmpFilterImp.txt"))
+    bim2 <- read.table('tmpFilterImp.txt', stringsAsFactors=F) 
+    colnames(bim1) <- c('chr', 'rsID', 'gd', 'pos', 'a0', 'a1') 
+    colnames(bim2) <- c('chr', 'rsID', 'pos')
+    outputFile <- 'tmp.txt'
+    snpSharedPos(inputFile1=bim1, inputFile2=bim2, outputFile, nCore=25) 
+    system( paste0(plink, " --bfile ", filteredImputedDatasetfn, " --exclude tmp.txt --make-bed --out ", removedMonoSnpAfter) )
+    system('rm tmpFilterImp.txt tmp.txt')
 ```
 
 5. Add previous identified monomorphic SNPs (if any) in 4_1_snpMonoRemoved.txt with their values from the lifted instance data.
@@ -706,10 +706,10 @@ system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ./6-finalResults
 
 setwd("./6-finalResults/")
 renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
-				         outputPrefix="imputedSnpsDataset", action="move")
+                         outputPrefix="imputedSnpsDataset", action="move")
 
 renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.", 
-				         outputPrefix="specificSnpsDataset", action="move")
+                         outputPrefix="specificSnpsDataset", action="move")
 ```  
 
 
