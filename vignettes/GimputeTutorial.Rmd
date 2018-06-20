@@ -18,7 +18,7 @@ BiocStyle::markdown()
 
 ```{r global_options, include=FALSE}  
 knitr::opts_chunk$set(message=FALSE, error=FALSE, warning=FALSE, fig.width=10, fig.height=7)
-options(width=100) 
+options(width=80) 
 ```
  
 
@@ -104,7 +104,7 @@ Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference
 
 ```{r eval=FALSE} 
 ## Define the directory where you place the imputation reference files 
-impRefdir <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
+impRefDIR <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
 ```  
 
 * Genotyping chip annotation file 

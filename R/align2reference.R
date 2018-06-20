@@ -21,29 +21,24 @@
 #' @author Junfang Chen 
 #' @export   
 #' @import doParallel  
- 
+
 prepareLegend2bim <- function(inputFile, outputFile, ncore){
 
     tmpFolder <- "tmp4legend"
     system(paste0("mkdir ", tmpFolder))
     system(paste0("scp ", inputFile, " ", tmpFolder))
     setwd(tmpFolder)
-    system("gunzip *.gz")
-     
+    system("gunzip *.gz") 
     XnonPAR <- "ALL_1000G_phase1integrated_v3_chrX_nonPAR_impute_macGT1.legend"
-    XnonPARv2 <- "ALL_1000G_phase1integrated_v3_chr23_impute_macGT1.legend"
-     
+    XnonPARv2 <- "ALL_1000G_phase1integrated_v3_chr23_impute_macGT1.legend" 
     XPAR1 <- "ALL_1000G_phase1integrated_v3_chrX_PAR1_impute_macGT1.legend"
-    XPAR1v2 <- "ALL_1000G_phase1integrated_v3_chr24_impute_macGT1.legend"
-    
+    XPAR1v2 <- "ALL_1000G_phase1integrated_v3_chr24_impute_macGT1.legend" 
     XPAR2 <- "ALL_1000G_phase1integrated_v3_chrX_PAR2_impute_macGT1.legend"
-    XPAR2v2 <- "ALL_1000G_phase1integrated_v3_chr25_impute_macGT1.legend"
- 
+    XPAR2v2 <- "ALL_1000G_phase1integrated_v3_chr25_impute_macGT1.legend" 
     ## change chrX.legend files and chr24 is for parallel computing
     system(paste0("mv ", XnonPAR, " ", XnonPARv2))
     system(paste0("mv ", XPAR1, " ", XPAR1v2))
-    system(paste0("mv ", XPAR2, " ", XPAR2v2)) 
-
+    system(paste0("mv ", XPAR2, " ", XPAR2v2))  
     chrslist <- as.list(seq_len(25)) 
     mclapply(chrslist, function(i){
         arg1 <- paste0("awk '{print $1, $2, $3, $4}' ")
@@ -53,26 +48,22 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
         arg3 <- paste0(" | grep 'rs' | awk '{ if (a[$1]++ == 0) print $0; }' ")
         arg4 <- paste0(" | tail -n+2  > chr")
         system(paste0(arg1, fileName1, i, fileName2, arg2, arg3, arg4, i, ".txt"))
-    }, mc.cores=ncore)
-  
+    }, mc.cores=ncore)  
     ## add chr   
     mclapply(chrslist, function(i){
         system(paste0("awk '{print ", i, ", $0}' chr", i, ".txt > bimChr", i, ".txt"))
     }, mc.cores=ncore) 
     ## --> Change chr24 to chr25  
-    system(paste0("awk '{print ", 25, ", $0}' chr", 24, ".txt > bimChr", 24, ".txt"))
-
-    system("cat bimChr*.txt >> chrCom.txt ") 
-
+    system(paste0("awk '{print ", 25, ", $0}' chr", 24, ".txt > bimChr", 24, ".txt")) 
+    system("cat bimChr*.txt >> chrCom.txt ")  
     system("{ printf 'chr\trsID\tpos\ta0\ta1\n'; cat chrCom.txt; } > final.txt ")
-    system(paste0("mv final.txt ", outputFile))
- 
+    system(paste0("mv final.txt ", outputFile)) 
     setwd("..") 
-    system(paste0("rm -r ", tmpFolder)) ## remove the folder
-
+    system(paste0("rm -r ", tmpFolder)) ## remove the folder 
 } 
-  
- 
+
+
+
 
 #' Check the alignment with the imputation reference panel
 #'
@@ -114,7 +105,8 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 ###' @examples  
 #' @export 
 #' @import doParallel  
- 
+
+
 checkAlign2ref <- function(plink, inputPrefix, referenceFile,
                            out2, out2.snp, out3, out3.snp,   
                            out4, out4.snp, out4.snpRetained, nCore=25){  
@@ -172,7 +164,7 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
         list(snpSharedPos, snpSharedPosAllele)
 
     }, mc.cores=nCore)
- 
+
     snpSharedPos <- unique(unlist(lapply(sharePosList, function(i){i[1]})))
     snpSharedPosAllele <- unique(unlist(lapply(sharePosList, function(i){i[2]}))) 
 
@@ -191,7 +183,6 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
     snpDifAllelMonoBIM <- bimSubV2[is.element(bimSubV2[,2], snpDifAlleleMono), ]
     snpDifAllel4mono <- snpDifAllelMonoBIM[which(snpDifAllelMonoBIM[,5] == "0"), 2] 
     snpDifAllele <- setdiff(snpDifAlleleMono, snpDifAllel4mono)
- 
 
     write.table(snpDifAllele, file=paste0(out4.snp, ".txt"), quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
@@ -234,7 +225,7 @@ snpSharedPos <- function(inputFile1, inputFile2, outputFile, nCore=25){
     print(currentChr) 
 
     snpSharedPosList <- mclapply(as.list(currentChr), function(i){ 
-        
+
         print(i)
         inputFile1sub <- inputFile1[which(inputFile1[,"chr"] == i), ]
         sub2 <- inputFile2[which(inputFile2[,"chr"] == i), ]
@@ -242,8 +233,8 @@ snpSharedPos <- function(inputFile1, inputFile2, outputFile, nCore=25){
         print(length(sharedPos))  
         snpSharedPos <- sub2[is.element(sub2[,"pos"], sharedPos), "rsID"]    
 
-    }, mc.cores=nCore) 
-    
+    }, mc.cores=nCore)     
+
     snpSharedPos <- unique(unlist(snpSharedPosList))
     write.table(snpSharedPos, file=outputFile, quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
