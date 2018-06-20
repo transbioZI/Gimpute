@@ -17,7 +17,7 @@ or somewhere in the command path.}
 each ID per line. If it is null, then duplicate the input PLINK files from 
 the last step as the output files.}
 
-\item{ancestrySymbol}{an indicator that shows the symbol of targeted ancestry. 
+\item{ancestrySymbol}{an indicator that shows the symbol of genetic ancestry. 
 If it is null, then all samples are selected.}
 
 \item{excludedProbeIdsFile}{a pure text file that stores the SNP IDs, 

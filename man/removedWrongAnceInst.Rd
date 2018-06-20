@@ -16,7 +16,7 @@ or somewhere in the command path.}
 \item{metaDataFile}{a pure text file that stores the meta information of 
 the samples.}
 
-\item{ancestrySymbol}{an indicator that shows the symbol of targeted ancestry. 
+\item{ancestrySymbol}{an indicator that shows the symbol of genetic ancestry. 
 If it is null, then all samples are selected.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
