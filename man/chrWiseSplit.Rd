@@ -39,8 +39,8 @@ region of chromosome X, then further split chr25 (PAR or Chr_XY)
 into PAR1 and PAR2 according to the genomic coordination GRCh37
 from https://en.wikipedia.org/wiki/Pseudoautosomal_region.
 The locations of the PARs within GRCh37 are:  
-PAR1	X	60001	2699520; 
-PAR2	X	154931044	155260560.
+PAR1    X    60001    2699520; 
+PAR2    X    154931044    155260560.
 }
 \author{
 Junfang Chen

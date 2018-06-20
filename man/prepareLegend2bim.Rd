@@ -17,7 +17,7 @@ file alike format data.}
 }
 \value{
 Prepare a bim-like reference file. Note that the column names 
-are already defined, i.e. "chr", "rsID", "pos", "a0",	"a1."
+are already defined, i.e. "chr", "rsID", "pos", "a0", "a1."
 }
 \description{
 Prepare a bim-like file from the imputation reference legend file 
