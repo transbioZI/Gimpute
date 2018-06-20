@@ -26,7 +26,7 @@ R CMD INSTALL Gimpute_*.tar.gz
 ```{r eval=FALSE}
 install.packages("devtools")
 library("devtools")
-install_github("transbioZI/Gimpute")
+install_github("transbioZI/Gimpute", build_vignettes=TRUE)
 ```
 This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
 
