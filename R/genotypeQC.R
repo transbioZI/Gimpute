@@ -23,8 +23,6 @@
 # 
 
 ##########################################################################
-#
-   
 
 
 #' Remove heterozygous SNPs in male chromosome X
@@ -60,8 +58,6 @@
 #' @export  
 #' @author Junfang Chen 
 ##' @examples   
-   
-  
 removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix, 
                            outputHetSNPfile, outputRetainSNPfile){
 
@@ -119,10 +115,8 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
         system(paste0("rm ", inputPrefix,".*"))
     }
-}    
+}
 
- 
-  
  
 ##########################################   
 ##########################################
@@ -182,7 +176,7 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
             renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
             system(paste0("touch ", outputSubjHetFile) )
             system(paste0("touch ", outputRetainSubjectFile) )
-  
+
         } else {     
 
             ## .hh: A text file with one line per error (sorted primarily by  
@@ -237,8 +231,8 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
         ## copy/rename plink files
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
     }
-}    
- 
+}
+
 
 
 
@@ -261,13 +255,13 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 
 #' @author Junfang Chen 
 ###' @examples  
-  
+
 setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
      
     system(paste0(plink, " --bfile ", inputPrefix, 
            " --set-hh-missing --make-bed --out ", outputPrefix))  
- 
-}  
+
+}
 
 
 
@@ -296,11 +290,7 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
  
     system(paste0(plink, " --bfile ", inputPrefix, " --geno ", snpMissCutOff, 
            " --make-bed --out ", outputPrefix))  
-     
-}  
-   
-
-
+}
 
 
 ##########################################   
@@ -325,14 +315,13 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 ##' @examples  
 
- 
 removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
  
     system(paste0(plink, " --bfile ", inputPrefix, " --mind ", sampleMissCutOff, 
            " --make-bed --out ", outputPrefix)) 
     system(paste0("rm ", outputPrefix, ".irem"))
 
-}   
+}
 
 
 
@@ -358,7 +347,6 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 #' @export 
 #' @author Junfang Chen 
 ##' @examples  
- 
 
 removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){ 
 
@@ -377,7 +365,7 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
     system(paste0("rm ", outputPrefix, ".het"))
     system(paste0("rm ", outputPrefix, ".txt"))
  
-}   
+}
 
 
 
@@ -409,7 +397,6 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 ##' @examples  
 
-# 
  
 removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){ 
 
@@ -417,8 +404,7 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
     system(paste0(plink, " --bfile ", inputPrefix, 
            " --make-founders require-2-missing --make-bed --out ", outputPrefix)) 
  
-}   
- 
+}
 
 ##########################################   
 ##########################################  
@@ -476,8 +462,7 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
         system(paste0("rm ", outputPrefix.tmp, ".*"))
         system(paste0("rm ", SNPdifCallrate))
     }
-}   
- 
+}
 
 
 ##########################################   
@@ -542,7 +527,6 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 
 
 
- 
 
 ##########################################   
 ##########################################
@@ -572,7 +556,7 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 removedSnpHWEauto <- function(groupLabel, plink, inputPrefix, 
                                 pval, outputPvalFile, 
                               outputSNPfile, outputPrefix){ 
- 
+
     if (groupLabel == "control"){ 
         groupStatus <- "filter-controls"
         affection <- "UNAFF" 
@@ -607,7 +591,6 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
     system(paste0("rm ", outputPrefix.tmp, ".*"))
 
 }
- 
 
 ##########################################   
 ##########################################  
@@ -634,17 +617,15 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 #' @author Junfang Chen 
 ##' @examples  
 
- 
 removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval, 
                                            outputPvalFile, outputSNPfile, 
                                            outputPrefix){ 
-    
+
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
     chrCodes <- names(table(bim[,1]))
     chr23check <- length(grep(23, chrCodes))
 
     if (chr23check == 1) { 
-     
         outputPrefix.tmp <- paste0(outputPrefix, "tmp") 
         system(paste0(plink, " --bfile ", inputPrefix, 
                " --filter-females --filter-controls --chr 23 --hardy ", 
@@ -672,9 +653,7 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
     }
 }
-  
 
-    
 ##########################################   
 ##########################################
 #' Population outlier detection
@@ -704,7 +683,7 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 
 #' @author Junfang Chen 
 ##' @examples  
- 
+
 
 plotPCA4plink <- function(gcta, inputPrefix, nThread, 
                           outputPC4subjFile, outputPCplotFile){ 
@@ -730,18 +709,12 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread,
     system(paste0("rm ", autosomefn, ".*"))
 }
 
-
- 
-
- 
-##
 ######################################################
 ######################################################
 #' Remove population outliers
 #'
 #' @description
 #' Remove population outliers by using principle component analysis.
-  
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
@@ -770,13 +743,13 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread,
 #' If the outliers are necessary to be removed, then one uses the eigenvalues 
 #' from the first principle component as a criterion to find out the outliers 
 #' by assigning an appropriate cutoff. 
-  
+
 
 #' @export 
 #' @import lattice  
 #' @author Junfang Chen 
-  
- 
+
+
 removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign, 
                                inputPC4subjFile, outputPC4outlierFile, 
                                outputPCplotFile, outputPrefix){
@@ -819,13 +792,10 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
         system(paste0("rm ", outputPC4subjFiletmp))
     }    
 }
- 
 
 
 
 
- 
-##
 ######################################################
 ######################################################
 #' Quality control for genotype data
@@ -855,7 +825,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
 #' female control subjects. Only chromosome X SNPs are considered. 
 #' The default is 0.000001
 #' @param outputPrefix the prefix of the output PLINK binary files after QC.
- 
+
 #' @return The output PLINK binary files after QC.
 #' @details The original PLINK files are implicitly processed by the following 
 #' default steps: 
@@ -877,7 +847,6 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, cutoff, cutoffSign,
 #' @export  
 #' @author Junfang Chen 
 ##' @examples  
-   
 
 genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05, 
                    sampleMissCutOff=0.02, Fhet=0.2, 
@@ -959,4 +928,4 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
         system(paste0("rm ", outputSNPfile))
     }    
      
-}     
+} 

@@ -72,29 +72,36 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' parameters: variant name, genomic position and the allele profile.
 #' Output files are generated sequentially, so they are determined 
 #' by the previous PLINK files.
- 
+
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK files.
-#' @param referenceFile the reference file used for the alignment, which is a PLINK 
-#' BIM alike format file.
-#' @param out2 the prefix of the output PLINK binary files after removing SNPs whose 
-#' genomic positions are not in the imputation reference, taking SNP names into account.  
-#' @param out2.snp the output plain text file that stores the removed SNPs whose genomic 
-#' positions are not in the imputation reference, taking SNP names into account.  
-#' @param out3 the prefix of the output PLINK binary files after removing SNPs whose 
-#' genomic positions are not in the imputation reference, ingoring SNP names.    
-#' @param out3.snp the output plain text file that stores the removed SNPs whose genomic 
-#' positions are not in the imputation reference, ingoring SNP names.  
-#' @param out4 the prefix of the output PLINK binary files after removing SNPs whose alleles 
-#' are not in the imputation reference, taking their genomic positions into account.    
-#' @param out4.snp the output plain text file that stores the removed SNPs whose alleles 
-#' are not in the imputation reference, taking their genomic positions into account. 
-#' @param out4.snpRetained the output plain text file that stores the removed SNPs 
-#' whose alleles are in the imputation reference, taking their genomic positions into account. 
+#' @param referenceFile the reference file used for the alignment, which is a
+#' PLINK BIM alike format file.
+#' @param out2 the prefix of the output PLINK binary files after removing SNPs
+#' whose genomic positions are not in the imputation reference,
+#' taking SNP names into account.  
+#' @param out2.snp the output plain text file that stores the removed SNPs 
+#' whose genomic positions are not in the imputation reference, 
+#' taking SNP names into account.  
+#' @param out3 the prefix of the output PLINK binary files after removing SNPs 
+#' whose genomic positions are not in the imputation reference, 
+#' ingoring SNP names.    
+#' @param out3.snp the output plain text file that stores the removed SNPs 
+#' whose genomic positions are not in the imputation reference, 
+#' ingoring SNP names.  
+#' @param out4 the prefix of the output PLINK binary files after removing SNPs 
+#' whose alleles are not in the imputation reference, 
+#' taking their genomic positions into account.    
+#' @param out4.snp the output plain text file that stores the removed SNPs 
+#' whose alleles are not in the imputation reference, 
+#' taking their genomic positions into account. 
+#' @param out4.snpRetained the output plain text file that stores the 
+#' removed SNPs whose alleles are in the imputation reference, 
+#' taking their genomic positions into account. 
 
-#' @param nCore the number of cores used for computation. This can be tuned along with nThread.
- 
+#' @param nCore the number of cores used for computation. 
+#' This can be tuned along with nThread.
 #' @return The set of aligned PLINK files from your own study compared with 
 #' the imputation reference.
 #' @details The output files are genrated in order. Genomic position includes 
@@ -108,8 +115,7 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 
 
 checkAlign2ref <- function(plink, inputPrefix, referenceFile,
-                           out2, out2.snp, out3, out3.snp,   
-                           out4, out4.snp, out4.snpRetained, nCore=25){  
+    out2, out2.snp, out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore=25){
 
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
     impRef <- read.table(file=referenceFile, header=TRUE, stringsAsFactors=FALSE)  
@@ -118,7 +124,7 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
     interSNPs <- intersect(bim[,2], impRef[,"rsID"]) 
     bimSubV1 <- bim[match(interSNPs, bim[,2]), ] 
     impRefSubV1 <- impRef[match(interSNPs, impRef[,"rsID"]), ]
- 
+
     ## check chr and bp position consistency
     whChrNotSame <- which(bimSubV1[,1]!= impRefSubV1[,"chr"])
     whPosNotSame <- which(bimSubV1[,4]!= impRefSubV1[,"pos"]) 
@@ -197,7 +203,6 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
 
 }
 
-    
 
 #' Find shared genomic position between two files.
 #'
