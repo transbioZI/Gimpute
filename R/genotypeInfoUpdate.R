@@ -199,7 +199,7 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param metaDataFile a pure text file that stores the meta information of 
 #' the samples.  
-#' @param ancestrySymbol an indicator that shows the symbol of targeted ancestry. 
+#' @param ancestrySymbol an indicator that shows the symbol of genetic ancestry. 
 #' If it is null, then all samples are selected. 
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
@@ -793,7 +793,7 @@ prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 #' @param dupSampleIDFile a pure text file that stores the duplicated sample IDs, 
 #' each ID per line. If it is null, then duplicate the input PLINK files from 
 #' the last step as the output files. 
-#' @param ancestrySymbol an indicator that shows the symbol of targeted ancestry. 
+#' @param ancestrySymbol an indicator that shows the symbol of genetic ancestry. 
 #' If it is null, then all samples are selected. 
 #' @param excludedProbeIdsFile a pure text file that stores the SNP IDs, 
 #' one per line, which need to be removed. If it is null, no SNPs are removed.

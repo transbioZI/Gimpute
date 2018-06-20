@@ -21,7 +21,7 @@ opts_chunk$set(message = FALSE, error = FALSE, warning = FALSE,
 
 # About Gimpute
 ## Background
-Genome-wide association studies (GWAS) have become an essential tool in assisting the improvement of understanding of neuropathology of diseases. Moreover, the imputation of genotyping data with missing information can enhance the power of GWAS by using haplotype relationships between genetic variants. In the meantime, the imputation can substantially reduce the cost of genotyping large number of samples. Furthermore, the comparison of significant findings across different cohorts and genotyping platforms is also achievable. Currently large amounts of genotyping data are produced at an unprecedented rate to be analyzed; however, the preparation of ready-to-use data sets needs to be of high quality. Thus the implementation of an efficient and reliable genetic data pre-processing and imputation pipeline is desirable.   
+Genome-wide association studies (GWAS) have become an essential tool in assisting the improvement of understanding of neuropathology of diseases. Moreover, the imputation of genotyping data with missing information can enhance the power of GWAS by using haplotype relationships between genetic variants. In the meantime, the imputation can substantially reduce the cost of genotyping large number of samples. Furthermore, the comparison of significant findings across different cohorts and genotyping platforms is also achievable. Currently large amounts of genotyping data are produced at an unprecedented rate to be analyzed; however, the preparation of ready-to-use data sets needs to be of high quality. Thus the implementation of an efficient and reliable genetic data pre-processing and imputation pipeline is desirable.
 
 ## Scope of the pipeline 
 In order to ensure the reliability and reproducibility of genome-wide association study (GWAS) data, 
@@ -45,14 +45,24 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 ## Installation 
 Development version from Github:
 ```{r eval=FALSE}
+install.packages("devtools")
 library("devtools")
 install_github("transbioZI/Gimpute")
 ```
-This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
+This function`install_github()` requires that you build from source, 
+namely, `make` and compilers must be installed on the system.
  
 ## Experimental data
-PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown in this tutorial as well. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). 
+PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. 
+Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown as below. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). 
 
+```{r eval=FALSE} 
+library(Gimpute)
+## Load PLINK binary files from Gimpute package
+bedFile <- system.file("extdata", "study.bed", package="Gimpute")
+bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
+famFile <- system.file("extdata", "study.fam", package="Gimpute") 
+```
 
 ## Get it Setup 
 ### File and directory naming conventions
@@ -61,18 +71,25 @@ The files processed and generated are named in a consistent way across all datas
 * filename.# represents a set of the three PLINK files, i.e. the .bed, .fam and .bim file. 
 Binary PLINK files are recommended due to their smaller file size and fast processing.
 
-* filename.txt denotes a file with additionally information, like SNP names, in pure text format.
+* filename.txt denotes a file with additional information, such as metadata information, SNP names, in pure text format.
 The names of the output files begin with the number of the step which produces the respective file.
 
-
+* Directory naming:
 ```{r eval=FALSE} 
-## Start an R session in a directory where you"d like to generate the data.
-system('mkdir 1-conversion')
-system('mkdir 2-QC')
-system('mkdir 3-lifting')
-system('mkdir 4-imputation')
-system('mkdir 5-reductAndExpand')
-system('mkdir 6-finalResults')
+## Start an R session in a directory where you'd like to generate the data.
+system("mkdir 0-rawData")
+system("mkdir 1-conversion")
+system("mkdir 2-QC")
+system("mkdir 3-lifting")
+system("mkdir 4-imputation")
+system("mkdir 5-reductAndExpand")
+system("mkdir 6-finalResults")
+
+## Go to ./0-rawData, where you want to place the original data.
+setwd("0-rawData")
+system("mkdir plinkFiles") ## Original PLINK data 
+system("mkdir sampleInfo") ## Metadata 
+setwd("..")
 ```
 
 
@@ -90,7 +107,6 @@ impRefdir <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
 Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
 These files are particularly important for strand checking and genomic information of genotypes on a variety of genome builds.
 ```{r eval=FALSE} 
-## 
 ## chipAnnoFile <- "/home/junfang.chen/Gimpute/config/Illumina/Human1M-Duov3_B-b37.Illmn.strand"
 chipAnnoFile <- NULL 
 ``` 
@@ -103,20 +119,7 @@ dupSampleIDFile <- NULL
 ## which have to be excluded should be placed in this directory.
 excludedProbeIdsFile <- NULL 
 ```
- 
-### Global variables
-
-```{r eval=FALSE} 
-## the symbol to indicate the ancestry, such as 'EA', 'AA' ... or NULL.
-ancestrySymbol <- "EA"
-## the cutoff and the sign for removing population outliers 
-## based on derived first principle component 
-cutoff <-  NULL 
-## the sign to indicate whether your chosen cutoff value should be greater 
-## or smaller than the 'real' population value (determined by first PC)
-cutoffSign <- 'greater' ## not used if cutoff==NULL
-```
-
+  
 ### Required tools
 
 ```{r eval=FALSE} 
@@ -133,7 +136,7 @@ gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
 
 All files named in this subsection are in the directory 1-conversion/.
 
-Input files:
+### Input files
 
 * Raw genotype data in PLINK format: ../0-rawData/plinkFiles/*.#
 
@@ -146,36 +149,31 @@ Input files:
 * The file with the IDs of the excluded probes of the chip (see section 2.4.2).
 
 
+### Individual processing steps
+
+0. Locate the original PLINK files and metadata information either from our package or your side.
 
 ```{r eval=FALSE} 
-## module function
-inputPrefix <- "study"
-outputPrefix <- "1_11_removedYMtSnp" 
-metaDataFile <- "1_01_metaData.txt"
-updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
-			   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-			   chipType, outputPrefix)
-```
-
-Processing steps:
-
-1. Use the raw genotype data and meta-data information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. EA or AA), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained.
-+ Output file: 1_01_metaData.txt
-
-
-```{r eval=FALSE} 
-
-## Load PLINK binary files and meta information file
+## Load PLINK binary files and metadata information from Gimpute package
 bedFile <- system.file("extdata", "study.bed", package="Gimpute")
 bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
 famFile <- system.file("extdata", "study.fam", package="Gimpute")
 metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
 
-## copy PLINK files and meta information file
-system( paste0("scp ", bedFile, " ./1-conversion/") ) 
-system( paste0("scp ", bimFile, " ./1-conversion/") ) 
-system( paste0("scp ", famFile, " ./1-conversion/") ) 
-system( paste0("scp ", metadataFile, " ./1-conversion/") )  
+## Copy into the "0-rawData" directory
+system(paste0("scp ", bedFile, " ./0-rawData/plinkFiles/")) 
+system(paste0("scp ", bimFile, " ./0-rawData/plinkFiles/")) 
+system(paste0("scp ", famFile, " ./0-rawData/plinkFiles/")) 
+system(paste0("scp ", metadataFile, " ./0-rawData/sampleInfo/"))  
+```
+
+1. Use the raw genotype data and metadata information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. EA or AA), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. In the following example, the metadata file is already preprocessed.
++ Output file: 1_01_metaData.txt 
+
+```{r eval=FALSE} 
+## Load PLINK binary files and meta information file
+system( paste0("scp ./0-rawData/plinkFiles/study.*  ./1-conversion/") ) 
+system( paste0("scp ./0-rawData/sampleInfo/1_01_metaData.txt ./1-conversion/") ) 
 setwd("./1-conversion/") 
 ```
 
@@ -183,7 +181,7 @@ setwd("./1-conversion/")
 + Output files: 1_02_removedExclInst.#
 ```{r eval=FALSE} 
 dupSampleIDFile <- NULL
-inputPrefix <- rawPlinkFiles
+inputPrefix <- "study" ## from last step
 outputPrefix <- "1_02_removedExclInst" 
 removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix)
 ```
@@ -206,6 +204,7 @@ removeNoGroupId(plink, inputPrefix, outputPrefix)
 5. Remove instances which have a value for ance (self identified ancestry) in the file 1_01_metaData.txt that is excluded from the dataset (for the excluded ancestry values see section 2.4.2).
 + Output files: 1_05_removedWrongAnceInst.#
 ```{r eval=FALSE} 
+ancestrySymbol <- "EA"
 metaDataFile <- "1_01_metaData.txt" 
 inputPrefix <- "1_04_removedNoGroupId"
 outputPrefix <- "1_05_removedWrongAnceInst"
@@ -268,6 +267,20 @@ inputPrefix <- "1_10_changedXyChr"
 outputPrefix <- "1_11_removedYMtSnp"
 removedYMtSnp(plink, inputPrefix, outputPrefix)
 ```
+
+
+### Running 
+
+```{r eval=FALSE} 
+## module function
+inputPrefix <- "study"
+outputPrefix <- "1_11_removedYMtSnp" 
+metaDataFile <- "1_01_metaData.txt"
+updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
+			   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+			   chipType, outputPrefix)
+```
+
 
 
 ```{r eval=FALSE} 
