@@ -356,10 +356,10 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' rs-names but different versions of SNP ID ound in chip annotation file. 
 #' e.g. SNP-A IDs for Affymetrix chip. 2.) SNPs with duplicated genomic 
 #' position: the combination of base pair position and chromosomal location. 
-#' @export 
 
+#' @export  
 #' @author Junfang Chen 
-#' @examples 
+##' @examples 
  
 
 removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile, 

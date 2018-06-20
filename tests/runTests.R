@@ -74,7 +74,7 @@ system( paste0("scp ./0-rawData/plinkFiles/study.*  ./1-conversion/") )
 system( paste0("scp ./0-rawData/sampleInfo/1_01_metaData.txt ./1-conversion/") ) 
 setwd("./1-conversion/") 
 
-
+ 
  
 ############################################################ 
 ## module function
@@ -82,10 +82,11 @@ inputPrefix <- "study"
 ancestrySymbol <- "EA"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
+chipType <- "illumina"
 updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
 			   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
 			   chipType, outputPrefix)
-
+ 
 ## remove unwanted files
 system( paste0("rm  *.log ") ) 
 ## change dir to the main directory
