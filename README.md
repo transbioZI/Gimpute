@@ -20,7 +20,7 @@ Development version from Github:
 ```{r eval=FALSE}
 git clone https://github.com/transbioZI/Gimpute
 R CMD build Gimpute
-R CMD INSTALL Gimpute_0.99.3.tar.gz
+R CMD INSTALL Gimpute_*.tar.gz
 ```
 2.) Install Gimpute in R
 ```{r eval=FALSE}
