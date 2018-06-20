@@ -17,7 +17,7 @@ Description: Genotype imputation is essential for genome-wide association studie
     and the extension to other existing pipeline. 
 License: GPL-3
 Imports:
-    doParallel, lattice
+    doParallel, lattice, BiocStyle, knitr
 Depends: R (>= 3.5.0)
 Suggests: BiocStyle, knitr, testthat 
 VignetteBuilder: knitr
