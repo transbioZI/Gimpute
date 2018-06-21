@@ -1,6 +1,4 @@
 
- 
-
 #' Rename PLINK binary files  
 #'
 #' @description
@@ -29,8 +27,6 @@ renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
         system(paste0("mv ", inputPrefix, ".fam ", outputPrefix, ".fam"))
     }
 }
- 
-
 
 #' Get the outcome label of the genotype data
 #'

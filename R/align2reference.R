@@ -76,7 +76,7 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK files.
-#' @param referenceFile the reference file used for the alignment, which is a
+#' @param bimReferenceFile the reference file used for the alignment, which is a
 #' PLINK BIM alike format file.
 #' @param out2 the prefix of the output PLINK binary files after removing SNPs
 #' whose genomic positions are not in the imputation reference,
@@ -114,11 +114,11 @@ prepareLegend2bim <- function(inputFile, outputFile, ncore){
 #' @import doParallel  
 
 
-checkAlign2ref <- function(plink, inputPrefix, referenceFile,
+checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
     out2, out2.snp, out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore=25){
 
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-    impRef <- read.table(file=referenceFile, header=TRUE, stringsAsFactors=FALSE)  
+    impRef <- read.table(file=bimReferenceFile, header=TRUE, stringsAsFactors=FALSE)  
 
     ## step 1: for the same SNP names, but with different genomic position
     interSNPs <- intersect(bim[,2], impRef[,"rsID"]) 
@@ -152,23 +152,24 @@ checkAlign2ref <- function(plink, inputPrefix, referenceFile,
         bimSubSet <- bimSubV2[which(bimSubV2[,1] == i), ]
         impRefSubSet <- impRef[which(impRef[,"chr"] == i), ]
         sharedPos <- intersect(bimSubSet[,4], impRefSubSet[,"pos"])
-        print(length(sharedPos))
-        bimSubSub <- bimSubSet[match(sharedPos, bimSubSet[,4]), ]
-        impRefSubSub <- impRefSubSet[match(sharedPos, impRefSubSet[,"pos"]), ] 
-        # sum(bimSubSub[,4] == impRefSubSub[,"pos"])
-        subComb <- cbind(bimSubSub, impRefSubSub) 
-        ## SNPs with common genomic position
-        snpSharedPos <- subComb[is.element(subComb[,4], sharedPos), 2]  
-        ## SNPs with common genomic position but diff alleles
-        bimAlleleMat <- apply(subComb[,5:6], 1, sort)
-        refAlleleMat <- apply(subComb[,c("a0","a1")], 1, sort)
-        bimAA <- paste0(bimAlleleMat[1,], bimAlleleMat[2,])
-        refAA <- paste0(refAlleleMat[1,], refAlleleMat[2,])
+        print(length(sharedPos)) 
+        if (length(sharedPos) != 0){ 
+            bimSubSub <- bimSubSet[match(sharedPos, bimSubSet[,4]), ]
+            impRefSubSub <- impRefSubSet[match(sharedPos, impRefSubSet[,"pos"]), ] 
+            # sum(bimSubSub[,4] == impRefSubSub[,"pos"])
+            subComb <- cbind(bimSubSub, impRefSubSub) 
+            ## SNPs with common genomic position
+            snpSharedPos <- subComb[is.element(subComb[,4], sharedPos), 2]  
+            ## SNPs with common genomic position but diff alleles
+            bimAlleleMat <- apply(subComb[,5:6], 1, sort)
+            refAlleleMat <- apply(subComb[,c("a0","a1")], 1, sort)
+            bimAA <- paste0(bimAlleleMat[1,], bimAlleleMat[2,])
+            refAA <- paste0(refAlleleMat[1,], refAlleleMat[2,])
 
-        subCombV1 <- cbind(subComb, bimAA, refAA) 
-        snpSharedPosAllele <- subCombV1[which(bimAA == refAA), 2]  
-        list(snpSharedPos, snpSharedPosAllele)
-
+            subCombV1 <- cbind(subComb, bimAA, refAA) 
+            snpSharedPosAllele <- subCombV1[which(bimAA == refAA), 2]  
+            list(snpSharedPos, snpSharedPosAllele)
+        }    
     }, mc.cores=nCore)
 
     snpSharedPos <- unique(unlist(lapply(sharePosList, function(i){i[1]})))

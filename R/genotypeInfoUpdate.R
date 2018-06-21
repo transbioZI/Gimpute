@@ -24,7 +24,6 @@
 
 ##########################################################################
 #
-  
 ##########################################   
 ##########################################  
 #' Remove duplicated sample IDs
@@ -40,14 +39,14 @@
 #' the last step as the output files.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param outputPrefix the prefix of the output PLINK binary files.
- 
+
 #' @return The output PLINK binary files after removing duplicated sample IDs. 
 #' @export 
 
 #' @author Junfang Chen 
 #' @examples 
 
- 
+
 removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
 
     if (!is.null(dupSampleIDFile)){ 
@@ -72,7 +71,7 @@ removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
         # system(paste0("rm ", inputPrefix, ".*"))
     } 
 }
- 
+
 
 
 ##########################################   
@@ -101,7 +100,7 @@ removeDupID <- function(plink, dupSampleIDFile, inputPrefix, outputPrefix){
 #' @export  
 #' @author Junfang Chen 
 
- 
+
 
 updateGroupIdAndSex <- function(plink, inputPrefix, metaDataFile, outputPrefix){
          
@@ -184,9 +183,8 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
            noGroupIdsfn, " --make-bed --out ", outputPrefix) )  
     system(paste0("rm ",  noGroupIdsfn) )
 }
- 
- 
-  
+
+
 ##########################################   
 ########################################## 
 #' Remove samples with incorrect ancestry
@@ -229,7 +227,7 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
                paste0(outputPrefix,".txt"), " --make-bed --out ", outputPrefix) )
         system(paste0("rm ",  outputPrefix, ".txt") )
     }    
-    
+
 }
 
 
@@ -259,20 +257,17 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
  
  
 removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPrefix){
- 
+
     if (!is.null(excludedProbeIdsFile)) {
         system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-               excludedProbeIdsFile, " --make-bed --out ", outputPrefix) )
-        ## remove .txt
-        system(paste0("rm ", excludedProbeIdsFile) )
+               excludedProbeIdsFile, " --make-bed --out ", outputPrefix) ) 
     } else { 
         ## copy/rename all snp info updated plink files
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy")   
     }
 }
-   
 
- 
+
 ##########################################   
 ##########################################   
 #' Remove SNPs not in the chip annotation file
@@ -297,14 +292,13 @@ removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPre
 
 #' @export 
 #' @author Junfang Chen 
- 
- 
+
 
 removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile, 
                                outputPrefix, outputSNPfile){
 
     if (!is.null(chipAnnoFile)){ 
- 
+
         annoFile <- "chipAnnoRefb37.txt"
         if (chipType == "affymetrix") { 
             prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
@@ -338,7 +332,7 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #'
 #' @description
 #' Remove duplicated SNPs that have same rs-names or duplicated genomic position.
-  
+
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
@@ -350,7 +344,7 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' @param outputSNPdupFile a pure text file that stores the duplicated SNP IDs, 
 #' which are detected by the use of the chip annotation file.
 #' @param outputPrefix the prefix of the output PLINK binary files.
- 
+
 #' @return The output PLINK binary files after removing duplicated SNP IDs.
 #' @details Duplicated SNPs have two levels of meaning: 1.) SNPs have same 
 #' rs-names but different versions of SNP ID ound in chip annotation file. 
@@ -360,11 +354,11 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' @export  
 #' @author Junfang Chen 
 ##' @examples 
- 
+
 
 removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile, 
                                 chipType, outputSNPdupFile, outputPrefix){
-     
+
      if (!is.null(chipAnnoFile)){ 
 
         annoFile <- "chipAnnoRefb37.txt"
@@ -375,7 +369,7 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
         } else if (chipType == "PsychChip"){ 
             prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
         }
-             
+
         ## find the overlapping
         chipAnno <- read.table(file=annoFile, header=TRUE, stringsAsFactors=FALSE)  
         bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
@@ -385,7 +379,7 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
         chipAnnoV1sort <- chipAnno[match(sharedSNP, chipAnno[,"chipSnpID"]),]
         bimV1 <- bim[match(sharedSNP, bim[,2]), ]
         comb <- cbind(bimV1, chipAnnoV1sort)   
- 
+
         ## remove SNPs with duplicated position first
         chrNames <- names(table(comb[,1]))
         dupPos <- c()
@@ -452,10 +446,10 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 
 #' @export 
 #' @author Junfang Chen 
-  
+
 updatedSnpInfo <- function(plink, inputPrefix, 
                            chipAnnoFile, chipType, outputPrefix){
-     
+
     if (!is.null(chipAnnoFile)){ 
         annoFile <- "chipAnnoRefb37.txt"
         if (chipType == "affymetrix") { 
@@ -467,7 +461,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
         } else if (chipType == "PsychChip"){ 
             prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
                                           outputFile=annoFile)
-        } 
+        }
 
         ## find the overlapping
         chipAnno <- read.table(file=annoFile, 
@@ -481,7 +475,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
         chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], interSNPs),]
         annoV1sort <- chipAnnoV1[match(bimV1[,2], chipAnnoV1[,"chipSnpID"]),]
         comV2 <- cbind(bimV1, annoV1sort) 
-     
+
         ## Update main info  
         if (chipType == "affymetrix") {      
             updateSNP2rs <- subset(comV2, select=c(V2, rsID))
@@ -533,7 +527,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
          ## remove all tmp files (rs, chr, pos)
         system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
         system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
-     
+
     } else { 
         ## copy/rename plink files
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
@@ -562,14 +556,14 @@ updatedSnpInfo <- function(plink, inputPrefix,
 
 #' @author Junfang Chen 
 ##' @examples 
- 
+
 
 splitXchr <- function(plink, inputPrefix, outputPrefix){
 
-    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
-    chrDist <- table(bim[,1])
-    chr23check <- is.element(names(chrDist), 23)
-    if (chr23check == TRUE) {
+    bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)    
+    chrCodes <- names(table(bim[,1]))
+    chr23check <- length(grep(23, chrCodes))
+    if (chr23check == 1) { 
         ## split X chr into PAR(chr25) and non-PAR (chr23)
         system(paste0(plink, " --bfile ", inputPrefix, 
                " --split-x hg19 --make-bed --out ", outputPrefix))
@@ -577,13 +571,9 @@ splitXchr <- function(plink, inputPrefix, outputPrefix){
         ## copy/rename plink files
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy") 
     }
-     
 }
 
 
-
- 
-  
 ##########################################   
 ##########################################  
 #' Remove SNPs on the chromosome Y and mitochondrial DNA
@@ -596,7 +586,7 @@ splitXchr <- function(plink, inputPrefix, outputPrefix){
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param outputPrefix the prefix of the output PLINK binary files.
- 
+
 #' @return The output PLINK binary files after removing SNPs 
 #' on the chromosome Y and mitochondrial DNA.
 #' @details Note that if chromosome Y and mitochondrial DNA are available,
@@ -605,8 +595,7 @@ splitXchr <- function(plink, inputPrefix, outputPrefix){
 #' @export 
 #' @author Junfang Chen 
 # #' @examples 
- 
- 
+
 removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)  
@@ -620,7 +609,6 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
     system(paste0("rm ", paste0(outputPrefix, ".txt")))
 }
 
-  
 ##########################################   
 ########################################## 
 ##########################################   
@@ -677,7 +665,6 @@ prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
                 row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
 
 }
- 
 
 
 ##########################################   
@@ -704,7 +691,6 @@ prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
 # #' @examples 
 
 
- 
 prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
 
     chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE)
@@ -729,7 +715,6 @@ prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
 }
 
 
- 
 
 ##########################################   
 ########################################## 
@@ -752,7 +737,6 @@ prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
 #' @author Junfang Chen 
 ##' @examples 
 
- 
 prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 
     chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE) 
@@ -826,11 +810,11 @@ prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 #' @author Junfang Chen 
 ##' @examples 
 
- 
+
 updateGenoInfo <- function(plink, inputPrefix, metaDataFile, dupSampleIDFile,
                            ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
                            chipType, outputPrefix){
- 
+
     ## step 2
     outputPrefix2 <- "1_02_removedExclInst" 
     removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix=outputPrefix2)
@@ -872,26 +856,23 @@ updateGenoInfo <- function(plink, inputPrefix, metaDataFile, dupSampleIDFile,
     ## step 11  
     outputPrefix11 <- "1_11_removedYMtSnp"
     removedYMtSnp(plink, inputPrefix=outputPrefix10, outputPrefix=outputPrefix11)
-
     ## remove intermediate files
-    system(paste0("rm ", outputPrefix2, ".*"))
-    system(paste0("rm ", outputPrefix3, ".*"))
-    system(paste0("rm ", outputPrefix4, ".*"))
-    system(paste0("rm ", outputPrefix5, ".*"))
-    system(paste0("rm ", outputPrefix6, ".*"))
-    system(paste0("rm ", outputPrefix7, ".*"))
-    system(paste0("rm ", outputPrefix8, ".*"))
-    system(paste0("rm ", outputPrefix9, ".*"))
-    system(paste0("rm ", outputPrefix10, ".*"))
+    # system(paste0("rm ", outputPrefix2, ".*"))
+    # system(paste0("rm ", outputPrefix3, ".*"))
+    # system(paste0("rm ", outputPrefix4, ".*"))
+    # system(paste0("rm ", outputPrefix5, ".*"))
+    # system(paste0("rm ", outputPrefix6, ".*"))
+    # system(paste0("rm ", outputPrefix7, ".*"))
+    # system(paste0("rm ", outputPrefix8, ".*"))
+    # system(paste0("rm ", outputPrefix9, ".*"))
+    # system(paste0("rm ", outputPrefix10, ".*"))
 
-    if (file.exists(outputSNPfile7)) {  
-        system(paste0("rm ", outputSNPfile7))
-    }
+    # if (file.exists(outputSNPfile7)) {  
+    #     system(paste0("rm ", outputSNPfile7))
+    # }
 
-    if (file.exists(outputSNPdupFile8)) {  
-        system(paste0("rm ", outputSNPdupFile8))
-    }    
+    # if (file.exists(outputSNPdupFile8)) {  
+    #     system(paste0("rm ", outputSNPdupFile8))
+    # }    
  
 }
- 
-  
