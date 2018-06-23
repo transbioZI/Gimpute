@@ -4,7 +4,7 @@
 \alias{updateGenoInfo}
 \title{Update genotype information}
 \usage{
-updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
+updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile, chipType, outputPrefix)
 }
 \arguments{
@@ -13,7 +13,7 @@ or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{dupSampleIDFile}{a pure text file that stores the duplicated sample IDs, 
+\item{removedSampIDFile}{a pure text file that stores the duplicated sample IDs, 
 each ID per line. If it is null, then duplicate the input PLINK files from 
 the last step as the output files.}
 
@@ -49,7 +49,7 @@ The original PLINK files are implicitly processed by the following steps:
 6.) remove SNPs that are not in the annotation file;
 7.) remove duplicated SNPs;
 8.) update SNP genomic position and strand information;
-9.) splitchromosome X into pseudoautosomal region (PAR) and non-PAR;
+9.) split chromosome X into pseudoautosomal region (PAR) and non-PAR;
 10.) remove SNPs on the chromosome Y and mitochondrial DNA.
 The metadata information file and the chip annotation file are used as the 
 reference for the update.

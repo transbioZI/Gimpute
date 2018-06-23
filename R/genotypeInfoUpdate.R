@@ -252,7 +252,7 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
 #' ## removedWrongAnceInst(plink, inputPrefix, metaDataFile,  
-#'                         ancestrySymbol, outputPrefix)
+#' ##                      ancestrySymbol, outputPrefix)
 
 
 removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile, 

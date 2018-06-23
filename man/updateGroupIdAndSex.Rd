@@ -31,6 +31,19 @@ Use the information from the metadata file as the reference and update the group
 information/the outcome in the PLINK file. Group label should be 1 and 2. 
 (1=unaff, 2=aff, 0=miss); missing phenotype will be indicated as -9.
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+outputPrefix <- "1_03_replacedGroupAndSex" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## updateGroupIdAndSex(plink, inputPrefix, metaDataFile, outputPrefix)
+}
 \author{
 Junfang Chen
 }

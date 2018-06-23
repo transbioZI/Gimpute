@@ -4,7 +4,7 @@
 \alias{removeOutlierByPCs}
 \title{Remove population outliers}
 \usage{
-removeOutlierByPCs(plink, gcta, inputPrefix, cutoff, cutoffSign,
+removeOutlierByPCs(plink, gcta, inputPrefix, nThread, cutoff, cutoffSign,
   inputPC4subjFile, outputPC4outlierFile, outputPCplotFile, outputPrefix)
 }
 \arguments{
@@ -15,6 +15,8 @@ or somewhere in the command path.}
 or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
+
+\item{nThread}{the number of threads used for computation.}
 
 \item{cutoff}{the cutoff that distinguishes the eigenvalues of the outliers
 from ordinary population. If it is null, then there are no outliers or 
