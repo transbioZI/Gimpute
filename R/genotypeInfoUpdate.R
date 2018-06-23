@@ -306,6 +306,7 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
 #' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 #' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
 #' outputPrefix <- "1_06_removedExclProbe" 
@@ -349,17 +350,19 @@ removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPre
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
 #' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 #' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
-#' outputPrefix <- "1_06_removedExclProbe" 
+#' outputSNPfile <- "1_07_removedUnmapProbes"   
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' ## removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix)
-
+#' ## removedUnmapProbes(plink, inputPrefix, chipAnnoFile, 
+#' ##                    outputPrefix, outputSNPfile)
 
 removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile, 
                                outputPrefix, outputSNPfile){
@@ -368,11 +371,11 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 
         annoFile <- "chipAnnoRefb37.txt"
         if (chipType == "affymetrix") { 
-            prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
+            .prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
         } else if (chipType == "illumina"){ 
-            prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
+            .prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
         } else if (chipType == "PsychChip"){ 
-            prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
+            .prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
         }
 
         ## find the overlapping
@@ -431,11 +434,11 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 
         annoFile <- "chipAnnoRefb37.txt"
         if (chipType == "affymetrix") { 
-            prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
+            .prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, outputFile=annoFile)
         } else if (chipType == "illumina"){ 
-            prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
+            .prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, outputFile=annoFile)
         } else if (chipType == "PsychChip"){ 
-            prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
+            .prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, outputFile=annoFile)
         }
 
         ## find the overlapping
@@ -521,14 +524,14 @@ updatedSnpInfo <- function(plink, inputPrefix,
     if (!is.null(chipAnnoFile)){ 
         annoFile <- "chipAnnoRefb37.txt"
         if (chipType == "affymetrix") { 
-            prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
-                                           outputFile=annoFile)
+            .prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
+                                            outputFile=annoFile)
         } else if (chipType == "illumina"){ 
-            prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
-                                         outputFile=annoFile)
-        } else if (chipType == "PsychChip"){ 
-            prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
+            .prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
                                           outputFile=annoFile)
+        } else if (chipType == "PsychChip"){ 
+            .prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
+                                           outputFile=annoFile)
         }
 
         ## find the overlapping
@@ -624,8 +627,17 @@ updatedSnpInfo <- function(plink, inputPrefix,
 #' @export 
 
 #' @author Junfang Chen 
-##' @examples 
-
+#' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+#' outputPrefix <- "1_10_splitXchr" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removeSampID(plink, inputPrefix, outputPrefix)
 
 splitXchr <- function(plink, inputPrefix, outputPrefix){
 
@@ -664,6 +676,16 @@ splitXchr <- function(plink, inputPrefix, outputPrefix){
 #' @export 
 #' @author Junfang Chen 
 # #' @examples 
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+#' outputPrefix <- "1_11_removedYMtSnp" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedYMtSnp(plink, inputPrefix, outputPrefix)
 
 removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 
@@ -703,12 +725,12 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 #' @details If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
-#' @export 
+##' @export 
 
 #' @author Junfang Chen 
 #' @examples 
 
-prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
+.prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
 
     inputNew <- paste0(inputFile, "New")
     system(paste0("sed 1d ", inputFile, " > ", inputNew) )
@@ -755,12 +777,12 @@ prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 
-#' @export  
+##' @export  
 #' @author Junfang Chen 
 # #' @examples 
 
 
-prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
+.prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
 
     chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE)
     # print(colnames(chipAnnoRefraw))
@@ -802,11 +824,11 @@ prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
 #' @details If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
-#' @export 
+##' @export 
 #' @author Junfang Chen 
 ##' @examples 
 
-prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
+.prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
 
     chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE) 
     colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", 
