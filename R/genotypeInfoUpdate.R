@@ -349,6 +349,16 @@ removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPre
 
 #' @export 
 #' @author Junfang Chen 
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+#' outputPrefix <- "1_06_removedExclProbe" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix)
 
 
 removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile, 
