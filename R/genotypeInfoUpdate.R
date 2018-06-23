@@ -107,6 +107,18 @@ removeSampID <- function(plink, removedSampIDFile, inputPrefix, outputPrefix){
 #' @export  
 #' @author Junfang Chen 
 
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+#' outputPrefix <- "1_03_replacedGroupAndSex" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## updateGroupIdAndSex(plink, inputPrefix, metaDataFile, outputPrefix)
 
 
 updateGroupIdAndSex <- function(plink, inputPrefix, metaDataFile, outputPrefix){
@@ -176,6 +188,19 @@ updateGroupIdAndSex <- function(plink, inputPrefix, metaDataFile, outputPrefix){
 
 #' @author Junfang Chen 
 
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+#' outputPrefix <- "1_04_removedNoGroupId" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removeNoGroupId(plink, inputPrefix, outputPrefix)
+
+
 
 removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
  
@@ -213,6 +238,21 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
 #' 'EAS' for East Asian. See the metaDataFile for more details. 
 #' @export  
 #' @author Junfang Chen  
+
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+#' ancestrySymbol <- "EAS"
+#' outputPrefix <- "1_05_removedWrongAnceInst" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedWrongAnceInst(plink, inputPrefix, metaDataFile,  
+#'                         ancestrySymbol, outputPrefix)
 
 
 removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile, 
@@ -261,8 +301,18 @@ removedWrongAnceInst <- function(plink, inputPrefix, metaDataFile,
 
 #' @export 
 #' @author Junfang Chen 
- 
- 
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+#' outputPrefix <- "1_06_removedExclProbe" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedExclProbe(plink, inputPrefix, excludedProbeIdsFile, outputPrefix)
+
 removedExclProbe <- function(plink, inputPrefix, excludedProbeIdsFile, outputPrefix){
 
     if (!is.null(excludedProbeIdsFile)) {
