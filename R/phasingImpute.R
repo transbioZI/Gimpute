@@ -59,9 +59,6 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
            " --make-bed --out ", outputPrefix)) 
 }
 
-
- 
-
 ##########################################################################
 ## chrWiseSplit.R
 ########################################################################## 
@@ -108,7 +105,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
     ## check which chromosomes are available to be splitted from the .bim file
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
     chrs <- as.integer(names(table(bim[,1])))
- 
+
     chrslist <- as.list(chrs)
     mclapply(chrslist, function(i){
         cmd <- paste0(plink, " --bfile ", inputPrefix, " --chr ", i, 
@@ -143,6 +140,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
                        inputPrefix, chrXPAR2suffix))
                 par2 <- TRUE 
             } else { 
+                par2 <- FALSE
                 print("PAR2 is NOT available in chrX!") 
             }
 
@@ -162,7 +160,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 
     return(par=list(par1, par2)) 
 }
- 
+
 
 
 
@@ -192,7 +190,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' @export 
 #' @author Junfang Chen 
 
- 
+
 
 chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){  
 
@@ -243,7 +241,6 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 
-    
 
 ##########################################################################
 ## prePhasingByShapeit.R
@@ -329,7 +326,7 @@ prePhasingByShapeit <- function(shapeit, chrs, dataDIR,
     }, mc.cores=nCore)     
 } 
 
- 
+
 
 
 
@@ -363,7 +360,7 @@ prePhasingByShapeit <- function(shapeit, chrs, dataDIR,
 
 #' @author Junfang Chen 
 ##' @examples 
- 
+
 
 imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR, 
                              impRefDIR, imputedDIR, prefix4plinkEachChr, 
@@ -373,7 +370,7 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
 
         chunkfn <- paste0(prefixChunk, i, ".txt")
         chunks <- read.table(chunkfn, sep=" ")
- 
+
         chunklist <- as.list(seq_len(nrow(chunks)))
         mclapply(chunklist, function(j){
 
@@ -390,7 +387,7 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
                                 "_impute_macGT1.hap.gz ") 
             LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
                                   "_impute_macGT1.legend.gz ")
- 
+
             ## main output file    
             OUTPUT_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
                                   ".pos", chunkSTART, "-", chunkEND, ".impute2 ")   
@@ -454,14 +451,11 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
             }
         }, mc.cores=nCore)  
     } 
-}         
- 
- 
+}
 
 
 
 
-  
 ##########################################################################
 ## convertImpute2ByGtool.R 
 ##########################################################################  
@@ -492,7 +486,7 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
 #' @import doParallel  
 
 #' @author Junfang Chen 
-  
+
 
 convertImpute2ByGtool <- function(gtool, chrs, prefixChunk, 
                                   phaseDIR, imputedDIR, prefix4plinkEachChr, 
@@ -527,10 +521,6 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
         }, mc.cores=nCore)
     } 
 } 
-  
-     
-   
-  
 
 
 ##########################################################################
@@ -564,8 +554,6 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
 #' @author Junfang Chen 
 
 
- 
- 
 mergePlinkData <- function(plink, chrs, prefix4plinkEachChr, 
                            prefix4mergedPlink, nCore){ 
 
@@ -634,12 +622,8 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
     system(paste0(plink, " --bfile ", fA, " --merge-list ", mergefilesetname, 
            " --make-bed --out ", prefix4mergedPlink))
  
-} 
+}
 
- 
-
-  
- 
 
 ##########################################################################
 ## filterImputeData.R
@@ -672,7 +656,6 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 
 #' @export 
 #' @author Junfang Chen 
-   
 
 
 filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
@@ -706,7 +689,7 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
            badImputeSNPfile, " --make-bed --out ", outputPrefix)) 
     system("rm impute2infoAllvariants.txt")
-    
+
 }
 
 
@@ -753,9 +736,6 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
     system( "rm *.imiss *.lmiss *.log") 
 
 }
-# 
-
-  
 
 
 ##########################################################################
@@ -902,7 +882,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                           prefix4plinkEachChr=prefixGWchr, suffix4imputed, 
                           postImputeDIR, nCore4gtool)
-  
+
     ## step 2.6  
     ####################################################### 
     ## Modify missing genotype format.
@@ -931,7 +911,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     recodMat <- cbind(famImpute[,c("V1", "V2")], famOrig[,c("V1", "V2")]) 
     write.table(recodMat, file="recoded.txt", quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
-     
+
     system(paste0(plink, " --bfile ", prefixMerge, 
            " --update-ids recoded.txt --make-bed --out ", prefix4final)) 
     #######################################################

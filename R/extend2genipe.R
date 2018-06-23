@@ -53,13 +53,13 @@
 #' @param segmentSize the length of a single segment for imputation.
 #' @param thread4impute2 the number of threads for the imputation.  
 #' @param thread4shapeit the number of threads for phasing.
-  
+
 #' @return The imputed files using genipe.
 #' @export 
 
 #' @author Junfang Chen 
 ###' @examples 
-  
+
 
 imputedByGenipe <- function(chrs, impRefDir, inputPrefix, 
                             shapeit, impute2, plink, fastaFile, 
@@ -174,7 +174,7 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
         ) )  
     }
 }
- 
+
 
 
 ##########################################################################
@@ -197,17 +197,15 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
 #' @param info the measure of the observed statistical information associated 
 #' with the allele frequency estimate threshold for site exclusion. (<0.00)
 #' @param outputPrefix the prefix for the imputed output files. 
- 
+
 #' @return The merged imputed files using genipe.
 #' @export 
 
 #' @author Junfang Chen 
 ##' @examples 
-  
 
 mergeByGenipe <- function(inputImpute2, chr, probability, 
                           completionRate, info, outputPrefix){ 
-         
     system( paste0("impute2-merger ", 
     " --impute2 ", inputImpute2, " \ ",
     " --chr ", chr, "\ ",   
@@ -216,10 +214,10 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
     " --info  ", info, " \ ",  
     " --prefix ", outputPrefix ) )    
 }
- 
 
 
- 
+
+
 
 
 ##########################################################################
@@ -263,7 +261,7 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 ##' @param info Extract markers with an information equal or higher to 
 #' the specified threshold. Can be use in combination with ‘--maf’, ‘--rate’ 
 #' and ‘--genomic’.
-  
+
 #' @return The extracted imputed files using genipe.
 #' @export 
 
@@ -275,7 +273,7 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 # --format  bed   --extract  imputedChr2.marker 
 
 extractByGenipe <- function(inputImpute2, inputMAP, outputPrefix, format, prob){ 
-    
+
     ## extract all the markers from the input map file 
     tmpMarkerFile <- "markers.txt"
     system( paste0("awk '{print $2}' ", inputMAP, " > ", tmpMarkerFile) )
@@ -287,6 +285,3 @@ extractByGenipe <- function(inputImpute2, inputMAP, outputPrefix, format, prob){
     ) )
     system(paste0("rm ", tmpMarkerFile))    
 }
- 
-
- 
