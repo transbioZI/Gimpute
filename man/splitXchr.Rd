@@ -25,6 +25,19 @@ if chromosome X data is available.
 \details{
 Genomic coordinate system is on genome build hg19.
 }
+\examples{
+ 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+outputPrefix <- "1_10_splitXchr" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removeSampID(plink, inputPrefix, outputPrefix)
+}
 \author{
 Junfang Chen
 }

@@ -33,6 +33,20 @@ If some of the input SNPs are not included, then remove them.
 If the chip annotation file is not available for your study, 
 you can download it from http://www.well.ox.ac.uk/~wrayner/strand/.
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+inputPrefix <- "controlData" ## Specify the input PLINK file prefix
+outputSNPfile <- "1_07_removedUnmapProbes"   
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedUnmapProbes(plink, inputPrefix, chipAnnoFile, 
+##                    outputPrefix, outputSNPfile)
+}
 \author{
 Junfang Chen
 }
