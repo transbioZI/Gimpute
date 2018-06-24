@@ -72,7 +72,8 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
     sampleFile <- paste0(impRefDir, "1000GP_Phase3.sample")
 
     ## chrX non-PAR
-    HAPSfileChrXnonPAR <- paste0(impRefDir, "1000GP_Phase3_chrX_NONPAR.hap.gz")   
+    HAPSfileChrXnonPAR <- paste0(impRefDir, 
+                                 "1000GP_Phase3_chrX_NONPAR.hap.gz")   
     LEGENDXnonPAR <- paste0(impRefDir, "1000GP_Phase3_chrX_NONPAR.legend.gz") 
     GENMAPfileXnonPAR <- paste0(impRefDir, 
                                 "genetic_map_chrX_nonPAR_combined_b37.txt") 
