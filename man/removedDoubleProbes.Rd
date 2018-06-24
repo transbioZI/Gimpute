@@ -29,7 +29,8 @@ which are detected by the use of the chip annotation file.}
 The output PLINK binary files after removing duplicated SNP IDs.
 }
 \description{
-Remove duplicated SNPs that have same rs-names or duplicated genomic position.
+Remove duplicated SNPs that have same rs-names or 
+duplicated genomic position.
 }
 \details{
 Duplicated SNPs have two levels of meaning: 1.) SNPs have same 

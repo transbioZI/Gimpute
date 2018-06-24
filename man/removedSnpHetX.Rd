@@ -39,7 +39,8 @@ data exists.
 \details{
 A haploid heterozygous is a male genotype that is heterozygous, 
 which could be an error given the haploid nature of the male X chromosome.
-In principle, one has to remove all heterozygous SNPs of chromosome X in males. 
+In principle, one has to remove all heterozygous SNPs of chromosome X 
+in males. 
 However, too many SNPs might be removed in some data sets. 
 Therefore a small percentage of such SNPs in the data set is allowed.
 }

@@ -17,8 +17,8 @@ or somewhere in the command path.}
 case subjects. Only autosomal SNPs are considered. The default value is
 0.000001.}
 
-\item{outputPvalFile}{the output pure text file that stores autosomal SNPs and 
-their sorted HWE p-values.}
+\item{outputPvalFile}{the output pure text file that stores autosomal SNPs
+and their sorted HWE p-values.}
 
 \item{outputSNPfile}{the output pure text file that stores the removed SNPs, 
 one per line.}

@@ -13,7 +13,7 @@ or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{removedSampIDFile}{a pure text file that stores the duplicated sample IDs, 
+\item{removedSampIDFile}{a pure text file that stores the useless sample IDs, 
 each ID per line. If it is null, then duplicate the input PLINK files from 
 the last step as the output files.}
 
@@ -35,12 +35,13 @@ file: 'illumina', 'affymetrix' or 'psychChip'.}
 The output PLINK binary files after genotype information remapping.
 }
 \description{
-Update genotype data information of the original PLINK binary files involving  
+Update genotype information of the original PLINK binary files involving  
 subject metadata information remapping and SNP information rearrangement and 
 conversion according to the annotation file.
 }
 \details{
-The original PLINK files are implicitly processed by the following steps: 
+The original PLINK files are implicitly processed by the 
+following steps: 
 1.) remove duplicated subjects;
 2.) update group ID and sex information;
 3.) remove not labelled subjects;
@@ -63,9 +64,12 @@ bimFile <- system.file("extdata", "controlData.bim", package="Gimpute")
 famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 inputPrefix <- "controlData" 
-metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
-excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="Gimpute")
-removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", package="Gimpute")
+metaDataFile <- system.file("extdata", "1_01_metaData.txt",  
+                            package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
+                                    package="Gimpute")
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+                                 package="Gimpute")
 chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 

@@ -2,7 +2,8 @@
 % Please edit documentation in R/genotypeInfoUpdate.R
 \name{splitXchr}
 \alias{splitXchr}
-\title{Split chromosome X into pseudoautosomal region and non-pseudoautosomal region.}
+\title{Split chromosome X into pseudoautosomal region and 
+non-pseudoautosomal region.}
 \usage{
 splitXchr(plink, inputPrefix, outputPrefix)
 }
@@ -19,8 +20,8 @@ The output PLINK binary files after splitting chromosome X into
 pseudoautosomal region and non-pseudoautosomal region.
 }
 \description{
-Split chromosome X into pseudoautosomal region and non-pseudoautosomal region, 
-if chromosome X data is available.
+Split chromosome X into pseudoautosomal region and 
+non-pseudoautosomal region, if chromosome X data is available.
 }
 \details{
 Genomic coordinate system is on genome build hg19.

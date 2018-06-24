@@ -22,10 +22,12 @@ If it is null, then all samples are selected.}
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK binary files after checking the ancestry information.
+The output PLINK binary files after checking 
+the ancestry information.
 }
 \description{
-Remove samples with the incorrect ancestry or keep samples at your own chioce.
+Remove samples with the incorrect ancestry or keep samples 
+at your own chioce.
 }
 \details{
 ancestrySymbol, such as 'EUR' stands for the European, 
@@ -36,7 +38,8 @@ ancestrySymbol, such as 'EUR' stands for the European,
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
-metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+metaDataFile <- system.file("extdata", "1_01_metaData.txt", 
+                            package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 inputPrefix <- "controlData" ## Specify the input PLINK file prefix
 ancestrySymbol <- "EAS"

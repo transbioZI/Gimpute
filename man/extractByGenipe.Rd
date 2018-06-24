@@ -14,9 +14,9 @@ for generating markers in a text file (only one column without column name).}
 
 \item{outputPrefix}{the prefix of the output files. [impute2_extractor]}
 
-\item{format}{the output format. Can specify either ‘impute2’ for probabilities 
- (same as impute2 format, i.e. 3 values per sample), ‘dosage’ for 
-dosage values (one value between 0 and 2 by sample), 
+\item{format}{the output format. Can specify either ‘impute2’ for 
+probabilities (same as impute2 format, i.e. 3 values per sample), ‘dosage’ 
+for dosage values (one value between 0 and 2 by sample), 
  ‘calls’ for hard calls, or ‘bed’ for Plink binary format (with hard calls). 
 [impute2]
 (one line per sample per marker). This option is only compatible with 

@@ -13,7 +13,8 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{excludedProbeIdsFile}{a pure text file that stores the SNP IDs, 
-one per line, which need to be removed. If it is null, then no SNPs are removed.}
+one per line, which need to be removed. If it is null, 
+then no SNPs are removed.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
@@ -33,7 +34,8 @@ must be excluded.
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
-excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt",
+                                    package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 inputPrefix <- "controlData" ## Specify the input PLINK file prefix
 outputPrefix <- "1_06_removedExclProbe" 

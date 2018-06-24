@@ -10,7 +10,8 @@ chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore = 25)
 \item{plink}{an executable program in either the current 
 working directory or somewhere in the command path.}
 
-\item{inputPrefix}{the prefix of the input PLINK binary files before splitting.}
+\item{inputPrefix}{the prefix of the input PLINK binary files 
+before splitting.}
 
 \item{chrXPAR1suffix}{if chromosome 25 is available and with PAR1, 
 then generate the suffix with X_PAR1 for chrX_PAR1.}
@@ -21,7 +22,8 @@ then generate the suffix with X_PAR2 for chrX_PAR2.}
 \item{nCore}{the number of cores used for parallel computation. 
 The default value is 25.}
 
-\item{outputPrefix}{the prefix of the output PLINK binary files after splitting
+\item{outputPrefix}{the prefix of the output PLINK binary files 
+after splitting  
 separately for each chromosome, appended with the chromosome codes.}
 }
 \value{

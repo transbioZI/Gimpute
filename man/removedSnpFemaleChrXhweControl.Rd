@@ -17,8 +17,8 @@ or somewhere in the command path.}
 subjects. Only chromosome X SNPs are considered. 
 The default value is 0.000001.}
 
-\item{outputPvalFile}{the output pure text file that stores chromosome X SNPs 
-and their sorted HWE p-values.}
+\item{outputPvalFile}{the output pure text file that stores chromosome X 
+SNPs and their sorted HWE p-values.}
 
 \item{outputSNPfile}{the output pure text file that stores the removed SNPs, 
 one per line.}

@@ -19,8 +19,8 @@ heterozygous SNPs on the chromosome X.}
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 
 \item{outputSubjHetFile}{the output pure text file that stores male subjects 
-that have heterozygous SNPs with their frequency (if any), i.e. the number of 
-.hh SNPs in this male. Lines are sorted by descending number.}
+that have heterozygous SNPs with their frequency (if any), i.e. the number 
+of .hh SNPs in this male. Lines are sorted by descending number.}
 
 \item{outputRetainSubjectFile}{the output pure text file that stores
 male subjects that have heterozygous SNPs with their frequency after 
