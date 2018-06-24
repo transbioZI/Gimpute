@@ -56,6 +56,27 @@ reference for the update.
 If the chip annotation file is not available for your study, it can be 
 downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="Gimpute")
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", package="Gimpute")
+chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+ancestrySymbol <- "EUR"
+outputPrefix <- "1_11_removedYMtSnp" 
+metaDataFile <- "1_01_metaData.txt"
+chipType <- "affymetrix"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"  
+## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
+##                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+##                chipType, outputPrefix)
+}
 \author{
 Junfang Chen
 }

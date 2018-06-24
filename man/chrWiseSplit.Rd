@@ -42,6 +42,20 @@ The locations of the PARs within GRCh37 are:
 PAR1    X    60001    2699520; 
 PAR2    X    154931044    155260560.
 }
+\examples{
+ 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+inputPrefix <- "controlData"
+chrXPAR1suffix <- "X_PAR1"
+chrXPAR2suffix <- "X_PAR2"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore)
+}
 \author{
 Junfang Chen
 }

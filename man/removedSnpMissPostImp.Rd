@@ -14,7 +14,7 @@ directory or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{missCutoff}{the cutoff of the least number of instances for 
-a SNP that is not missing.}
+a SNP that is not missing. The default is 20.}
 
 \item{outputSNPfile}{the output file of SNPs with pre-defined 
 missing values.}
@@ -28,6 +28,18 @@ and a pure text file contains SNPs with pre-defined missing values.
 \description{
 Remove SNPs which have a non missing value for less than a predefined 
 number of instances.
+}
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+inputPrefix <- "controlData" 
+outputPrefix <- "removedSnpMissPostImp" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedSnpMissPostImp(plink, inputPrefix, missCutoff=20, outputPrefix)
 }
 \author{
 Junfang Chen

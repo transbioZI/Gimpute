@@ -20,6 +20,10 @@ Get the group label from the PLINK FAM file.
 If the input FAM file also has missing outcomes, which are 
 shown in the sixth column of FAM file as "0", then an error is given.
 }
+\examples{
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")  
+getGroupLabel(inputFAMfile=famFile)
+}
 \author{
 Junfang Chen
 }

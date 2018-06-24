@@ -37,6 +37,22 @@ rs-names but different versions of SNP ID ound in chip annotation file.
 e.g. SNP-A IDs for Affymetrix chip. 2.) SNPs with duplicated genomic 
 position: the combination of base pair position and chromosomal location.
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+inputPrefix <- "controlData"     
+chipType <- "affymetrix"
+outputSNPdupFile <- "snpDup.txt"
+outputPrefix <- "removedDoubleProbes"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedDoubleProbes(plink, inputPrefix, chipAnnoFile,
+##                     chipType, outputSNPdupFile, outputPrefix)
+}
 \author{
 Junfang Chen
 }
