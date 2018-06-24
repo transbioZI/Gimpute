@@ -4,7 +4,8 @@
 \alias{plotPCA4plink}
 \title{Population outlier detection}
 \usage{
-plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
+plotPCA4plink(gcta, inputPrefix, nThread = 20, outputPC4subjFile,
+  outputPCplotFile)
 }
 \arguments{
 \item{gcta}{an executable program in either the current working directory 
@@ -12,7 +13,8 @@ or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{nThread}{the number of threads used for computation.}
+\item{nThread}{the number of threads used for computation. 
+The default is 20.}
 
 \item{outputPC4subjFile}{the pure text file that stores all the subject IDs 
 and their corresponding eigenvalues of the first two principle components.}
@@ -34,9 +36,18 @@ Before population outlier detection, it's better to perform QC
 on the genotype data. 
 Only autosomal genotypes are used for principle component analysis.
 }
-\examples{
- 
-}
 \author{
-Junfang Chen
+Junfang Chen 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
+outputPCplotFile <- "2_13_eigenvalAfterQC.png" ## png format
+## Not run: Requires an executable program GCTA, e.g.
+## gcta <- "/home/tools/gcta64"
+## plotPCA4plink(gcta, inputPrefix, nThread=20, 
+##               outputPC4subjFile, outputPrefix)
 }

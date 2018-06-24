@@ -23,9 +23,17 @@ missing values.
 \description{
 Remove SNPs with missingness of greater than a certain threshold.
 }
-\examples{
- 
-}
 \author{
-Junfang Chen
+Junfang Chen 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+snpMissCutOff <- 0.05
+inputPrefix <- "controlData" 
+outputPrefix <- "2_04_removedSnpMissPre" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedSnpMiss(plink, snpMissCutOff, inputPrefix, outputPrefix)
 }

@@ -29,7 +29,17 @@ be greater than 0.2, i.e. |Fhet| >= 0.2, then this analysis will
 automatically skip haploid markers (male X and Y chromosome markers).
 }
 \examples{
- 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+Fhet <- 0.2
+inputPrefix <- "controlData" 
+outputPrefix <- "2_06_removedInstFhet" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedInstFhet(plink, Fhet, inputPrefix, outputPrefix)
 }
 \author{
 Junfang Chen

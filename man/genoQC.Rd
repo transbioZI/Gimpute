@@ -19,7 +19,7 @@ or somewhere in the command path.}
 before subject removal. The default is 0.05.}
 
 \item{sampleMissCutOff}{the cutoff of the missingness for removing 
-subjects/instances. The default is}
+subjects/instances. The default is 0.02.}
 
 \item{Fhet}{the cutoff of the autosomal heterozygosity deviation. 
 The default is 0.2.}
@@ -68,6 +68,24 @@ between cases and controls;
 }
 \examples{
  
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+outputPrefix <- "2_12_removedSnpHweFemaleX"  
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## genoQC(plink, inputPrefix, 
+##        snpMissCutOffpre=0.05, 
+##        sampleMissCutOff=0.02, 
+##        Fhet=0.2, 
+##        snpMissCutOffpost=0.02, 
+##        snpMissDifCutOff=0.02,
+##        femaleChrXmissCutoff=0.05, 
+##        pval4autoCtl=0.000001, 
+##        pval4femaleXctl=0.000001, outputPrefix)
 }
 \author{
 Junfang Chen

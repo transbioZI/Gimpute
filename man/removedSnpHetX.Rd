@@ -44,7 +44,20 @@ However, too many SNPs might be removed in some data sets.
 Therefore a small percentage of such SNPs in the data set is allowed.
 }
 \examples{
-  
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+hhCutOff <- 0.005 ##  can be tuned
+outputPrefix <- "2_01_removedSnpHetX" 
+outputHetSNPfile <- "2_01_snpHHfreqAll.txt"
+outputRetainSNPfile <- "2_01_snpHHfreqRetained.txt"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedSnpHetX(plink, inputPrefix, hhCutOff, outputPrefix, 
+##                outputHetSNPfile, outputRetainSNPfile)
 }
 \author{
 Junfang Chen
