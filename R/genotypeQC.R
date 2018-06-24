@@ -328,6 +328,7 @@ setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -367,6 +368,7 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -516,6 +518,7 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -582,6 +585,7 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -661,6 +665,7 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -740,6 +745,7 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 
 #' @export 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -821,6 +827,7 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval=0.000001,
 #' @import lattice  
 
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -899,6 +906,7 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread=20,
 #' @export 
 #' @import lattice  
 #' @author Junfang Chen 
+#' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
