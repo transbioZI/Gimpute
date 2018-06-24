@@ -51,7 +51,7 @@ Development version from Github:
 ```{r eval=FALSE}
 install.packages("devtools")
 library("devtools")
-install_github("transbioZI/Gimpute")
+install_github("transbioZI/Gimpute", build_vignettes=TRUE)
 ```
 This function`install_github()` requires that you build from source, 
 namely, `make` and compilers must be installed on the system.
@@ -63,9 +63,9 @@ Free datasets are available under ./extdata/ in our package. The way for loading
 ```{r eval=FALSE} 
 library(Gimpute)
 ## Load PLINK binary files from Gimpute package
-bedFile <- system.file("extdata", "study.bed", package="Gimpute")
-bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
-famFile <- system.file("extdata", "study.fam", package="Gimpute") 
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")  
 ```
 
 ## Get it Setup 
@@ -81,21 +81,13 @@ The names of the output files begin with the number of the step which produces t
 * Directory naming:
 ```{r eval=FALSE} 
 ## Start an R session in a directory where you'd like to generate the data.
-system("mkdir 0-rawData")
 system("mkdir 1-conversion")
 system("mkdir 2-QC")
 system("mkdir 3-lifting")
 system("mkdir 4-imputation")
 system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
-
-## Go to ./0-rawData, where you want to place the original data.
-setwd("0-rawData")
-system("mkdir plinkFiles") ## Original PLINK data 
-system("mkdir sampleInfo") ## Metadata 
-setwd("..")
 ```
-
 
 ### Configuration files
 * Imputation reference files
@@ -103,29 +95,25 @@ setwd("..")
 Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference), such as haplotypes from [1000 genome project](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz). 
 
 ```{r eval=FALSE} 
-## Define the directory where you place the imputation reference files 
-impRefDIR <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
+## Define the directory where you dowload/place the imputation reference files 
+impRefDIR <- "/home/imputeRef/1000Gphase1/"
 ```  
 
 * Genotyping chip annotation file 
 Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
-These files are particularly important for strand checking and genomic information of genotypes on a variety of genome builds.
+This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds.
 ```{r eval=FALSE} 
-## chipAnnoFile <- "/home/junfang.chen/Gimpute/config/Illumina/Human1M-Duov3_B-b37.Illmn.strand"
+## since the annotation file is too big, we do not upload this file
+## chipAnnoFile <- "/home/affyChip/GenomeWideSNP_6.na32.strand.txt"
 chipAnnoFile <- NULL 
 ``` 
 * Self-defined configuration files
 ```{r eval=FALSE} 
-## if it's not NULL, then the file stores the duplicated sample IDs 
-## should be placed in this directory.
-dupSampleIDFile <- NULL 
-## if it's not NULL, then the file stores the probes 
-## which have to be excluded should be placed in this directory.
-excludedProbeIdsFile <- NULL 
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="Gimpute")
 ```
   
-### Required tools
-
+### Required tools and packages
 ```{r eval=FALSE} 
 ## Define required tools
 plink <- "/home/junfang.chen/Gimpute/tools/plink"
@@ -133,6 +121,9 @@ gcta <- "/home/junfang.chen/Gimpute/tools/gcta64"
 shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
 impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
 gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
+## required R packages
+library(lattice)
+library(doParallel)
 ```
 
 # Running pipeline 
@@ -142,9 +133,9 @@ All files named in this subsection are in the directory 1-conversion/.
 
 ### Input files
 
-* Raw genotype data in PLINK format: ../0-rawData/plinkFiles/*.#
+* Raw genotype data in PLINK format: controlData.bed.#
 
-* Meta-data information file about the instances: ../0-rawData/sampleInfo/*.txt
+* Metadata information file about the instances: 1_01_metaData.txt
 
 * Chip annotation file for genotype information mapping and strand check (see section 2.4.2).
 
@@ -159,32 +150,25 @@ All files named in this subsection are in the directory 1-conversion/.
 
 ```{r eval=FALSE} 
 ## Load PLINK binary files and metadata information from Gimpute package
-bedFile <- system.file("extdata", "study.bed", package="Gimpute")
-bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
-famFile <- system.file("extdata", "study.fam", package="Gimpute")
-metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
-
-## Copy into the "0-rawData" directory
-system(paste0("scp ", bedFile, " ./0-rawData/plinkFiles/")) 
-system(paste0("scp ", bimFile, " ./0-rawData/plinkFiles/")) 
-system(paste0("scp ", famFile, " ./0-rawData/plinkFiles/")) 
-system(paste0("scp ", metadataFile, " ./0-rawData/sampleInfo/"))  
+setwd("./1-conversion/") 
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 ```
 
-1. Use the raw genotype data and metadata information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. EA or AA), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. In the following example, the metadata file is already preprocessed.
+1. Use the raw genotype data and metadata information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. In the following example, the metadata file is already preprocessed.
 + Output file: 1_01_metaData.txt 
 
 ```{r eval=FALSE} 
 ## Load PLINK binary files and meta information file
-system( paste0("scp ./0-rawData/plinkFiles/study.*  ./1-conversion/") ) 
-system( paste0("scp ./0-rawData/sampleInfo/1_01_metaData.txt ./1-conversion/") ) 
-setwd("./1-conversion/") 
+metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+system(paste0("scp ", metadataFile, " ."))  
 ```
 
 2. Remove all excluded instances from the raw chip data.
 + Output files: 1_02_removedExclInst.#
 ```{r eval=FALSE} 
-dupSampleIDFile <- NULL
 inputPrefix <- "study" ## from last step
 outputPrefix2 <- "1_02_removedExclInst" 
 removeDupID(plink, dupSampleIDFile, inputPrefix, outputPrefix=outputPrefix2)
