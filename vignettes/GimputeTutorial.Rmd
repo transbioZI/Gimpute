@@ -116,11 +116,11 @@ excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="
 ### Required tools and packages
 ```{r eval=FALSE} 
 ## Define required tools
-plink <- "/home/junfang.chen/Gimpute/tools/plink"
-gcta <- "/home/junfang.chen/Gimpute/tools/gcta64" 
-shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
-impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
-gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
+plink <- "/home/tools/plink"
+gcta <- "/home/tools/gcta64" 
+shapeit <- "/home/tools/shapeit"
+impute2 <- "/home/tools/impute2"
+gtool <- "/home/tools/gtool"
 ## required R packages
 library(lattice)
 library(doParallel)
@@ -190,7 +190,7 @@ removeNoGroupId(plink, inputPrefix=outputPrefix3, outputPrefix=outputPrefix4)
 5. Remove instances which have a value for ance (self identified ancestry) in the file 1_01_metaData.txt that is excluded from the dataset (for the excluded ancestry values see section 2.4.2).
 + Output files: 1_05_removedWrongAnceInst.#
 ```{r eval=FALSE} 
-ancestrySymbol <- "EA"
+ancestrySymbol <- "EUR"
 outputPrefix5 <- "1_05_removedWrongAnceInst"
 removedWrongAnceInst(plink, inputPrefix=outputPrefix4, metaDataFile,  
                      ancestrySymbol, outputPrefix=outputPrefix5)
@@ -474,7 +474,7 @@ renamePlinkBFile(inputPrefix="2_13_removedOutliers",
 inputFile <- paste0(impRefDIR,'/', '*.legend.gz') 
 referenceFile <- paste0(impRefDIR, 'bimImputeRef.txt')
 ## take less than 1 minute
-prepareLegend2bim(inputFile, outputFile=referenceFile, ncore=25) 
+.prepareLegend2bim(inputFile, outputFile=referenceFile, ncore=25) 
 inputPrefix <- "3_1_liftedDataset" 
 out2.snp <- "3_2_snpSameNameDiffPos"
 out2 <- "3_2_removedSnpSameNameDiffPos"
