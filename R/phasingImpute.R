@@ -81,8 +81,10 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 
 #' @param plink an executable program in either the current 
 #' working directory or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK binary files before splitting.
-#' @param outputPrefix the prefix of the output PLINK binary files after splitting  
+#' @param inputPrefix the prefix of the input PLINK binary files 
+#' before splitting.
+#' @param outputPrefix the prefix of the output PLINK binary files 
+#' after splitting  
 #' separately for each chromosome, appended with the chromosome codes.
 #' @param chrXPAR1suffix  if chromosome 25 is available and with PAR1, 
 #' then generate the suffix with X_PAR1 for chrX_PAR1. 
@@ -137,7 +139,8 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
     if (is.element(25, chrs)){  
 
         print("PAR is available in chrX!") 
-        bim25 <- read.table(paste0(inputPrefix, "25.bim"), stringsAsFactors=FALSE) 
+        bim25 <- read.table(paste0(inputPrefix, "25.bim"), 
+                            stringsAsFactors=FALSE) 
         pos4PAR1 <- c(60001, 2699520) 
         ## first check for PAR1 and afterwards for PAR2
         if ( length(which(bim25[,4] <= pos4PAR1[2]))!= 0 ){ 
@@ -239,8 +242,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
         if (nrow(chunkMatrix) == 1){
             chunks <- chunkMatrix
         } else {  
-            ##  it may happen that only a few SNPs from the last chunk; 
-            ## but if the last chunk is large, then specify -allow_large_regions 
+            ## it may happen that only a few SNPs from the last chunk; 
+            ## if the last chunk is large, then specify -allow_large_regions 
             chunks <- head(chunkMatrix, -1) ## merge last-second to last  
             chunks[nrow(chunks), 2] <- posEnd
         }
@@ -299,8 +302,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' along with nThread. The default value is 1
 
 #' @return The pre-phased haplotypes for given chromosomes.  
-#' @details If ChrX is available then it is done differently by passing the flag 
-#' --chrX to SHAPEIT.
+#' @details If ChrX is available then it is done differently by passing 
+#' the flag --chrX to SHAPEIT.
 
 #' @export 
 ##' @import doParallel  
@@ -323,9 +326,10 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                               "_combined_b37.txt ")
         HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
                             "_impute_macGT1.hap.gz ") 
-        LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-                              "_impute_macGT1.legend.gz ")
-        SAMPLE_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3.sample ")
+        LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", 
+                              i, "_impute_macGT1.legend.gz ")
+        SAMPLE_FILE <- paste0(impRefDIR, 
+                              "ALL_1000G_phase1integrated_v3.sample ")
 
         # main output file
         OUTPUT_HAPS <- paste0(phaseDIR, "chr", i, ".haps ")     
@@ -413,14 +417,16 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             ## For other reference panels you want to modify the following setting  
             GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
                                   "_combined_b37.txt ")
-            HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-                                "_impute_macGT1.hap.gz ") 
-            LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
+            HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", 
+                                i, "_impute_macGT1.hap.gz ") 
+            LEGEND_FILE <- paste0(impRefDIR, 
+                                  "ALL_1000G_phase1integrated_v3_chr", i, 
                                   "_impute_macGT1.legend.gz ")
 
             ## main output file    
             OUTPUT_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
-                                  ".pos", chunkSTART, "-", chunkEND, ".impute2 ")   
+                                  ".pos", chunkSTART, 
+                                  "-", chunkEND, ".impute2 ")   
             ################## impute genotypes from GWAS haplotypes 
             autosomeCode = seq_len(22)
             if (is.element(i, autosomeCode)) { 
@@ -533,7 +539,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             ## INPUT data files
             SAM_FILE <- paste0(phaseDIR, "chr", i, ".sample")  
             GEN_FILE <- paste0(imputedDIR, prefix4plinkEachChr, i, 
-                               ".pos", chunkSTART, "-", chunkEND, suffix4imputed) 
+                               ".pos", chunkSTART, 
+                               "-", chunkEND, suffix4imputed) 
             ## output PLINK binary files
             PED_FILE <- paste0(postImputeDIR, prefix4plinkEachChr, i, ".pos", 
                                chunkSTART, "-", chunkEND, ".ped") 
@@ -622,19 +629,19 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
          
         arg <- paste0(plink, " --file ", fA, " --merge-list ", filesetname, 
-                      " --allow-extra-chr --make-bed --out gwasImputed_oldchr25")
+                      " --allow-extra-chr --make-bed --out gwasImputedOld25")
         system(arg) 
         ## update chr code for XPAR --> 25
-        bim <- read.table("gwasImputed_oldchr25.bim", stringsAsFactors=FALSE)
+        bim <- read.table("gwasImputedOld25.bim", stringsAsFactors=FALSE)
         updateSNPchr <- cbind(bim[,2], rep(25, length=nrow(bim))) 
         write.table(updateSNPchr, file="gwasImputed_newchr25.txt", quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
 
-        system(paste0(plink, " --bfile gwasImputed_oldchr25 --allow-extra-chr ", 
+        system(paste0(plink, " --bfile gwasImputedOld25 --allow-extra-chr ", 
                " --update-chr gwasImputed_newchr25.txt 2 1",
                " --make-bed --out gwasImputed_chr25"))  
-        system("rm gwasImputed_oldchr25.* gwasImputed_newchr25.txt")
+        system("rm gwasImputedOld25.* gwasImputed_newchr25.txt")
         # system( paste0("rm ", filesetname))
     }     
     ## combine all bed files
@@ -678,8 +685,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' two columns: SNP names and the corresponding info scores. 
 #' A pure text file with all excluded SNPs having bad info scores. 
 #' The filtered PLINK binary imputed files, 
-#' @details Filter genetic variants accoring to the imputation quality score with 
-#' the help of .impute2_info files generated by IMPUTE2. 
+#' @details Filter genetic variants accoring to the imputation quality score 
+#' with the help of .impute2_info files generated by IMPUTE2. 
 #' Often, we keep variants with imputation info score of greater than 0.6.    
 #' Note that imputed SNPs with more than two alleles are not considered. 
 
@@ -691,8 +698,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                              infoScore=0.6, badImputeSNPfile, inputPrefix, 
                              outputPrefix){ 
 
-    ## read each .impute2_info file, remove 1st line, add to another file and repeat   
-    ## get all impute2_info files for each chunk
+    ## read each .impute2_info file, remove 1st line, add to another file 
+    ## and repeat get all impute2_info files for each chunk
     files <- system(paste0("ls *", suffix4impute2info), intern=TRUE) 
     for (i in seq_len(length(files))) { 
         ## impute2infoAllvariants.txt is the temporal file
@@ -769,8 +776,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
     missSNPinfo <- read.table(paste0(inputPrefix, ".lmiss"), 
                               stringsAsFactors=FALSE, header=TRUE)
     missSNPinfo[,6] <- missSNPinfo[,"N_GENO"] - missSNPinfo[,"N_MISS"] 
-    snpWithManyMissSNPs <- missSNPinfo[which(missSNPinfo[,6] < missCutoff), "SNP"] 
-    write.table(snpWithManyMissSNPs, file=outputSNPfile, quote=FALSE, 
+    manyMissSNPs <- missSNPinfo[which(missSNPinfo[,6] < missCutoff), "SNP"] 
+    write.table(manyMissSNPs, file=outputSNPfile, quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
            outputSNPfile, " --make-bed --out ", outputPrefix))
@@ -870,8 +877,9 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
                         infoScore=0.6, outputInfoFile,
                         impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE){
 
-    ## One must create directories for storing temporary imputation output files 
-    ## The name of these directories must be fixed for the sake of the subsequent steps.
+    ## One must create directories for storing tmp imputation output files 
+    ## The name of these directories must be fixed for the sake of 
+    ## the subsequent steps.
     system(paste0("mkdir ", tmpImputeDir))
     setwd(tmpImputeDir) ## 
     ## sub-directories  
@@ -892,7 +900,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     ## step 2.1 
     ## copy plink files without monomorphic SNPs; prepare for the imputation.
     prefixGWchr <- "gwas_data_chr"  
-    system( paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
+    system(paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
     setwd(paste0("./", tmpImputeDir, "/1-dataFiles/"))  
     renamePlinkBFile(inputPrefix, outputPrefix=prefixGWchr, action="move")
     bimCurrent <- read.table(file=paste0(prefixGWchr, ".bim"), 
@@ -956,7 +964,8 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     prefixMerge <- "gwasMerged" 
     .mergePlinkData(plink, chrs, prefix4plinkEachChr=prefixGWchr, 
                    prefixMerge, nCore=length(chrslist))
-    ## fam IDs might be changed: a.) if IDs have 'N'; b.) IID, FID may be switched.
+    ## fam IDs may be changed: a.) if IDs have 'N'; 
+    ## b.) IID, FID may be switched.
     ## >> update this as below 
     ## the original PLINK files before imputation
     setwd("..")

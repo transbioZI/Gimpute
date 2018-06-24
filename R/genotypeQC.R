@@ -51,7 +51,8 @@
 #' corresponding frequency.
 #' @details  A haploid heterozygous is a male genotype that is heterozygous, 
 #' which could be an error given the haploid nature of the male X chromosome.
-#' In principle, one has to remove all heterozygous SNPs of chromosome X in males. 
+#' In principle, one has to remove all heterozygous SNPs of chromosome X 
+#' in males. 
 #' However, too many SNPs might be removed in some data sets. 
 #' Therefore a small percentage of such SNPs in the data set is allowed.
 
@@ -92,7 +93,7 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
         } else {      
 
             ## *.hh: A text file with one line per error (sorted primarily by 
-            ## variant ID, secondarily by sample ID) with the following three fields:
+            ## variant ID, 2nd by sample ID) with the following 3 fields:
             # Family ID  Within-family ID Variant ID
             hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
             fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
@@ -100,29 +101,33 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
             hetSNPsFreq <- table(hh[,3])
             # hetSNPFreqFreq <- table(hetSNPs) 
 
-            cutoff4removeHetSNP <- nrow(fam) * hhCutOff
-            mostFakeSNPs <- hetSNPsFreq[which(hetSNPsFreq >= cutoff4removeHetSNP)] 
+            cut4removeHetSNP <- nrow(fam) * hhCutOff
+            mostFakeSNPs <- hetSNPsFreq[which(hetSNPsFreq >= cut4removeHetSNP)] 
             mostFakeSNPs <- names(mostFakeSNPs)
             str(mostFakeSNPs)
             write.table(mostFakeSNPs, file="mostFakeSNPs.txt", quote=FALSE, 
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
             ## remove these fake SNPs
             system(paste0(plink, " --bfile ", inputPrefix, 
-                   " --exclude mostFakeSNPs.txt --make-bed --out ", outputPrefix))
+                   " --exclude mostFakeSNPs.txt --make-bed --out ", 
+                   outputPrefix))
             ## remove unwanted files
             system(paste0("rm mostFakeSNPs.txt"))
 
             ## generate hetSNPsFreq in .txt file 
             hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
-            hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
+            hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], 
+                                                 decreasing=TRUE),] 
             ## all heterozygous SNPs 
             write.table(hetSNPinstNum, file=outputHetSNPfile, quote=FALSE, 
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
             ## remaining heterozygous SNPs 
-            hetSNPinstNumSub <- hetSNPinstNum[!is.element(hetSNPinstNum[,1], mostFakeSNPs), ]
+            hetSNPinstNumSub <- hetSNPinstNum[!is.element(hetSNPinstNum[,1], 
+                                                          mostFakeSNPs), ]
             write.table(hetSNPinstNumSub, file=outputRetainSNPfile, 
-                        quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+                        quote=FALSE, row.names=FALSE, 
+                        col.names=FALSE, eol="\r\n", sep=" ") 
         } 
 
         system(paste0("rm male23nonPAR.* ", inputPrefix,".*")) 
@@ -152,8 +157,8 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 #' heterozygous SNPs on the chromosome X.
 #' @param outputPrefix the prefix of the output PLINK binary files.
 #' @param outputSubjHetFile the output pure text file that stores male subjects 
-#' that have heterozygous SNPs with their frequency (if any), i.e. the number of 
-#' .hh SNPs in this male. Lines are sorted by descending number.
+#' that have heterozygous SNPs with their frequency (if any), i.e. the number 
+#' of .hh SNPs in this male. Lines are sorted by descending number.
 #' @param outputRetainSubjectFile the output pure text file that stores
 #' male subjects that have heterozygous SNPs with their frequency after 
 #' subject removal (if any). Lines are sorted by descending number.
@@ -214,21 +219,24 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
         } else {     
 
             ## .hh: A text file with one line per error (sorted primarily by  
-            ## variant ID,secondarily by sample ID) with the following three fields:
+            ## variant ID,secondarily by sample ID) with the following 3 fields:
             ## Family ID  Within-family ID Variant ID
             hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
             fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
                             
             hetInstFreq <- table(hh[,2])  
             str(unique(hh[,2]))
-            mostFakeInst <- hetInstFreq[which(hetInstFreq >= hhSubjCutOff)]  
-            mostFakeInst4plink <- fam[is.element(fam[,2], names(mostFakeInst)), c("V1", "V2")]
+            mostFakeInst <- hetInstFreq[which(hetInstFreq >= hhSubjCutOff)]
+            whFakeID <- is.element(fam[,2], names(mostFakeInst))  
+            mostFakeInstID <- fam[whFakeID, c("V1", "V2")]
 
-            write.table(mostFakeInst4plink, file="mostFakeInst4plink.txt", quote=FALSE, 
-                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+            write.table(mostFakeInstID, file="mostFakeInst4plink.txt", 
+                        quote=FALSE, row.names=FALSE, 
+                        col.names=FALSE, eol="\r\n", sep=" ") 
             ## remove these fake SNPs
             system(paste0(plink, " --bfile ", inputPrefix, 
-                   " --remove mostFakeInst4plink.txt --make-bed --out ", outputPrefix))
+                   " --remove mostFakeInst4plink.txt --make-bed --out ", 
+                   outputPrefix))
             system(paste0("rm mostFakeInst4plink.txt"))
 
             ## generate hetSNPsFreq in .txt file 
@@ -238,9 +246,11 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
 
             ## remaining males with heterozygous SNPs 
-            InstHetSNPsub <- InstHetSNP[!is.element(InstHetSNP[,1], names(mostFakeInst)), ] 
+            InstHetSNPsub <- InstHetSNP[!is.element(InstHetSNP[,1], 
+                                                    names(mostFakeInst)), ] 
             write.table(InstHetSNPsub, file=outputRetainSubjectFile, 
-                        quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
+                        quote=FALSE, row.names=FALSE, 
+                        col.names=FALSE, eol="\r\n", sep=" ") 
           } 
 
         system(paste0("rm male23nonPAR.*")) 
@@ -255,10 +265,12 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
             hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)  
             hetSNPsFreq <- table(hh[,3])  
             hetSNPinstNum <- as.data.frame(hetSNPsFreq, stringsAsFactors=FALSE)
-            hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], decreasing=TRUE),] 
+            hetSNPinstNum <- hetSNPinstNum[order(hetSNPinstNum[,2], 
+                                                 decreasing=TRUE),] 
             ## all heterozygous SNPs 
             write.table(hetSNPinstNum, file=outputHetSNPfile, 
-                        quote=FALSE, row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")   
+                        quote=FALSE, row.names=FALSE, 
+                        col.names=FALSE, eol="\r\n", sep=" ")   
         }
         system(paste0("rm male23nonPAR.*"))    
      } else { 
@@ -429,7 +441,8 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 
 removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){ 
 
-    system(paste0(plink, " --bfile ", inputPrefix, " --het --out ", outputPrefix))
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --het --out ", outputPrefix))
     ##  F inbreeding coefficient estimate
     autoHet <- read.table(file=paste0(outputPrefix, ".het"), header=TRUE)  
     fhet <- autoHet[, "F"]
@@ -491,7 +504,8 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
     # Remove the parent IDs which do not belong to subjects
     system(paste0(plink, " --bfile ", inputPrefix, 
-           " --make-founders require-2-missing --make-bed --out ", outputPrefix)) 
+           " --make-founders require-2-missing --make-bed --out ", 
+           outputPrefix)) 
  
 }
 
@@ -654,8 +668,8 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 #' @param pval the p-value cutoff for controlling HWE test in either control or 
 #' case subjects. Only autosomal SNPs are considered. The default value is
 #' 0.000001.
-#' @param outputPvalFile the output pure text file that stores autosomal SNPs and 
-#' their sorted HWE p-values.
+#' @param outputPvalFile the output pure text file that stores autosomal SNPs  
+#' and their sorted HWE p-values.
 #' @param outputSNPfile the output pure text file that stores the removed SNPs, 
 #' one per line.
 #' @param outputPrefix the prefix of the output PLINK binary files.
@@ -734,8 +748,8 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 #' @param pval the p-value cutoff for controlling HWE test in female control 
 #' subjects. Only chromosome X SNPs are considered. 
 #' The default value is 0.000001.
-#' @param outputPvalFile the output pure text file that stores chromosome X SNPs 
-#' and their sorted HWE p-values.
+#' @param outputPvalFile the output pure text file that stores chromosome X 
+#' SNPs and their sorted HWE p-values.
 #' @param outputSNPfile the output pure text file that stores the removed SNPs, 
 #' one per line.
 #' @param outputPrefix the prefix of the output PLINK binary files.
@@ -846,11 +860,13 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread=20,
 
     autosomefn <- paste0(inputPrefix, "Autosome")
     system(paste0(gcta, " --bfile ", inputPrefix, 
-           " --make-grm --autosome --out ", autosomefn, " --thread-num ", nThread))
+           " --make-grm --autosome --out ", 
+           autosomefn, " --thread-num ", nThread))
     system(paste0(gcta, " --grm ", autosomefn, " --pca 20 --out ", 
            autosomefn, " --thread-num ", nThread))
 
-    eigen <- read.table(file=paste0(autosomefn,".eigenvec"), stringsAsFactors=FALSE)
+    eigen <- read.table(file=paste0(autosomefn,".eigenvec"), 
+                        stringsAsFactors=FALSE)
     pcs <- eigen[,seq_len(4)] ## first two PCs in the 3rd and 4th column.
     write.table(pcs, outputPC4subjFile, quote=FALSE, row.names=FALSE, 
                 col.names=FALSE, eol="\r\n", sep=" ")
@@ -942,29 +958,29 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
             ## detected by PC1
             outliersPC1v1 <- subjID_PCs[which(subjID_PCs[,3] <= cutoff[1]), ] 
             outliersPC1v2 <- subjID_PCs[which(subjID_PCs[,3] >= cutoff[2]), ]  
-            subjID_PCs4outlier <- rbind(outliersPC1v1, outliersPC1v2)
+            outlierID <- rbind(outliersPC1v1, outliersPC1v2)
         } else { 
             if (cutoffSign == "smaller"){ 
                 ## detected by PC1
-                subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] <= cutoff), ] 
+                outlierID <- subjID_PCs[which(subjID_PCs[,3] <= cutoff), ] 
             } else if (cutoffSign == "greater"){
                 ## detected by PC1
-                subjID_PCs4outlier <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
+                outlierID <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
             }
         }      
         ## sorted by first PC.
-        subjID_PCs4outlierSorted <- subjID_PCs4outlier[order(subjID_PCs4outlier[,3]), ] 
-        write.table(subjID_PCs4outlierSorted, file=outputPC4outlierFile, quote=FALSE, 
+        outlierIDSorted <- outlierID[order(outlierID[,3]), ] 
+        write.table(outlierIDSorted, file=outputPC4outlierFile, quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
-        subjID4outlierTmp  <- subjID_PCs4outlierSorted[,c("V1", "V2")]
+        subjID4outlierTmp  <- outlierIDSorted[,c("V1", "V2")]
         subjID4outlierTmpFile <- "subjID4outlierTmp.txt"
         write.table(subjID4outlierTmp, file=subjID4outlierTmpFile, quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
         system(paste0(plink, " --bfile ", inputPrefix, " --remove ", 
                subjID4outlierTmpFile, " --make-bed --out ", outputPrefix))
         system(paste0("rm ", subjID4outlierTmpFile)) 
-        ## Plot first two PCs again
-        outputPC4subjFiletmp <- "outputPC4subjFile.txt" ## PCs for the retained subjects 
+        ## Plot first two PCs again; PCs for the retained subjects 
+        outputPC4subjFiletmp <- "outputPC4subjFile.txt" 
         plotPCA4plink(gcta, inputPrefix=outputPrefix, nThread, 
                       outputPC4subjFiletmp, outputPCplotFile)
         system(paste0("rm ", outputPC4subjFiletmp))
@@ -1077,8 +1093,7 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     outputPrefix8 <- "2_08_removedSnpMissPost" 
     removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
                    inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
-    ## step 9 
-    ## Remove SNPs with difference >= 0.02 of SNP missingness between cases and controls.
+    ## step 9  
     outputPrefix9 <- "2_09_removedSnpMissDiff" 
     removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
                        snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
