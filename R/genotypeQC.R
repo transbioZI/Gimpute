@@ -288,7 +288,17 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 #' @export 
 
 #' @author Junfang Chen 
-###' @examples  
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "2_03_setHeteroHaploMissing" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## setHeteroHaploMissing(plink, inputPrefix, outputPrefix)
 
 setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
      
@@ -318,7 +328,17 @@ setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' snpMissCutOff <- 0.05
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "2_04_removedSnpMissPre" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedSnpMiss(plink, snpMissCutOff, inputPrefix, outputPrefix)
  
 removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
  
@@ -347,7 +367,18 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' sampleMissCutOff <- 0.02
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "2_05_removedInstMiss" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedInstMiss(plink, sampleMissCutOff, inputPrefix, outputPrefix)
+ 
 
 removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
  
@@ -380,7 +411,19 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' Fhet <- 0.2
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "2_06_removedInstFhet" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedInstFhet(plink, Fhet, inputPrefix, outputPrefix)
+ 
 
 removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){ 
 
@@ -429,7 +472,17 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
 
 #' @export  
 #' @author Junfang Chen 
-##' @examples  
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "2_07_removedParentIdsMiss" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedParentIdsMiss(plink, inputPrefix, outputPrefix)
 
  
 removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){ 
@@ -463,8 +516,19 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
-
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' snpMissDifCutOff <- 0.02
+#' outputPrefix <- "2_09_removedSnpMissDiff" 
+#' groupLabel <- "control"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, 
+#' ##                    outputPrefix, groupLabel)
 
 removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff, 
                                outputPrefix, groupLabel){
@@ -518,7 +582,18 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' femaleChrXmissCutoff <- 0.05
+#' inputPrefix <- "controlData"  
+#' outputPrefix <- "2_10_removedSnpFemaleChrXmiss" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
+#' ##                          inputPrefix, outputPrefix)
 
 
 removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff, 
@@ -573,22 +648,36 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param pval the p-value cutoff for controlling HWE test in either control or 
-#' case subjects. Only autosomal SNPs are considered. 
+#' case subjects. Only autosomal SNPs are considered. The default value is
+#' 0.000001.
 #' @param outputPvalFile the output pure text file that stores autosomal SNPs and 
 #' their sorted HWE p-values.
 #' @param outputSNPfile the output pure text file that stores the removed SNPs, 
 #' one per line.
 #' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK binary files.
+#' @return The output PLINK binary files after HWE test on the autosome.
 #' @details 
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' groupLabel <- "control"
+#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+#' outputPvalFile <- "2_11_snpHwePvalAuto.txt"
+#' outputSNPfile <- "2_11_snpRemovedHweAuto.txt" 
+#' outputPrefix <- "2_11_removedSnpHweAuto" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedSnpHWEauto(groupLabel, plink, inputPrefix, pval=0.000001,
+#' ##                   outputPvalFile, outputSNPfile, outputPrefix)
 
 removedSnpHWEauto <- function(groupLabel, plink, inputPrefix, 
-                                pval, outputPvalFile, 
+                              pval=0.000001, outputPvalFile, 
                               outputSNPfile, outputPrefix){ 
 
     if (groupLabel == "control"){ 
@@ -639,19 +728,34 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param pval the p-value cutoff for controlling HWE test in female control 
 #' subjects. Only chromosome X SNPs are considered. 
+#' The default value is 0.000001.
 #' @param outputPvalFile the output pure text file that stores chromosome X SNPs 
 #' and their sorted HWE p-values.
 #' @param outputSNPfile the output pure text file that stores the removed SNPs, 
 #' one per line.
 #' @param outputPrefix the prefix of the output PLINK binary files.
 
-#' @return The output PLINK binary files.
+#' @return The output PLINK binary files after HWE test on chromosomal X 
+#' in female controls.
 
 #' @export 
 #' @author Junfang Chen 
-##' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' inputPrefix <- "controlData"  
+#' outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
+#' outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
+#' outputPrefix <- "2_12_removedSnpHweFemaleX"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedSnpFemaleChrXhweControl(plink, inputPrefix, pval=0.000001,
+#' ##                                outputPvalFile, outputSNPfile, 
+#' ##                                outputPrefix)
 
-removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval, 
+removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval=0.000001, 
                                            outputPvalFile, outputSNPfile, 
                                            outputPrefix){ 
 
@@ -701,10 +805,11 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param nThread the number of threads used for computation. 
+#' The default is 20.
 #' @param outputPC4subjFile the pure text file that stores all the subject IDs 
 #' and their corresponding eigenvalues of the first two principle components.
 #' @param outputPCplotFile the plot file for visualizing the first two 
-#' principle components of all investigated subjects.
+#' principle components of all investigated subjects. 
 
 #' @return The output pure text file and plot file for storing first two 
 #' principle components of study subjects.
@@ -716,10 +821,20 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval,
 #' @import lattice  
 
 #' @author Junfang Chen 
-##' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
+#' outputPCplotFile <- "2_13_eigenvalAfterQC.png" ## png format
+#' ## Not run: Requires an executable program GCTA, e.g.
+#' ## gcta <- "/home/tools/gcta64"
+#' ## plotPCA4plink(gcta, inputPrefix, nThread=20, 
+#' ##               outputPC4subjFile, outputPrefix)
 
-
-plotPCA4plink <- function(gcta, inputPrefix, nThread, 
+plotPCA4plink <- function(gcta, inputPrefix, nThread=20, 
                           outputPC4subjFile, outputPCplotFile){ 
 
     autosomefn <- paste0(inputPrefix, "Autosome")
@@ -756,6 +871,7 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread,
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param nThread the number of threads used for computation. 
+#' The default is 20.
 #' @param cutoff the cutoff that distinguishes the eigenvalues of the outliers  
 #' from ordinary population. If it is null, then there are no outliers or 
 #' outliers are not required to be removed.  
@@ -783,9 +899,26 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread,
 #' @export 
 #' @import lattice  
 #' @author Junfang Chen 
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData"  
+#' cutoff <- NULL ## no outlier to be removed
+#' cutoffSign <- "greater" ## not used if cutoff == NULL
+#' inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
+#' outputPC4outlierFile <- "2_13_eigenval4outliers.txt"
+#' outputPCplotFile <- "2_13_removedOutliers.png"
+#' outputPrefix <- "2_13_removedOutliers" 
+#' ## Not run: Requires an executable program PLINK and GCTA, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## gcta <- "/home/tools/gcta64"
+#' ## removeOutlierByPCs(plink, gcta, inputPrefix, nThread=20, 
+#' ##                    cutoff, cutoffSign, inputPC4subjFile, 
+#' ##                    outputPC4outlierFile, outputPCplotFile, outputPrefix)
 
-
-removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread, cutoff, 
+removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff, 
                                cutoffSign, inputPC4subjFile, 
                                outputPC4outlierFile, 
                                outputPCplotFile, outputPrefix){
@@ -845,7 +978,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread, cutoff,
 #' @param snpMissCutOffpre the cutoff of the missingness for removing SNPs 
 #' before subject removal. The default is 0.05.
 #' @param sampleMissCutOff the cutoff of the missingness for removing 
-#' subjects/instances. The default is 
+#' subjects/instances. The default is 0.02.
 #' @param Fhet the cutoff of the autosomal heterozygosity deviation. 
 #' The default is 0.2.
 #' @param snpMissCutOffpost the cutoff of the missingness for removing SNPs 
@@ -882,7 +1015,26 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread, cutoff,
 
 #' @export  
 #' @author Junfang Chen 
-##' @examples  
+#' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "2_12_removedSnpHweFemaleX"  
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## genoQC(plink, inputPrefix, 
+#' ##        snpMissCutOffpre=0.05, 
+#' ##        sampleMissCutOff=0.02, 
+#' ##        Fhet=0.2, 
+#' ##        snpMissCutOffpost=0.02, 
+#' ##        snpMissDifCutOff=0.02,
+#' ##        femaleChrXmissCutoff=0.05, 
+#' ##        pval4autoCtl=0.000001, 
+#' ##        pval4femaleXctl=0.000001, outputPrefix)
+
 
 genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05, 
                    sampleMissCutOff=0.02, Fhet=0.2, 
