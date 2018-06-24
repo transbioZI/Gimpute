@@ -36,8 +36,8 @@ Before population outlier detection, it's better to perform QC
 on the genotype data. 
 Only autosomal genotypes are used for principle component analysis.
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -50,4 +50,7 @@ outputPCplotFile <- "2_13_eigenvalAfterQC.png" ## png format
 ## gcta <- "/home/tools/gcta64"
 ## plotPCA4plink(gcta, inputPrefix, nThread=20, 
 ##               outputPC4subjFile, outputPrefix)
+}
+\author{
+Junfang Chen
 }

@@ -32,8 +32,8 @@ To test for differential call rates between cases and controls for each SNP
 Only if both case-control groups exist in the input genotype data, 
 differential SNPs are removed.
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -47,4 +47,7 @@ groupLabel <- "control"
 ## plink <- "/home/tools/plink"
 ## removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, 
 ##                    outputPrefix, groupLabel)
+}
+\author{
+Junfang Chen
 }

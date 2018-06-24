@@ -33,8 +33,8 @@ in female controls.
 Hardy Weinberg Equilibrium test for SNPs on the chromosome X in 
 female controls.
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -49,4 +49,7 @@ outputPrefix <- "2_12_removedSnpHweFemaleX"
 ## removedSnpFemaleChrXhweControl(plink, inputPrefix, pval=0.000001,
 ##                                outputPvalFile, outputSNPfile, 
 ##                                outputPrefix)
+}
+\author{
+Junfang Chen
 }

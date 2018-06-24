@@ -52,8 +52,8 @@ If the outliers are necessary to be removed, then one uses the eigenvalues
 from the first principle component as a criterion to find out the outliers 
 by assigning an appropriate cutoff.
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -72,4 +72,7 @@ outputPrefix <- "2_13_removedOutliers"
 ## removeOutlierByPCs(plink, gcta, inputPrefix, nThread=20, 
 ##                    cutoff, cutoffSign, inputPC4subjFile, 
 ##                    outputPC4outlierFile, outputPCplotFile, outputPrefix)
+}
+\author{
+Junfang Chen
 }

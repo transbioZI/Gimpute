@@ -31,8 +31,8 @@ The output PLINK binary files after HWE test on the autosome.
 \description{
 Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium (HWE).
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -47,4 +47,7 @@ outputPrefix <- "2_11_removedSnpHweAuto"
 ## plink <- "/home/tools/plink"
 ## removedSnpHWEauto(groupLabel, plink, inputPrefix, pval=0.000001,
 ##                   outputPvalFile, outputSNPfile, outputPrefix)
+}
+\author{
+Junfang Chen
 }

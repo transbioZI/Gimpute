@@ -24,8 +24,8 @@ The output PLINK binary files.
 Remove SNPs on the chromosome X with a pre-defined cutoff for 
 missingness in females.
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -38,4 +38,7 @@ outputPrefix <- "2_10_removedSnpFemaleChrXmiss"
 ## plink <- "/home/tools/plink"
 ## removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
 ##                          inputPrefix, outputPrefix)
+}
+\author{
+Junfang Chen
 }

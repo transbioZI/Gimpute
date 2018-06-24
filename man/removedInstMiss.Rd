@@ -25,8 +25,8 @@ a pre-defined removal cutoff.
 Remove Subjects or instances with missingness of greater than a certain 
 threshold.
 }
-\author{
-Junfang Chen 
+\examples{
+ 
 ## In the current working directory
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -38,4 +38,7 @@ outputPrefix <- "2_05_removedInstMiss"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
 ## removedInstMiss(plink, sampleMissCutOff, inputPrefix, outputPrefix)
+}
+\author{
+Junfang Chen
 }
