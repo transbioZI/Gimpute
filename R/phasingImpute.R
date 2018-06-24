@@ -25,7 +25,6 @@
 ##########################################################################
 ## removedMonoSnp.R
 ##########################################################################
-# 
 
 #' Exclude monomorphic SNPs 
 #'
@@ -38,14 +37,25 @@
 #' @param outputPrefix the prefix of the output PLINK binary files 
 #' after removing monomorphic SNPs.
 #' @param outputSNPfile the output pure text file that stores 
-#' the removed monomorphic SNPs, one per line.
+#' the removed monomorphic SNPs, one per line, if any.
 
 #' @return The output PLINK binary files after removing monomorphic SNPs 
 #' and a pure text file with removed monomorphic SNPs.
 #' @export 
 
 #' @author Junfang Chen 
-
+#' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' inputPrefix <- "controlData"
+#' outputPrefix <- "removedMonoSnp" 
+#' outputSNPfile <- "monoSNP.txt"  
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedMonoSnp(plink, inputPrefix, outputPrefix, outputSNPfile)
 
 removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){  
 
@@ -92,12 +102,22 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' The locations of the PARs within GRCh37 are:  
 #' PAR1    X    60001    2699520; 
 #' PAR2    X    154931044    155260560.   
-
 #' @export 
 #' @import doParallel  
 
 #' @author Junfang Chen
-
+#' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' inputPrefix <- "controlData"
+#' chrXPAR1suffix <- "X_PAR1"
+#' chrXPAR2suffix <- "X_PAR2"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore)
 
 chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix, 
                          chrXPAR2suffix, nCore=25){ 
@@ -189,8 +209,18 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 
 #' @export 
 #' @author Junfang Chen 
-
-
+#' @examples  
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' inputPrefix <- "controlData"
+#' outputPrefix <- "chunks_chr"
+#' bimCurrent <- read.table(file=famFile, stringsAsFactors=FALSE)  
+#' chrs <- names(table(bimCurrent[,1]))
+#' print(chrs)   
+#' chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
 
 chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){  
 
@@ -243,7 +273,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 ##########################################################################
-## prePhasingByShapeit.R
+## .prePhasingByShapeit.R
 ########################################################################## 
 #' Prephasing genotypes using SHAPEIT
 #'
@@ -273,11 +303,11 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' --chrX to SHAPEIT.
 
 #' @export 
-#' @import doParallel  
+##' @import doParallel  
 
-#' @author Junfang Chen   
+#' @author Junfang Chen    
 
-prePhasingByShapeit <- function(shapeit, chrs, dataDIR, 
+.prePhasingByShapeit <- function(shapeit, chrs, dataDIR, 
                                 prefix4plinkEachChr, impRefDIR, phaseDIR, 
                                 nThread=40, effectiveSize=20000, nCore=1){
 
@@ -331,7 +361,7 @@ prePhasingByShapeit <- function(shapeit, chrs, dataDIR,
 
 
 ##########################################################################
-## imputedByImpute2.R
+## .imputedByImpute2.R
 ########################################################################## 
 #' Impute genotypes using IMPUTE2
 #'
@@ -355,14 +385,14 @@ prePhasingByShapeit <- function(shapeit, chrs, dataDIR,
 #' passed for prephasing using SHAPEIT.
 #' --chrX flag, specifically for chrX imputation'
 #' @return The imputed files for all chunks from given chromosomes.  
-#' @export 
+##' @export 
 #' @import doParallel  
 
 #' @author Junfang Chen 
 ##' @examples 
 
 
-imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR, 
+.imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR, 
                              impRefDIR, imputedDIR, prefix4plinkEachChr, 
                              nCore, effectiveSize){ 
  
@@ -457,7 +487,7 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
 
 
 ##########################################################################
-## convertImpute2ByGtool.R 
+## .convertImpute2ByGtool.R 
 ##########################################################################  
 #' Convert IMPUTE2 format files into PLINK format
 #'
@@ -482,13 +512,13 @@ imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR,
  
 #' @return The converted binary PLINK format files for each chunk from IMPUTE2 
 #' results.
-#' @export 
+##' @export 
 #' @import doParallel  
 
 #' @author Junfang Chen 
 
 
-convertImpute2ByGtool <- function(gtool, chrs, prefixChunk, 
+.convertImpute2ByGtool <- function(gtool, chrs, prefixChunk, 
                                   phaseDIR, imputedDIR, prefix4plinkEachChr, 
                                   suffix4imputed, postImputeDIR, nCore){
 
@@ -524,7 +554,7 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
 
 
 ##########################################################################
-## mergePlinkData.R
+## .mergePlinkData.R
 ########################################################################## 
 #' Merge chunk-wise PLINK files 
 #'
@@ -548,13 +578,12 @@ convertImpute2ByGtool <- function(gtool, chrs, prefixChunk,
 #' combined. Then all chromosomal PLINK files are assembled together 
 #' into one whole genome PLINK binary file set.
 
-#' @export 
+##' @export 
 #' @import doParallel  
-
 #' @author Junfang Chen 
 
 
-mergePlinkData <- function(plink, chrs, prefix4plinkEachChr, 
+.mergePlinkData <- function(plink, chrs, prefix4plinkEachChr, 
                            prefix4mergedPlink, nCore){ 
 
     ## firstly, only consider chromosomes from 1:23; as Xpar chrs 
@@ -626,7 +655,7 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 
 
 ##########################################################################
-## filterImputeData.R
+## .filterImputeData.R
 ########################################################################## 
 #' Filter genetic variants    
 #'
@@ -654,11 +683,11 @@ mergePlinkData <- function(plink, chrs, prefix4plinkEachChr,
 #' Often, we keep variants with imputation info score of greater than 0.6.    
 #' Note that imputed SNPs with more than two alleles are not considered. 
 
-#' @export 
+##' @export 
 #' @author Junfang Chen 
 
 
-filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
+.filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
                              infoScore=0.6, badImputeSNPfile, inputPrefix, 
                              outputPrefix){ 
 
@@ -706,7 +735,7 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
 #' directory or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param missCutoff  the cutoff of the least number of instances for 
-#' a SNP that is not missing.
+#' a SNP that is not missing. The default is 20.
 #' @param outputSNPfile the output file of SNPs with pre-defined 
 #' missing values.
 #' @param outputPrefix  the prefix of the PLINK binary files. 
@@ -716,6 +745,18 @@ filterImputeData <- function(plink, suffix4impute2info, outputInfoFile,
 
 #' @export 
 #' @author Junfang Chen 
+
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "removedSnpMissPostImp" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedSnpMissPostImp(plink, inputPrefix, missCutoff=20, outputPrefix)
 
 
 removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff, 
@@ -798,7 +839,27 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' 5.) Filtering out imputed variants with bad imputation quality. 
 
 #' @export 
-#' @author Junfang Chen 
+#' @author Junfang Chen
+#' @examples 
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "removedMonoSnp.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "removedMonoSnp.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "removedMonoSnp.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' inputPrefix <- "removedMonoSnp"  
+#' outputPrefix <- "gwasImputedFiltered"
+#' prefix4final <- "gwasImputed"   
+#' outputInfoFile <- "impute2infoUpdated.txt"
+#' tmpImputeDir <- "tmpImpute"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' phaseImpute(inputPrefix, outputPrefix, prefix4final,
+#'             plink, shapeit, impute2, gtool, 
+#'             windowSize=3000000, effectiveSize=20000, 
+#'             nCore4phase=1, nThread=40, 
+#'             nCore4impute=40, nCore4gtool=40, 
+#'             infoScore=0.6, outputInfoFile, 
+#'             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
 phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
@@ -855,13 +916,13 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     setwd("..") 
     system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
     ## step 2.3     
-    prePhasingByShapeit(shapeit, chrs, dataDIR, 
+    .prePhasingByShapeit(shapeit, chrs, dataDIR, 
                         prefix4plinkEachChr=prefixGWchr, 
                         impRefDIR, phaseDIR, nThread, 
                         effectiveSize, nCore4phase)
     ## step 2.4   
     prefixChunk <- paste0(chunkDIR, chunkPrefix)        
-    imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
+    .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
                      imputedDIR, prefix4plinkEachChr=prefixGWchr, 
                      nCore4impute, effectiveSize)
     ## step 2.5   
@@ -879,7 +940,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     }, mc.cores=length(biglists)) 
     setwd("..") 
     suffix4imputed <- ".impute2noINDEL.impute2"   
-    convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
+    .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                           prefix4plinkEachChr=prefixGWchr, suffix4imputed, 
                           postImputeDIR, nCore4gtool)
 
@@ -893,7 +954,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
         system(paste0("sed -i 's/N/0/g' ", prefixGWchr, i, ".*ped "))
     }, mc.cores=length(chrslist)) 
     prefixMerge <- "gwasMerged" 
-    mergePlinkData(plink, chrs, prefix4plinkEachChr=prefixGWchr, 
+    .mergePlinkData(plink, chrs, prefix4plinkEachChr=prefixGWchr, 
                    prefixMerge, nCore=length(chrslist))
     ## fam IDs might be changed: a.) if IDs have 'N'; b.) IID, FID may be switched.
     ## >> update this as below 
@@ -922,7 +983,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
     setwd(finalImputeDIR)
     suffix4impute2info <- ".impute2_info"
     badImputeSNPfile <- "badImputeSNPs.txt" 
-    filterImputeData(plink, suffix4impute2info, 
+    .filterImputeData(plink, suffix4impute2info, 
                      outputInfoFile, infoScore, badImputeSNPfile, 
                      inputPrefix=prefix4final, outputPrefix)
     setwd("..")

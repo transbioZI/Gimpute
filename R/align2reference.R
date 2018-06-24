@@ -9,7 +9,8 @@
 #' from 1000 genome projects.
 #' @param outputFile the pure text file that stores the prepared PLINK BIM 
 #' file alike format data. 
-#' @param nCore the number of cores used for computation.  
+#' @param nCore the number of cores used for computation. 
+#' The default is 20.  
 
 #' @return Prepare a bim-like reference file. Note that the column names 
 #' are already defined, i.e. "chr", "rsID", "pos", "a0", "a1."
@@ -19,10 +20,10 @@
 #' in column3 and 4, and start with 'rs") and remove duplicated snp IDs. 
 #' Column names are added in the end. 
 #' @author Junfang Chen 
-#' @export   
+##' @export   
 #' @import doParallel  
 
-prepareLegend2bim <- function(inputFile, outputFile, ncore){
+.prepareLegend2bim <- function(inputFile, outputFile, ncore=20){
 
     tmpFolder <- "tmp4legend"
     system(paste0("mkdir ", tmpFolder))
@@ -217,14 +218,15 @@ checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
 #' chromosomal location, snp name and base-pair position.
 #' @param outputFile the pure text file return the snp name of the second input file.
 #' @param nCore the number of cores used for computation.  
+#' The default is 20.  
 
 #' @return The snp name of the second input file which shares the same genomic 
 #' position with that of the first input file.
 
-#' @export 
+##' @export 
 #' @import doParallel  
 
-snpSharedPos <- function(inputFile1, inputFile2, outputFile, nCore=25){
+.snpSharedPos <- function(inputFile1, inputFile2, outputFile, nCore=20){
 
     chrDist <- table(inputFile1[,"chr"])
     currentChr <- names(chrDist)

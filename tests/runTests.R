@@ -201,7 +201,7 @@ renamePlinkBFile(inputPrefix="2_13_removedOutliers",
 inputFile <- paste0(impRefDIR,"*.legend.gz")  
 bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
 ## take less than 1 minute
-prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
+.prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
 
 ## 2. Remove SNPs for which the name has a different position (i.e. combination of
 # base pair position and chromosome) in the imputation reference files. 
@@ -326,7 +326,7 @@ if (file.size(paste0(outputMonoSNPfile)) == 0 ){
     colnames(bim1) <- c("chr", "rsID", "gd", "pos", "a0", "a1") 
     colnames(bim2) <- c("chr", "rsID", "pos")
     outputFile <- "tmp.txt"
-    snpSharedPos(inputFile1=bim1, inputFile2=bim2, outputFile, nCore=25) 
+    .snpSharedPos(inputFile1=bim1, inputFile2=bim2, outputFile, nCore=25) 
     system(paste0(plink, " --bfile ", filteredImputedDatasetfn, 
            " --exclude tmp.txt --make-bed --out ", removedMonoSnpAfter))
     system("rm tmpFilterImp.txt tmp.txt")

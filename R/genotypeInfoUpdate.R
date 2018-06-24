@@ -424,7 +424,22 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 
 #' @export  
 #' @author Junfang Chen 
-##' @examples 
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData"     
+#' chipType <- "affymetrix"
+#' outputSNPdupFile <- "snpDup.txt"
+#' outputPrefix <- "removedDoubleProbes"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedDoubleProbes(plink, inputPrefix, chipAnnoFile,
+#' ##                     chipType, outputSNPdupFile, outputPrefix)
+
 
 
 removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile, 
@@ -516,7 +531,22 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' the reference. 
 
 #' @export 
-#' @author Junfang Chen 
+#' @author Junfang Chen  
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+#' inputPrefix <- "controlData"     
+#' chipType <- "affymetrix"
+#' outputPrefix <- "updatedSnpInfo"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## updatedSnpInfo(plink, inputPrefix, chipAnnoFile, 
+#' ##                    outputPrefix, outputSNPfile)
+
 
 updatedSnpInfo <- function(plink, inputPrefix, 
                            chipAnnoFile, chipType, outputPrefix){
@@ -675,7 +705,7 @@ splitXchr <- function(plink, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
-# #' @examples 
+#' @examples 
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
@@ -898,8 +928,28 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 #' @export  
-#' @author Junfang Chen 
-##' @examples 
+#' @author Junfang Chen  
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' metaDataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+#' excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="Gimpute")
+#' removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", package="Gimpute")
+#' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+#' ancestrySymbol <- "EUR"
+#' outputPrefix <- "1_11_removedYMtSnp" 
+#' metaDataFile <- "1_01_metaData.txt"
+#' chipType <- "affymetrix"
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"  
+#' ## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
+#' ##                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+#' ##                chipType, outputPrefix)
+ 
 
 
 updateGenoInfo <- function(plink, inputPrefix, metaDataFile, removedSampIDFile,

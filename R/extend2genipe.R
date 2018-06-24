@@ -267,10 +267,7 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 
 #' @author Junfang Chen 
 ##' @examples  
-
-
-# impute2-extractor  --impute2 imputedChr2.impute2   --out imputedChr2   
-# --format  bed   --extract  imputedChr2.marker 
+ 
 
 extractByGenipe <- function(inputImpute2, inputMAP, outputPrefix, format, prob){ 
 
