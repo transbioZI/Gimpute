@@ -985,8 +985,6 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
                       outputPC4subjFiletmp, outputPCplotFile)
         system(paste0("rm ", outputPC4subjFiletmp))
     } 
-    ## remove unwanted files 
-    system(paste0("rm  *.log "))  
 }
 
 

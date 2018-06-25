@@ -7,6 +7,7 @@ date: "Modified: 25 Jun 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
   BiocStyle::html_document:
     toc_float: true
+    number_sections: true
 vignette: >
    %\VignetteIndexEntry{Gimpute tutorial}
    %\VignetteEngine{knitr::rmarkdown}

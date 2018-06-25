@@ -63,7 +63,7 @@ system(paste0("scp ", metadataFile, " ."))
  
  
 ############################################################ 
-## module function
+## pipeline function
 inputPrefix <- "controlData"
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
