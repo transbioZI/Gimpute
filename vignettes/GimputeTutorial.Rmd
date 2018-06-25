@@ -45,7 +45,7 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 
 ## Installation 
 Development version from Github:
-```{r}
+```{r eval=FALSE}
 library("devtools")
 install_github("transbioZI/Gimpute", build_vignettes=TRUE)
 ```
@@ -115,11 +115,11 @@ excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", package="
 ### Required tools and packages
 ```{r} 
 ## Define required tools
-plink <- "/home/tools/plink"
-gcta <- "/home/tools/gcta64" 
-shapeit <- "/home/tools/shapeit"
-impute2 <- "/home/tools/impute2"
-gtool <- "/home/tools/gtool"
+plink <- "/home/junfang.chen/Gimpute/tools/plink"
+gcta <- "/home/junfang.chen/Gimpute/tools/gcta64" 
+shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
+impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
+gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
 ## Gimpute has the following dependencies:
 library(lattice)
 library(doParallel)
@@ -142,21 +142,9 @@ All files named in this subsection are in the directory 1-genoUpdate/.
 
 * The file with the IDs of the excluded probes of the chip (see section 2.4.2).
 
-
-
 ### Processing example
-#### Using pipeline function
-```{r eval=FALSE} 
-## module function
-inputPrefix <- "study"
-outputPrefix <- "1_11_removedYMtSnp" 
-metaDataFile <- "1_01_metaData.txt"
-updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
-               ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-               chipType, outputPrefix)
-```
-#### Using individual function
-0. Locate the original PLINK files and metadata information either from our package or your side.
+
+0. Locate the original PLINK files and other requird files either from our package or your side.
 
 ```{r} 
 ## Load PLINK binary files and metadata information from Gimpute package
@@ -164,24 +152,43 @@ updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
-system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+
+metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+                                 package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
+                                    package="Gimpute")
+chipAnnoFile <- NULL 
 ```
+
+#### Using pipeline function
+```{r eval=FALSE} 
+## pipeline function
+inputPrefix <- "controlData"
+outputPrefix <- "1_11_removedYMtSnp" 
+metaDataFile <- "1_01_metaData.txt"
+updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
+               ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+               chipType, outputPrefix)
+```
+#### Using individual function
 
 1. Use the raw genotype data and metadata information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. In the following example, the metadata file is already preprocessed.
 + Output file: 1_01_metaData.txt 
 
 ```{r} 
-## Load PLINK binary files and meta information file
-metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
 system(paste0("scp ", metadataFile, " ."))  
 ```
 
 2. Remove all excluded instances from the raw chip data.
 + Output files: 1_02_removedExclInst.#
 ```{r eval=FALSE} 
-inputPrefix <- "study" ## from last step
 outputPrefix2 <- "1_02_removedExclInst" 
-removeDupID(plink, removedSampIDFile, inputPrefix, outputPrefix=outputPrefix2)
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+                                 package="Gimpute")
+removeSampID(plink, removedSampIDFile, inputPrefix, 
+             outputPrefix=outputPrefix2)
 ```
 3. Replace all values for affection (phenotype, group) and sex in the PLINK fam file by those values in the file 1_01_metaData.txt. In regards to this, the missing value for sex is represented by the value 0 (zero), the missing value for affection (group) is represented by the value -9.
 + Output files: 1_03_replacedGroupAndSex.#
