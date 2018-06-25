@@ -5,7 +5,8 @@
 \title{Update genotype information}
 \usage{
 updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
-  ancestrySymbol, excludedProbeIdsFile, chipAnnoFile, chipType, outputPrefix)
+  ancestrySymbol, excludedProbeIdsFile, chipAnnoFile, chipType, outputPrefix,
+  keepInterFile = TRUE)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 
@@ -30,6 +31,9 @@ information.}
 file: 'illumina', 'affymetrix' or 'psychChip'.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
+
+\item{keepInterFile}{a logical value indicating if the intermediate 
+processed files should be kept or not. The default is TRUE.}
 }
 \value{
 The output PLINK binary files after genotype information remapping.
@@ -79,7 +83,7 @@ chipType <- "affymetrix"
 ## plink <- "/home/tools/plink"  
 ## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
 ##                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-##                chipType, outputPrefix)
+##                chipType, outputPrefix, keepInterFile=TRUE)
 }
 \author{
 Junfang Chen

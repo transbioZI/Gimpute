@@ -7,7 +7,7 @@
 genoQC(plink, inputPrefix, snpMissCutOffpre = 0.05, sampleMissCutOff = 0.02,
   Fhet = 0.2, snpMissCutOffpost = 0.02, snpMissDifCutOff = 0.02,
   femaleChrXmissCutoff = 0.05, pval4autoCtl = 1e-06,
-  pval4femaleXctl = 1e-06, outputPrefix)
+  pval4femaleXctl = 1e-06, outputPrefix, keepInterFile = TRUE)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 
@@ -42,6 +42,9 @@ female control subjects. Only chromosome X SNPs are considered.
 The default is 0.000001}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files after QC.}
+
+\item{keepInterFile}{a logical value indicating if the intermediate 
+processed files should be kept or not. The default is TRUE.}
 }
 \value{
 The output PLINK binary files after QC.
@@ -85,7 +88,8 @@ outputPrefix <- "2_12_removedSnpHweFemaleX"
 ##        snpMissDifCutOff=0.02,
 ##        femaleChrXmissCutoff=0.05, 
 ##        pval4autoCtl=0.000001, 
-##        pval4femaleXctl=0.000001, outputPrefix)
+##        pval4femaleXctl=0.000001, 
+##        outputPrefix, keepInterFile=TRUE)
 }
 \author{
 Junfang Chen
