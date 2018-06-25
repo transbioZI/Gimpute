@@ -1,10 +1,9 @@
-
 ---
 title: "Gimpute: An efficient genetic data imputation pipeline"
 author:
  - name: Junfang Chen, Dietmar Lippold and Emanuel Schwarz
    affiliation: Central Institute of Mental Health, Heidelberg University, Germany  
-date: 17 June 2018 
+date: "Modified: June 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: BiocStyle::html_document 
 vignette: >
    %\VignetteIndexEntry{Gimpute tutorial}
@@ -18,9 +17,8 @@ BiocStyle::markdown()
 
 ```{r global_options, include=FALSE}  
 knitr::opts_chunk$set(message=FALSE, error=FALSE, warning=FALSE, fig.width=10, fig.height=10)
-options(width=90) 
+options(width=80) 
 ```
- 
 
 
 # About Gimpute
