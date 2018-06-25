@@ -372,7 +372,7 @@ outputPrefix8 <- "2_08_removedSnpMissPost"
 + Output files: 2_09_removedSnpMissDiff.#
 ```{r} 
 outputPrefix9 <- "2_09_removedSnpMissDiff" 
-groupLabel <- getGroupLabel(inputFAMfile=paste0(outputPrefix8, ".fam"))
+# groupLabel <- getGroupLabel(inputFAMfile=paste0(outputPrefix8, ".fam"))
 # removedSnpMissDiff(plink, inputPrefix=outputPrefix8, snpMissDifCutOff=0.02, 
 #                    outputPrefix=outputPrefix9, groupLabel)  
 ```
@@ -471,11 +471,11 @@ imputation reference files for that combination of base pair position and chromo
  
 
 ```{r} 
-renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
-                 outputPrefix="3_1_QCdata", action="move")
-inputFile <- paste0(impRefDIR,"*.legend.gz")  
-bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
-.prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
+# renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
+#                  outputPrefix="3_1_QCdata", action="move")
+# inputFile <- paste0(impRefDIR,"*.legend.gz")  
+# bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
+# .prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
 
 inputPrefix <- "3_1_QCdata" 
 out2.snp <- "3_2_snpSameNameDiffPos"
