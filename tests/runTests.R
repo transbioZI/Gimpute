@@ -2,43 +2,30 @@
 # File   : runTests.R
 # Author : Junfang Chen
 # Version0: 28 Jun 2016
-# VersionX: 19 Jun 2018
+# VersionX: 25 Jun 2018
    
 
 library(Gimpute)
  
 ## Start an R session in a directory where you'd like to generate the data.
-system("mkdir 0-rawData")
-system("mkdir 1-conversion")
-system("mkdir 2-QC")
-system("mkdir 3-lifting")
+system("mkdir 1-genoUpdate")
+system("mkdir 2-genoQC")
+system("mkdir 3-checkAlign")
 system("mkdir 4-imputation")
 system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
 
-## Go to ./0-rawData, where you want to place the original data.
-setwd("0-rawData")
-system("mkdir plinkFiles") ## Original PLINK data 
-system("mkdir sampleInfo") ## Metadata 
-setwd("..")
-
 ## Define the directory where you place the imputation reference files 
-impRefDIR <- "/home/junfang.chen/Gimpute/imputeRef/1000Gphase1/"
-impRefDIR <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef/1000Gphase1/"
+impRefDIRmain <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef"
+impRefDIR <- paste0(impRefDIRmain, "/1000Gphase1/")
+
 ## Genotyping chip annotation file 
-## chipAnnoFile <- "/home/junfang.chen/Gimpute/config/Illumina/Human1M-Duov3_B-b37.Illmn.strand"
 chipAnnoFile <- NULL 
-
-
 ## Self-defined configuration files
-## if it's not NULL, then the file stores the duplicated sample IDs 
-## should be placed in this directory.
-dupSampleIDFile <- NULL 
-## if it's not NULL, then the file stores the probes 
-## which have to be excluded should be placed in this directory.
-excludedProbeIdsFile <- NULL 
-
-
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+                                 package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
+                                    package="Gimpute")
 
 ## Define required tools
 plink <- "/home/junfang.chen/Gimpute/tools/plink"
@@ -46,7 +33,9 @@ gcta <- "/home/junfang.chen/Gimpute/tools/gcta64"
 shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
 impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
 gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
-
+## Gimpute has the following dependencies:
+library(lattice)
+library(doParallel)
   
   
 ############################################################
@@ -54,41 +43,36 @@ gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
 ############################################################
 
 ## step 0
-## Load PLINK binary files and metadata information from Gimpute package
-bedFile <- system.file("extdata", "study.bed", package="Gimpute")
-bimFile <- system.file("extdata", "study.bim", package="Gimpute") 
-famFile <- system.file("extdata", "study.fam", package="Gimpute")
+## Load PLINK binary files and additional files from Gimpute.
+setwd("./1-genoUpdate/") 
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, " ."))   
+system(paste0("scp ", bimFile, " ."))   
+system(paste0("scp ", famFile, " ."))   
+
 metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+                                 package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
+                                    package="Gimpute")
+chipAnnoFile <- NULL 
 
-## Copy into the "0-rawData" directory
-system(paste0("scp ", bedFile, " ./0-rawData/plinkFiles/")) 
-system(paste0("scp ", bimFile, " ./0-rawData/plinkFiles/")) 
-system(paste0("scp ", famFile, " ./0-rawData/plinkFiles/")) 
-system(paste0("scp ", metadataFile, " ./0-rawData/sampleInfo/"))
-
- 
-
-
-## step 1
-system(paste0("scp ./0-rawData/plinkFiles/study.*  ./1-conversion/")) 
-system(paste0("scp ./0-rawData/sampleInfo/1_01_metaData.txt ./1-conversion/")) 
-setwd("./1-conversion/") 
-
+## step 1  
+system(paste0("scp ", metadataFile, " ."))  
  
  
 ############################################################ 
 ## module function
-inputPrefix <- "study"
-ancestrySymbol <- "EA"
+inputPrefix <- "controlData"
+ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
-chipType <- "illumina"
-updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
+chipType <- "affymetrix"
+updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-               chipType, outputPrefix)
- 
-## remove unwanted files
-system(paste0("rm  *.log ")) 
+               chipType, outputPrefix, keepInterFile=TRUE)
 ## change dir to the main directory
 setwd("..")   
 
@@ -99,10 +83,10 @@ setwd("..")
 
 
 ## step 0
-## copy the last output plink files from 1-conversion
+## copy the last output plink files from 1-genoUpdate
 inputPrefix4QC <- "1_11_removedYMtSnp"
-system(paste0("scp ./1-conversion/", inputPrefix4QC, ".*", " ./2-QC/"))
-setwd("./2-QC/")
+system(paste0("scp ./1-genoUpdate/", inputPrefix4QC, ".*", " ./2-genoQC/"))
+setwd("./2-genoQC/")
 
 
 ## ste 1
@@ -140,15 +124,15 @@ genoQC(plink, inputPrefix,
        snpMissDifCutOff=0.02,
        femaleChrXmissCutoff=0.05, 
        pval4autoCtl=0.000001, 
-       pval4femaleXctl=0.000001, outputPrefix)
+       pval4femaleXctl=0.000001, outputPrefix, keepInterFile=TRUE)
  
  
 ################################################
 ## get the ethnic group info
 setwd("..")
 metaDataFile <- "1_01_metaData.txt"
-system(paste0("scp ./1-conversion/", metaDataFile, " ./2-QC/"))
-setwd("./2-QC/")
+system(paste0("scp ./1-genoUpdate/", metaDataFile, " ./2-genoQC/"))
+setwd("./2-genoQC/")
 ################################################ 
 
 ## step 13 
@@ -193,8 +177,8 @@ setwd("..")
 
  
 ## step 1 copy the QC-PLINK files to next section   
-system("cp ./2-QC/2_13_removedOutliers.* ./3-lifting/ ")
-setwd("./3-lifting/")
+system("cp ./2-genoQC/2_13_removedOutliers.* ./3-checkAlign/ ")
+setwd("./3-checkAlign/")
 renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
                  outputPrefix="3_1_liftedDataset", action="move")
 
@@ -203,8 +187,8 @@ bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
 ## take less than 1 minute
 .prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
 
-## 2. Remove SNPs for which the name has a different position (i.e. combination of
-# base pair position and chromosome) in the imputation reference files. 
+## 2. Remove SNPs for which the name has a different position (i.e. combination 
+# of base pair position and chromosome) in the imputation reference files. 
 inputPrefix <- "3_1_liftedDataset" 
 out2.snp <- "3_2_snpSameNameDiffPos"
 out2 <- "3_2_removedSnpSameNameDiffPos"
@@ -243,7 +227,8 @@ outputPrefix <- "4_1_removedMonoSnp"
 outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4 and 5.
 
 ## copy plink files from last step; 
-system(paste0("cp ./3-lifting/", inputPrefix4aligned2impRef, ".* ./4-imputation/"))
+system(paste0("cp ./3-checkAlign/", 
+       inputPrefix4aligned2impRef, ".* ./4-imputation/"))
 ## remove Monomorphic SNPs
 setwd("4-imputation")
 removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef, 
@@ -292,7 +277,8 @@ filteredImputedDatasetfn <- "4_3_removedSnpInfoPostImp"
 snpWithBadInfoFile <- "4_3_snpRemovedInfoPostImp.txt"
 snpImputedInfoScoreFile <- "4_3_snpImputedInfoScore.txt"
  
-system(paste0("scp ./", tmpImputeDir, "/6-finalResults/gwasImputedFiltered.* . "))
+system(paste0("scp ./", tmpImputeDir, 
+       "/6-finalResults/gwasImputedFiltered.* . "))
 renamePlinkBFile(inputPrefix="gwasImputedFiltered", 
                  outputPrefix="4_3_removedSnpInfoPostImp", action="move")  
 
@@ -386,12 +372,13 @@ extSpecificDiffPosfn <- "5_4_extSpecificDiffPos"
 system(paste0("scp ./4-imputation/", inputPrefix, ".* ./5-reductAndExpand/")) 
 
 ## original but QC-ed dataset
-system(paste0("scp ./3-lifting/", inputOriginalQCed, ".* ./5-reductAndExpand/ "))
+system(paste0("scp ./3-checkAlign/", inputOriginalQCed, 
+       ".* ./5-reductAndExpand/ "))
 
-system(paste0("scp ./3-lifting/3_4_snpImpRefAlleles.txt ./5-reductAndExpand/"))
-system(paste0("scp ./3-lifting/3_4_snpDiffAlleles.txt ./5-reductAndExpand/"))
-system(paste0("scp ./3-lifting/3_3_snpMissPos.txt ./5-reductAndExpand/"))
-system(paste0("scp ./3-lifting/3_2_snpSameNameDiffPos.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-checkAlign/3_4_snpImpRefAlleles.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-checkAlign/3_4_snpDiffAlleles.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-checkAlign/3_3_snpMissPos.txt ./5-reductAndExpand/"))
+system(paste0("scp ./3-checkAlign/3_2_snpSameNameDiffPos.txt ./5-reductAndExpand/"))
 
 
 setwd("5-reductAndExpand/")
@@ -400,7 +387,8 @@ system(paste0(plink, " --bfile ", inputPrefix,
        " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", 
        reducedToSpecificfn)) 
 
-# 2. Add the SNPs with different alleles with their values from the dataset before removing SNPs. 
+## 2. Add the SNPs with different alleles with their values 
+## from the dataset before removing SNPs. 
 if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){ 
      renamePlinkBFile(inputPrefix=reducedToSpecificfn, 
                       outputPrefix=extSpecificDiffAllelefn, action="copy")   
@@ -414,7 +402,8 @@ if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){
 } 
       
 
-# 3. Add the SNPs with missing positions with their values from the dataset before removing SNPs. 
+## 3. Add the SNPs with missing positions with their values 
+## from the dataset before removing SNPs. 
 if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){  
     renamePlinkBFile(inputPrefix=extSpecificDiffAllelefn, 
                      outputPrefix=extSpecificMissPosfn, action="copy")  
@@ -427,7 +416,8 @@ if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){
     system("rm tmp.*")
 }
       
-# 4. Add the SNPs with different positions by their values from the dataset before removing SNPs. 
+## 4. Add the SNPs with different positions by their values 
+## from the dataset before removing SNPs. 
 if ( file.size(paste0("3_2_snpSameNameDiffPos.txt")) == 0 ){  
     renamePlinkBFile(inputPrefix=extSpecificMissPosfn, 
                      outputPrefix=extSpecificDiffPosfn, action="copy") 
@@ -453,11 +443,13 @@ setwd("..")
 ############################################################
 
 ## imputed dataset
-system(paste0("scp ./1-conversion/1_01_metaData.txt ./6-finalResults/metaData.txt " ))
+system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ./6-finalResults/ " ))
  
 ## go to the directory/ dataset name 
-system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ./6-finalResults/"))  
-system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ./6-finalResults/"))
+system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* 
+       ./6-finalResults/"))  
+system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* 
+       ./6-finalResults/"))
 
 setwd("./6-finalResults/")
 renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
@@ -473,15 +465,16 @@ renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.",
 ############################################################
 
 ## additional configuration files for Genipe
-impRefDir <- "/data/noether/dataProcessResults/10_Common/imputeReference/1000G_Phase3_2014/"
-fastaFile <- "/data/noether/dataProcessResults/10_Common/imputeReference/hg19/hg19.fasta"
+mainRefGenipe <- "/data/noether/dataProcessResults/10_Common/"
+impRefDir <- paste0(mainRefGenipe, "imputeReference/1000G_Phase3_2014/")
+fastaFile <- paste0(mainRefGenipe, "imputeReference/hg19/hg19.fasta")
 
  
 ## Impute genotypes using Genipe
 # chrs <- "autosomes"
 # chrs <- 23
 chrs <- 22
-inputPrefix <- "/data/noether/datatmp-nobackup/3_1_BrainCloud/v4/4-imputation/tmp4genipe/3_4_removedSnpDiffAlleles"
+inputPrefix <- "controlData"
 thread4impute2 <- 20 ## tune by yourself
 thread4shapeit <- 30
 segmentSize <- 3000000
@@ -497,7 +490,8 @@ probability <- 0.9
 completionRate <- 0.98
 # info <- 0.6
 outputPrefix <- paste0("imputedChr", chr)
-mergeByGenipe(inputImpute2, chr, probability, completionRate, info, outputPrefix)
+mergeByGenipe(inputImpute2, chr, probability, 
+              completionRate, info, outputPrefix)
  
  
 ## extract imputed markers using Genipe 

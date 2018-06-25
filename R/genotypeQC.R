@@ -1018,6 +1018,8 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' female control subjects. Only chromosome X SNPs are considered. 
 #' The default is 0.000001
 #' @param outputPrefix the prefix of the output PLINK binary files after QC.
+#' @param keepInterFile a logical value indicating if the intermediate 
+#' processed files should be kept or not. The default is TRUE.
 
 #' @return The output PLINK binary files after QC.
 #' @details The original PLINK files are implicitly processed by the following 
@@ -1057,14 +1059,16 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' ##        snpMissDifCutOff=0.02,
 #' ##        femaleChrXmissCutoff=0.05, 
 #' ##        pval4autoCtl=0.000001, 
-#' ##        pval4femaleXctl=0.000001, outputPrefix)
+#' ##        pval4femaleXctl=0.000001, 
+#' ##        outputPrefix, keepInterFile=TRUE)
 
 
 genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05, 
                    sampleMissCutOff=0.02, Fhet=0.2, 
                    snpMissCutOffpost=0.02, snpMissDifCutOff=0.02,
                    femaleChrXmissCutoff=0.05, pval4autoCtl=0.000001, 
-                   pval4femaleXctl=0.000001, outputPrefix) {
+                   pval4femaleXctl=0.000001, 
+                   outputPrefix, keepInterFile=TRUE) {
 
     ## check case control status
     groupLabel <- getGroupLabel(inputFAMfile=paste0(inputPrefix, ".fam"))
@@ -1120,23 +1124,25 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
                                    pval=pval4femaleXctl, outputPvalFile,
                                     outputSNPfile, outputPrefix=outputPrefix)
+    if (keepInterFile==FALSE){ 
+        ## remove intermediate files 
+        system(paste0("rm ", outputPrefix3, ".*"))
+        system(paste0("rm ", outputPrefix4, ".*"))
+        system(paste0("rm ", outputPrefix5, ".*"))
+        system(paste0("rm ", outputPrefix6, ".*"))
+        system(paste0("rm ", outputPrefix7, ".*"))
+        system(paste0("rm ", outputPrefix8, ".*"))
+        system(paste0("rm ", outputPrefix9, ".*"))
+        system(paste0("rm ", outputPrefix10, ".*"))
+        system(paste0("rm ", outputPrefix11, ".*")) 
 
-    # ## remove intermediate files 
-    # system(paste0("rm ", outputPrefix3, ".*"))
-    # system(paste0("rm ", outputPrefix4, ".*"))
-    # system(paste0("rm ", outputPrefix5, ".*"))
-    # system(paste0("rm ", outputPrefix6, ".*"))
-    # system(paste0("rm ", outputPrefix7, ".*"))
-    # system(paste0("rm ", outputPrefix8, ".*"))
-    # system(paste0("rm ", outputPrefix9, ".*"))
-    # system(paste0("rm ", outputPrefix10, ".*"))
-    # system(paste0("rm ", outputPrefix11, ".*")) 
-
-    # if (file.exists(outputPvalFile)) {  
-    #     system(paste0("rm ", outputPvalFile))
-    # }
-    # if (file.exists(outputSNPfile)) {  
-    #     system(paste0("rm ", outputSNPfile))
-    # }    
-     
+        if (file.exists(outputPvalFile)) {  
+            system(paste0("rm ", outputPvalFile))
+        }
+        if (file.exists(outputSNPfile)) {  
+            system(paste0("rm ", outputSNPfile))
+        }    
+    }
+    ## remove unwanted files
+    system(paste0("rm  *.log "))   
 } 

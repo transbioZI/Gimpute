@@ -931,7 +931,8 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 #' information. 
 #' @param chipType a string name that defines the type of the chip annotation 
 #' file: 'illumina', 'affymetrix' or 'psychChip'.
-
+#' @param keepInterFile a logical value indicating if the intermediate 
+#' processed files should be kept or not. The default is TRUE.
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
 #' @return The output PLINK binary files after genotype information remapping. 
@@ -976,13 +977,13 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 #' ## plink <- "/home/tools/plink"  
 #' ## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
 #' ##                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-#' ##                chipType, outputPrefix)
+#' ##                chipType, outputPrefix, keepInterFile=TRUE)
  
 
 
 updateGenoInfo <- function(plink, inputPrefix, metaDataFile, removedSampIDFile,
                            ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
-                           chipType, outputPrefix){
+                           chipType, outputPrefix, keepInterFile=TRUE){
 
     ## step 2
     outputPrefix2 <- "1_02_removedExclInst" 
@@ -1028,23 +1029,27 @@ updateGenoInfo <- function(plink, inputPrefix, metaDataFile, removedSampIDFile,
     outputPrefix11 <- "1_11_removedYMtSnp"
     removedYMtSnp(plink, inputPrefix=outputPrefix10, 
                   outputPrefix=outputPrefix11)
-    ## remove intermediate files
-    # system(paste0("rm ", outputPrefix2, ".*"))
-    # system(paste0("rm ", outputPrefix3, ".*"))
-    # system(paste0("rm ", outputPrefix4, ".*"))
-    # system(paste0("rm ", outputPrefix5, ".*"))
-    # system(paste0("rm ", outputPrefix6, ".*"))
-    # system(paste0("rm ", outputPrefix7, ".*"))
-    # system(paste0("rm ", outputPrefix8, ".*"))
-    # system(paste0("rm ", outputPrefix9, ".*"))
-    # system(paste0("rm ", outputPrefix10, ".*"))
 
-    # if (file.exists(outputSNPfile7)) {  
-    #     system(paste0("rm ", outputSNPfile7))
-    # }
+    if (keepInterFile==FALSE){ 
+        # remove intermediate files
+        system(paste0("rm ", outputPrefix2, ".*"))
+        system(paste0("rm ", outputPrefix3, ".*"))
+        system(paste0("rm ", outputPrefix4, ".*"))
+        system(paste0("rm ", outputPrefix5, ".*"))
+        system(paste0("rm ", outputPrefix6, ".*"))
+        system(paste0("rm ", outputPrefix7, ".*"))
+        system(paste0("rm ", outputPrefix8, ".*"))
+        system(paste0("rm ", outputPrefix9, ".*"))
+        system(paste0("rm ", outputPrefix10, ".*"))
 
-    # if (file.exists(outputSNPdupFile8)) {  
-    #     system(paste0("rm ", outputSNPdupFile8))
-    # }    
- 
+        if (file.exists(outputSNPfile7)) {  
+            system(paste0("rm ", outputSNPfile7))
+        }
+
+        if (file.exists(outputSNPdupFile8)) {  
+            system(paste0("rm ", outputSNPdupFile8))
+        }    
+    }    
+    ## remove unwanted files
+    system(paste0("rm  *.log "))     
 }
