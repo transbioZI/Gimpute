@@ -139,8 +139,7 @@ removeOutlierByPCs(plink, gcta, inputPrefix, nThread=20,
 setwd("..")
 ############################################################
 ### code chunk number 3: check the alignment
-############################################################ 
-## step 1 copy the QC-PLINK files to next section   
+############################################################   
 system("cp ./2-genoQC/2_13_removedOutliers.* ./3-checkAlign/ ")
 setwd("./3-checkAlign/")
 renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
@@ -148,34 +147,26 @@ renamePlinkBFile(inputPrefix="2_13_removedOutliers",
 
 inputFile <- paste0(impRefDIR,"*.legend.gz")  
 bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
-## take less than 1 minute
 .prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
-## 2. Remove SNPs for which the name has a different position (i.e. combination 
-# of base pair position and chromosome).
 inputPrefix <- "3_1_QCdata" 
 out2.snp <- "3_2_snpSameNameDiffPos"
 out2 <- "3_2_removedSnpSameNameDiffPos"
-# 3. Remove SNPs which bp and chr position are not contained. 
 out3 <- "3_3_removedSnpMissPos"
 out3.snp <- "3_3_snpMissPos"
-## 4. Remove SNPs which have an allele which is not in the imputation reference.
 out4 <- "3_4_removedSnpDiffAlleles"
 out4.snp <- "3_4_snpDiffAlleles"
 out4.snpRetained <- "3_4_snpImpRefAlleles"
- 
 checkAlign2ref(plink, inputPrefix, bimReferenceFile, out2, out2.snp, 
                out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore=25)
-
 setwd("..") 
 ############################################################
 ### code chunk number 4: Imputation
 ############################################################
 ## step 1 
-## Remove monomorphic SNPs from lifted/QC-ed data 
-## will also be used in step 4 and 5;
+## Remove monomorphic SNPs from lifted/QC-ed data  
 inputPrefix4aligned2impRef <- "3_4_removedSnpDiffAlleles" 
 outputPrefix <- "4_1_removedMonoSnp"
-outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4 and 5.
+outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4,5.
 
 ## copy plink files from last step; 
 system(paste0("cp ./3-checkAlign/", 

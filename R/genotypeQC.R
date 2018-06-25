@@ -1113,7 +1113,7 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     if (groupLabel == "control" | groupLabel == "caseControl"){
         removedSnpHWEauto(groupLabel="control", plink, 
                           inputPrefix=outputPrefix10, 
-                            pval=pval4autoCtl, outputPvalFile, 
+                          pval=pval4autoCtl, outputPvalFile, 
                           outputSNPfile, outputPrefix=outputPrefix11)
     ## HWE test is only performed on control data 
     } else { print("ERROR: HWE test on autosome!") }
@@ -1123,7 +1123,7 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     # outputPrefix12 <- "2_12_removedSnpHweFemaleXct" 
     removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
                                    pval=pval4femaleXctl, outputPvalFile,
-                                    outputSNPfile, outputPrefix=outputPrefix)
+                                   outputSNPfile, outputPrefix=outputPrefix)
     if (keepInterFile==FALSE){ 
         ## remove intermediate files 
         system(paste0("rm ", outputPrefix3, ".*"))
