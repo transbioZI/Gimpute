@@ -86,7 +86,7 @@ The recommended directories are named as follows:
 
 * 5-reductAndExpand: Filtered imputation data and expanded to the original non-imputed genotype files are generated in this directory.
 
-* 6-finalResults: Final processed and imputed genotype files are generated in this directory.
+* 6-finalResults: Final processed and filtered imputed genotype files are generated in this directory.
  
 ### Configuration files
 * Imputation reference files

@@ -208,6 +208,7 @@ checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
                 quote=FALSE, row.names=FALSE, 
                 col.names=FALSE, eol="\r\n", sep=" ")
 
+    system(paste0("rm  *.log")) 
 }
 
 

@@ -860,7 +860,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' phaseImpute(inputPrefix, outputPrefix, prefix4final,
+#' phaseImpute2(inputPrefix, outputPrefix, prefix4final,
 #'             plink, shapeit, impute2, gtool, 
 #'             windowSize=3000000, effectiveSize=20000, 
 #'             nCore4phase=1, nThread=40, 
@@ -869,7 +869,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #'             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
-phaseImpute <- function(inputPrefix, outputPrefix, prefix4final,
+phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
                         plink, shapeit, impute2, gtool, 
                         windowSize=3000000, effectiveSize=20000, 
                         nCore4phase=1, nThread=40, 
