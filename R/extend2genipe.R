@@ -65,30 +65,28 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
                             shapeit, impute2, plink, fastaFile, 
                             segmentSize, thread4impute2, thread4shapeit){ 
     
-    # ## IMPUTE2 autosomal reference
-    # HAPS_FILE <- paste0(impRefDir, "1000GP_Phase3_chr", i, ".hap.gz")  
-    # LEGEND_FILE <- paste0(impRefDir, "1000GP_Phase3_chr", i, ".legend.gz")  
-    # GENMAP_FILE <- paste0(impRefDir, "genetic_map_chr", i, "_combined_b37.txt")   
+    # ## IMPUTE2 autosomal reference   
     HAPS_FILE <- paste0(impRefDir, "1000GP_Phase3_chr{chrom}.hap.gz")   
     LEGEND_FILE <- paste0(impRefDir, "1000GP_Phase3_chr{chrom}.legend.gz") 
     GENMAP_FILE <- paste0(impRefDir, "genetic_map_chr{chrom}_combined_b37.txt")
     sampleFile <- paste0(impRefDir, "1000GP_Phase3.sample")
 
     ## chrX non-PAR
-    HAPS_FILEchrXnonPAR <- paste0(impRefDir, "1000GP_Phase3_chrX_NONPAR.hap.gz")   
-    LEGENDfileXnonPAR <- paste0(impRefDir, "1000GP_Phase3_chrX_NONPAR.legend.gz") 
+    HAPSfileChrXnonPAR <- paste0(impRefDir, 
+                                 "1000GP_Phase3_chrX_NONPAR.hap.gz")   
+    LEGENDXnonPAR <- paste0(impRefDir, "1000GP_Phase3_chrX_NONPAR.legend.gz") 
     GENMAPfileXnonPAR <- paste0(impRefDir, 
                                 "genetic_map_chrX_nonPAR_combined_b37.txt") 
     
     ## chrX X_PAR1
     HAPS_FILEchrX_PAR1 <- paste0(impRefDir, "1000GP_Phase3_chrX_PAR1.hap.gz")   
     LEGENDfileX_PAR1 <- paste0(impRefDir, "1000GP_Phase3_chrX_PAR1.legend.gz") 
-    GENMAPfileX_PAR1 <- paste0(impRefDir, "genetic_map_chrX_PAR1_combined_b37.txt") 
+    GENMAPX_PAR1 <- paste0(impRefDir, "genetic_map_chrX_PAR1_combined_b37.txt") 
 
     ## chrX X_PAR2
     HAPS_FILEchrX_PAR2 <- paste0(impRefDir, "1000GP_Phase3_chrX_PAR2.hap.gz")   
     LEGENDfileX_PAR2 <- paste0(impRefDir, "1000GP_Phase3_chrX_PAR2.legend.gz") 
-    GENMAPfileX_PAR2 <- paste0(impRefDir, "genetic_map_chrX_PAR2_combined_b37.txt") 
+    GENMAPX_PAR2 <- paste0(impRefDir, "genetic_map_chrX_PAR2_combined_b37.txt") 
 
     autosomeCode = seq_len(22) 
 
@@ -135,8 +133,8 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
         " --impute2-bin ", impute2, " \ ", 
         " --plink-bin ", plink, " \ ", 
         " --reference ", fastaFile, " \ ", 
-        " --hap-nonPAR  ", HAPS_FILEchrXnonPAR, " \ ",  ## chrX non-PAR
-        " --legend-nonPAR ", LEGENDfileXnonPAR, " \ ", ## chrX non-PAR 
+        " --hap-nonPAR  ", HAPSfileChrXnonPAR, " \ ",  ## chrX non-PAR
+        " --legend-nonPAR ", LEGENDXnonPAR, " \ ", ## chrX non-PAR 
         " --map-nonPAR ", GENMAPfileXnonPAR, " \ ", ## chrX non-PAR
         " --hap-template  ", HAPS_FILE, " \ ", 
         " --legend-template ", LEGEND_FILE, " \ ", 
@@ -158,10 +156,10 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
         " --reference ", fastaFile, " \ ", 
         " --hap-PAR1  ", HAPS_FILEchrX_PAR1, " \ ",  ## chrX PAR1
         " --legend-PAR1 ", LEGENDfileX_PAR1, " \ ", ## chrX PAR1 
-        " --map-PAR1 ", GENMAPfileX_PAR1, " \ ", ## chrX PAR1
+        " --map-PAR1 ", GENMAPX_PAR1, " \ ", ## chrX PAR1
         " --hap-PAR2  ", HAPS_FILEchrX_PAR2, " \ ",  ## chrX PAR2
         " --legend-PAR2 ", LEGENDfileX_PAR2, " \ ", ## chrX PAR2 
-        " --map-PAR2 ", GENMAP_FILEchrX_PAR2, " \ ", ## chrX PAR2
+        " --map-PAR2 ", GENMAPX_PAR2, " \ ", ## chrX PAR2
         " --hap-template  ", HAPS_FILE, " \ ", 
         " --legend-template ", LEGEND_FILE, " \ ", 
         " --map-template ", GENMAP_FILE, " \ ", 
@@ -239,9 +237,9 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 #' for generating markers in a text file (only one column without column name).
 # #' @param index  only perform the indexation.
 #' @param outputPrefix the prefix of the output files. [impute2_extractor]
-#' @param format the output format. Can specify either ‘impute2’ for probabilities 
-#'  (same as impute2 format, i.e. 3 values per sample), ‘dosage’ for 
-#' dosage values (one value between 0 and 2 by sample), 
+#' @param format the output format. Can specify either ‘impute2’ for 
+#' probabilities (same as impute2 format, i.e. 3 values per sample), ‘dosage’ 
+#' for dosage values (one value between 0 and 2 by sample), 
 #'  ‘calls’ for hard calls, or ‘bed’ for Plink binary format (with hard calls). 
 #' [impute2]
 # #' @param long write the output file in the long format 
@@ -267,10 +265,7 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 
 #' @author Junfang Chen 
 ##' @examples  
-
-
-# impute2-extractor  --impute2 imputedChr2.impute2   --out imputedChr2   
-# --format  bed   --extract  imputedChr2.marker 
+ 
 
 extractByGenipe <- function(inputImpute2, inputMAP, outputPrefix, format, prob){ 
 

@@ -4,7 +4,7 @@
 \alias{updateGenoInfo}
 \title{Update genotype information}
 \usage{
-updateGenoInfo(plink, inputPrefix, metaDataFile, dupSampleIDFile,
+updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
   ancestrySymbol, excludedProbeIdsFile, chipAnnoFile, chipType, outputPrefix)
 }
 \arguments{
@@ -13,7 +13,7 @@ or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
-\item{dupSampleIDFile}{a pure text file that stores the duplicated sample IDs, 
+\item{removedSampIDFile}{a pure text file that stores the useless sample IDs, 
 each ID per line. If it is null, then duplicate the input PLINK files from 
 the last step as the output files.}
 
@@ -35,12 +35,13 @@ file: 'illumina', 'affymetrix' or 'psychChip'.}
 The output PLINK binary files after genotype information remapping.
 }
 \description{
-Update genotype data information of the original PLINK binary files involving  
+Update genotype information of the original PLINK binary files involving  
 subject metadata information remapping and SNP information rearrangement and 
 conversion according to the annotation file.
 }
 \details{
-The original PLINK files are implicitly processed by the following steps: 
+The original PLINK files are implicitly processed by the 
+following steps: 
 1.) remove duplicated subjects;
 2.) update group ID and sex information;
 3.) remove not labelled subjects;
@@ -49,12 +50,36 @@ The original PLINK files are implicitly processed by the following steps:
 6.) remove SNPs that are not in the annotation file;
 7.) remove duplicated SNPs;
 8.) update SNP genomic position and strand information;
-9.) splitchromosome X into pseudoautosomal region (PAR) and non-PAR;
+9.) split chromosome X into pseudoautosomal region (PAR) and non-PAR;
 10.) remove SNPs on the chromosome Y and mitochondrial DNA.
 The metadata information file and the chip annotation file are used as the 
 reference for the update.
 If the chip annotation file is not available for your study, it can be 
 downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
+}
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+metaDataFile <- system.file("extdata", "1_01_metaData.txt",  
+                            package="Gimpute")
+excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
+                                    package="Gimpute")
+removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+                                 package="Gimpute")
+chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+ancestrySymbol <- "EUR"
+outputPrefix <- "1_11_removedYMtSnp" 
+metaDataFile <- "1_01_metaData.txt"
+chipType <- "affymetrix"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"  
+## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
+##                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
+##                chipType, outputPrefix)
 }
 \author{
 Junfang Chen

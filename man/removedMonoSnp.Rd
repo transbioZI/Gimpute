@@ -16,7 +16,7 @@ working directory or somewhere in the command path.}
 after removing monomorphic SNPs.}
 
 \item{outputSNPfile}{the output pure text file that stores 
-the removed monomorphic SNPs, one per line.}
+the removed monomorphic SNPs, one per line, if any.}
 }
 \value{
 The output PLINK binary files after removing monomorphic SNPs 
@@ -24,6 +24,20 @@ and a pure text file with removed monomorphic SNPs.
 }
 \description{
 Detect monomorphic SNPs from PLINK BIM file and exclude them if any.
+}
+\examples{
+ 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+inputPrefix <- "controlData"
+outputPrefix <- "removedMonoSnp" 
+outputSNPfile <- "monoSNP.txt"  
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedMonoSnp(plink, inputPrefix, outputPrefix, outputSNPfile)
 }
 \author{
 Junfang Chen

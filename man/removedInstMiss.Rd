@@ -27,6 +27,17 @@ threshold.
 }
 \examples{
  
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+sampleMissCutOff <- 0.02
+inputPrefix <- "controlData" 
+outputPrefix <- "2_05_removedInstMiss" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedInstMiss(plink, sampleMissCutOff, inputPrefix, outputPrefix)
 }
 \author{
 Junfang Chen

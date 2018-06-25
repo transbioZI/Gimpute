@@ -25,6 +25,18 @@ Remove SNPs on the chromosome Y and mitochondrial DNA.
 Note that if chromosome Y and mitochondrial DNA are available,
 they must be coded as 24 and 26, respectively.
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+outputPrefix <- "1_11_removedYMtSnp" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedYMtSnp(plink, inputPrefix, outputPrefix)
+}
 \author{
 Junfang Chen
 }

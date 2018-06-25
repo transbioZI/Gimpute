@@ -1,251 +1,118 @@
-FID IID descID ance sex group
-alt_id_1 samp_id_1 samp_id_1 EA 1 0
-alt_id_2 samp_id_2 samp_id_2 EA 1 0
-alt_id_3 samp_id_3 samp_id_3 EA 1 0
-alt_id_4 samp_id_4 samp_id_4 EA 1 0
-alt_id_5 samp_id_5 samp_id_5 EA 1 0
-alt_id_6 samp_id_6 samp_id_6 EA 1 0
-alt_id_7 samp_id_7 samp_id_7 EA 1 0
-alt_id_8 samp_id_8 samp_id_8 EA 1 0
-alt_id_9 samp_id_9 samp_id_9 EA 1 0
-alt_id_10 samp_id_10 samp_id_10 EA 1 0
-alt_id_11 samp_id_11 samp_id_11 EA 1 0
-alt_id_12 samp_id_12 samp_id_12 EA 1 0
-alt_id_13 samp_id_13 samp_id_13 EA 1 0
-alt_id_14 samp_id_14 samp_id_14 EA 1 0
-alt_id_15 samp_id_15 samp_id_15 EA 1 0
-alt_id_16 samp_id_16 samp_id_16 EA 1 0
-alt_id_17 samp_id_17 samp_id_17 EA 1 0
-alt_id_18 samp_id_18 samp_id_18 EA 1 0
-alt_id_19 samp_id_19 samp_id_19 EA 1 0
-alt_id_20 samp_id_20 samp_id_20 EA 1 0
-alt_id_21 samp_id_21 samp_id_21 EA 1 0
-alt_id_22 samp_id_22 samp_id_22 EA 1 0
-alt_id_23 samp_id_23 samp_id_23 EA 1 0
-alt_id_24 samp_id_24 samp_id_24 EA 1 0
-alt_id_25 samp_id_25 samp_id_25 EA 1 0
-alt_id_26 samp_id_26 samp_id_26 EA 1 0
-alt_id_27 samp_id_27 samp_id_27 EA 1 0
-alt_id_28 samp_id_28 samp_id_28 EA 1 0
-alt_id_29 samp_id_29 samp_id_29 EA 1 0
-alt_id_30 samp_id_30 samp_id_30 EA 1 0
-alt_id_31 samp_id_31 samp_id_31 EA 1 0
-alt_id_32 samp_id_32 samp_id_32 EA 1 0
-alt_id_33 samp_id_33 samp_id_33 EA 1 0
-alt_id_34 samp_id_34 samp_id_34 EA 1 0
-alt_id_35 samp_id_35 samp_id_35 EA 1 0
-alt_id_36 samp_id_36 samp_id_36 EA 1 0
-alt_id_37 samp_id_37 samp_id_37 EA 1 0
-alt_id_38 samp_id_38 samp_id_38 EA 1 0
-alt_id_39 samp_id_39 samp_id_39 EA 1 0
-alt_id_40 samp_id_40 samp_id_40 EA 1 0
-alt_id_41 samp_id_41 samp_id_41 EA 1 0
-alt_id_42 samp_id_42 samp_id_42 EA 1 0
-alt_id_43 samp_id_43 samp_id_43 EA 1 0
-alt_id_44 samp_id_44 samp_id_44 EA 1 0
-alt_id_45 samp_id_45 samp_id_45 EA 1 0
-alt_id_46 samp_id_46 samp_id_46 EA 1 0
-alt_id_47 samp_id_47 samp_id_47 EA 1 0
-alt_id_48 samp_id_48 samp_id_48 EA 1 0
-alt_id_49 samp_id_49 samp_id_49 EA 1 0
-alt_id_50 samp_id_50 samp_id_50 EA 1 0
-alt_id_51 samp_id_51 samp_id_51 EA 1 0
-alt_id_52 samp_id_52 samp_id_52 EA 1 0
-alt_id_53 samp_id_53 samp_id_53 EA 1 0
-alt_id_54 samp_id_54 samp_id_54 EA 1 0
-alt_id_55 samp_id_55 samp_id_55 EA 1 0
-alt_id_56 samp_id_56 samp_id_56 EA 1 0
-alt_id_57 samp_id_57 samp_id_57 EA 1 0
-alt_id_58 samp_id_58 samp_id_58 EA 1 0
-alt_id_59 samp_id_59 samp_id_59 EA 1 0
-alt_id_60 samp_id_60 samp_id_60 EA 1 0
-alt_id_61 samp_id_61 samp_id_61 EA 1 0
-alt_id_62 samp_id_62 samp_id_62 EA 1 0
-alt_id_63 samp_id_63 samp_id_63 EA 1 0
-alt_id_64 samp_id_64 samp_id_64 EA 1 0
-alt_id_65 samp_id_65 samp_id_65 EA 1 0
-alt_id_66 samp_id_66 samp_id_66 EA 1 0
-alt_id_67 samp_id_67 samp_id_67 EA 1 0
-alt_id_68 samp_id_68 samp_id_68 EA 1 0
-alt_id_69 samp_id_69 samp_id_69 EA 1 0
-alt_id_70 samp_id_70 samp_id_70 EA 1 0
-alt_id_71 samp_id_71 samp_id_71 EA 1 0
-alt_id_72 samp_id_72 samp_id_72 EA 1 0
-alt_id_73 samp_id_73 samp_id_73 EA 1 0
-alt_id_74 samp_id_74 samp_id_74 EA 1 0
-alt_id_75 samp_id_75 samp_id_75 EA 1 0
-alt_id_76 samp_id_76 samp_id_76 EA 1 0
-alt_id_77 samp_id_77 samp_id_77 EA 1 0
-alt_id_78 samp_id_78 samp_id_78 EA 1 0
-alt_id_79 samp_id_79 samp_id_79 EA 1 0
-alt_id_80 samp_id_80 samp_id_80 EA 1 0
-alt_id_81 samp_id_81 samp_id_81 EA 1 0
-alt_id_82 samp_id_82 samp_id_82 EA 1 0
-alt_id_83 samp_id_83 samp_id_83 EA 1 0
-alt_id_84 samp_id_84 samp_id_84 EA 1 0
-alt_id_85 samp_id_85 samp_id_85 EA 1 0
-alt_id_86 samp_id_86 samp_id_86 EA 1 0
-alt_id_87 samp_id_87 samp_id_87 EA 1 0
-alt_id_88 samp_id_88 samp_id_88 EA 1 0
-alt_id_89 samp_id_89 samp_id_89 EA 1 0
-alt_id_90 samp_id_90 samp_id_90 EA 1 0
-alt_id_91 samp_id_91 samp_id_91 EA 1 0
-alt_id_92 samp_id_92 samp_id_92 EA 1 0
-alt_id_93 samp_id_93 samp_id_93 EA 1 0
-alt_id_94 samp_id_94 samp_id_94 EA 1 0
-alt_id_95 samp_id_95 samp_id_95 EA 1 0
-alt_id_96 samp_id_96 samp_id_96 EA 1 0
-alt_id_97 samp_id_97 samp_id_97 EA 1 0
-alt_id_98 samp_id_98 samp_id_98 EA 1 0
-alt_id_99 samp_id_99 samp_id_99 EA 1 0
-alt_id_100 samp_id_100 samp_id_100 EA 1 0
-alt_id_101 samp_id_101 samp_id_101 EA 1 0
-alt_id_102 samp_id_102 samp_id_102 EA 1 0
-alt_id_103 samp_id_103 samp_id_103 EA 1 0
-alt_id_104 samp_id_104 samp_id_104 EA 1 0
-alt_id_105 samp_id_105 samp_id_105 EA 1 0
-alt_id_106 samp_id_106 samp_id_106 EA 1 0
-alt_id_107 samp_id_107 samp_id_107 EA 1 0
-alt_id_108 samp_id_108 samp_id_108 EA 1 0
-alt_id_109 samp_id_109 samp_id_109 EA 1 0
-alt_id_110 samp_id_110 samp_id_110 EA 1 0
-alt_id_111 samp_id_111 samp_id_111 EA 1 0
-alt_id_112 samp_id_112 samp_id_112 EA 1 0
-alt_id_113 samp_id_113 samp_id_113 EA 1 0
-alt_id_114 samp_id_114 samp_id_114 EA 1 0
-alt_id_115 samp_id_115 samp_id_115 EA 1 0
-alt_id_116 samp_id_116 samp_id_116 EA 1 0
-alt_id_117 samp_id_117 samp_id_117 EA 1 0
-alt_id_118 samp_id_118 samp_id_118 EA 1 0
-alt_id_119 samp_id_119 samp_id_119 EA 1 0
-alt_id_120 samp_id_120 samp_id_120 EA 1 0
-alt_id_121 samp_id_121 samp_id_121 EA 1 0
-alt_id_122 samp_id_122 samp_id_122 EA 1 0
-alt_id_123 samp_id_123 samp_id_123 EA 1 0
-alt_id_124 samp_id_124 samp_id_124 EA 1 0
-alt_id_125 samp_id_125 samp_id_125 EA 1 0
-alt_id_126 samp_id_126 samp_id_126 EA 2 0
-alt_id_127 samp_id_127 samp_id_127 EA 2 0
-alt_id_128 samp_id_128 samp_id_128 EA 2 0
-alt_id_129 samp_id_129 samp_id_129 EA 2 0
-alt_id_130 samp_id_130 samp_id_130 EA 2 0
-alt_id_131 samp_id_131 samp_id_131 EA 2 0
-alt_id_132 samp_id_132 samp_id_132 EA 2 0
-alt_id_133 samp_id_133 samp_id_133 EA 2 0
-alt_id_134 samp_id_134 samp_id_134 EA 2 0
-alt_id_135 samp_id_135 samp_id_135 EA 2 0
-alt_id_136 samp_id_136 samp_id_136 EA 2 0
-alt_id_137 samp_id_137 samp_id_137 EA 2 0
-alt_id_138 samp_id_138 samp_id_138 EA 2 0
-alt_id_139 samp_id_139 samp_id_139 EA 2 0
-alt_id_140 samp_id_140 samp_id_140 EA 2 0
-alt_id_141 samp_id_141 samp_id_141 EA 2 0
-alt_id_142 samp_id_142 samp_id_142 EA 2 0
-alt_id_143 samp_id_143 samp_id_143 EA 2 0
-alt_id_144 samp_id_144 samp_id_144 EA 2 0
-alt_id_145 samp_id_145 samp_id_145 EA 2 0
-alt_id_146 samp_id_146 samp_id_146 EA 2 0
-alt_id_147 samp_id_147 samp_id_147 EA 2 0
-alt_id_148 samp_id_148 samp_id_148 EA 2 0
-alt_id_149 samp_id_149 samp_id_149 EA 2 0
-alt_id_150 samp_id_150 samp_id_150 EA 2 0
-alt_id_151 samp_id_151 samp_id_151 EA 2 0
-alt_id_152 samp_id_152 samp_id_152 EA 2 0
-alt_id_153 samp_id_153 samp_id_153 EA 2 0
-alt_id_154 samp_id_154 samp_id_154 EA 2 0
-alt_id_155 samp_id_155 samp_id_155 EA 2 0
-alt_id_156 samp_id_156 samp_id_156 EA 2 0
-alt_id_157 samp_id_157 samp_id_157 EA 2 0
-alt_id_158 samp_id_158 samp_id_158 EA 2 0
-alt_id_159 samp_id_159 samp_id_159 EA 2 0
-alt_id_160 samp_id_160 samp_id_160 EA 2 0
-alt_id_161 samp_id_161 samp_id_161 EA 2 0
-alt_id_162 samp_id_162 samp_id_162 EA 2 0
-alt_id_163 samp_id_163 samp_id_163 EA 2 0
-alt_id_164 samp_id_164 samp_id_164 EA 2 0
-alt_id_165 samp_id_165 samp_id_165 EA 2 0
-alt_id_166 samp_id_166 samp_id_166 EA 2 0
-alt_id_167 samp_id_167 samp_id_167 EA 2 0
-alt_id_168 samp_id_168 samp_id_168 EA 2 0
-alt_id_169 samp_id_169 samp_id_169 EA 2 0
-alt_id_170 samp_id_170 samp_id_170 EA 2 0
-alt_id_171 samp_id_171 samp_id_171 EA 2 0
-alt_id_172 samp_id_172 samp_id_172 EA 2 0
-alt_id_173 samp_id_173 samp_id_173 EA 2 0
-alt_id_174 samp_id_174 samp_id_174 EA 2 0
-alt_id_175 samp_id_175 samp_id_175 EA 2 0
-alt_id_176 samp_id_176 samp_id_176 EA 2 0
-alt_id_177 samp_id_177 samp_id_177 EA 2 0
-alt_id_178 samp_id_178 samp_id_178 EA 2 0
-alt_id_179 samp_id_179 samp_id_179 EA 2 0
-alt_id_180 samp_id_180 samp_id_180 EA 2 0
-alt_id_181 samp_id_181 samp_id_181 EA 2 0
-alt_id_182 samp_id_182 samp_id_182 EA 2 0
-alt_id_183 samp_id_183 samp_id_183 EA 2 0
-alt_id_184 samp_id_184 samp_id_184 EA 2 0
-alt_id_185 samp_id_185 samp_id_185 EA 2 0
-alt_id_186 samp_id_186 samp_id_186 EA 2 0
-alt_id_187 samp_id_187 samp_id_187 EA 2 0
-alt_id_188 samp_id_188 samp_id_188 EA 2 0
-alt_id_189 samp_id_189 samp_id_189 EA 2 0
-alt_id_190 samp_id_190 samp_id_190 EA 2 0
-alt_id_191 samp_id_191 samp_id_191 EA 2 0
-alt_id_192 samp_id_192 samp_id_192 EA 2 0
-alt_id_193 samp_id_193 samp_id_193 EA 2 0
-alt_id_194 samp_id_194 samp_id_194 EA 2 0
-alt_id_195 samp_id_195 samp_id_195 EA 2 0
-alt_id_196 samp_id_196 samp_id_196 EA 2 0
-alt_id_197 samp_id_197 samp_id_197 EA 2 0
-alt_id_198 samp_id_198 samp_id_198 EA 2 0
-alt_id_199 samp_id_199 samp_id_199 EA 2 0
-alt_id_200 samp_id_200 samp_id_200 EA 2 0
-alt_id_201 samp_id_201 samp_id_201 EA 2 0
-alt_id_202 samp_id_202 samp_id_202 EA 2 0
-alt_id_203 samp_id_203 samp_id_203 EA 2 0
-alt_id_204 samp_id_204 samp_id_204 EA 2 0
-alt_id_205 samp_id_205 samp_id_205 EA 2 0
-alt_id_206 samp_id_206 samp_id_206 EA 2 0
-alt_id_207 samp_id_207 samp_id_207 EA 2 0
-alt_id_208 samp_id_208 samp_id_208 EA 2 0
-alt_id_209 samp_id_209 samp_id_209 EA 2 0
-alt_id_210 samp_id_210 samp_id_210 EA 2 0
-alt_id_211 samp_id_211 samp_id_211 EA 2 0
-alt_id_212 samp_id_212 samp_id_212 EA 2 0
-alt_id_213 samp_id_213 samp_id_213 EA 2 0
-alt_id_214 samp_id_214 samp_id_214 EA 2 0
-alt_id_215 samp_id_215 samp_id_215 EA 2 0
-alt_id_216 samp_id_216 samp_id_216 EA 2 0
-alt_id_217 samp_id_217 samp_id_217 EA 2 0
-alt_id_218 samp_id_218 samp_id_218 EA 2 0
-alt_id_219 samp_id_219 samp_id_219 EA 2 0
-alt_id_220 samp_id_220 samp_id_220 EA 2 0
-alt_id_221 samp_id_221 samp_id_221 EA 2 0
-alt_id_222 samp_id_222 samp_id_222 EA 2 0
-alt_id_223 samp_id_223 samp_id_223 EA 2 0
-alt_id_224 samp_id_224 samp_id_224 EA 2 0
-alt_id_225 samp_id_225 samp_id_225 EA 2 0
-alt_id_226 samp_id_226 samp_id_226 EA 2 0
-alt_id_227 samp_id_227 samp_id_227 EA 2 0
-alt_id_228 samp_id_228 samp_id_228 EA 2 0
-alt_id_229 samp_id_229 samp_id_229 EA 2 0
-alt_id_230 samp_id_230 samp_id_230 EA 2 0
-alt_id_231 samp_id_231 samp_id_231 EA 2 0
-alt_id_232 samp_id_232 samp_id_232 EA 2 0
-alt_id_233 samp_id_233 samp_id_233 EA 2 0
-alt_id_234 samp_id_234 samp_id_234 EA 2 0
-alt_id_235 samp_id_235 samp_id_235 EA 2 0
-alt_id_236 samp_id_236 samp_id_236 EA 2 0
-alt_id_237 samp_id_237 samp_id_237 EA 2 0
-alt_id_238 samp_id_238 samp_id_238 EA 2 0
-alt_id_239 samp_id_239 samp_id_239 EA 2 0
-alt_id_240 samp_id_240 samp_id_240 EA 2 0
-alt_id_241 samp_id_241 samp_id_241 EA 2 0
-alt_id_242 samp_id_242 samp_id_242 EA 2 0
-alt_id_243 samp_id_243 samp_id_243 EA 2 0
-alt_id_244 samp_id_244 samp_id_244 EA 2 0
-alt_id_245 samp_id_245 samp_id_245 EA 2 0
-alt_id_246 samp_id_246 samp_id_246 EA 2 0
-alt_id_247 samp_id_247 samp_id_247 EA 2 0
-alt_id_248 samp_id_248 samp_id_248 EA 2 0
-alt_id_249 samp_id_249 samp_id_249 EA 2 0
-alt_id_250 samp_id_250 samp_id_250 EA 2 0
+FID IID descID ance pop sex age group
+HG00105 HG00105 HG00105 EUR GBR 1 NA 0
+HG00107 HG00107 HG00107 EUR GBR 1 NA 0
+HG00115 HG00115 HG00115 EUR GBR 1 NA 0
+HG00132 HG00132 HG00132 EUR GBR 2 NA 0
+HG00145 HG00145 HG00145 EUR GBR 1 NA 0
+HG00157 HG00157 HG00157 EUR GBR 1 NA 0
+HG00181 HG00181 HG00181 EUR FIN 1 NA 0
+HG00308 HG00308 HG00308 EUR FIN 1 NA 0
+HG00379 HG00379 HG00379 EUR FIN 2 NA 0
+HG01500 HG01500 HG01500 EUR IBS 1 NA 0
+HG01501 HG01501 HG01501 EUR IBS 2 NA 0
+HG01503 HG01503 HG01503 EUR IBS 1 NA 0
+HG01504 HG01504 HG01504 EUR IBS 2 NA 0
+HG01506 HG01506 HG01506 EUR IBS 1 NA 0
+HG01507 HG01507 HG01507 EUR IBS 2 NA 0
+HG01509 HG01509 HG01509 EUR IBS 1 NA 0
+HG01510 HG01510 HG01510 EUR IBS 2 NA 0
+HG01512 HG01512 HG01512 EUR IBS 1 NA 0
+HG01513 HG01513 HG01513 EUR IBS 2 NA 0
+HG01524 HG01524 HG01524 EUR IBS 1 NA 0
+HG01525 HG01525 HG01525 EUR IBS 2 NA 0
+HG01527 HG01527 HG01527 EUR IBS 1 NA 0
+HG01528 HG01528 HG01528 EUR IBS 2 NA 0
+HG01530 HG01530 HG01530 EUR IBS 1 NA 0
+HG01531 HG01531 HG01531 EUR IBS 2 NA 0
+HG01536 HG01536 HG01536 EUR IBS 1 NA 0
+HG01537 HG01537 HG01537 EUR IBS 2 NA 0
+HG01602 HG01602 HG01602 EUR IBS 2 NA 0
+HG01603 HG01603 HG01603 EUR IBS 1 NA 0
+HG01605 HG01605 HG01605 EUR IBS 2 NA 0
+HG01606 HG01606 HG01606 EUR IBS 1 NA 0
+HG01607 HG01607 HG01607 EUR IBS 2 NA 0
+HG01608 HG01608 HG01608 EUR IBS 1 NA 0
+HG01610 HG01610 HG01610 EUR IBS 1 NA 0
+HG01612 HG01612 HG01612 EUR IBS 2 NA 0
+HG01613 HG01613 HG01613 EUR IBS 2 NA 0
+HG01615 HG01615 HG01615 EUR IBS 1 NA 0
+HG01628 HG01628 HG01628 EUR IBS 2 NA 0
+HG01630 HG01630 HG01630 EUR IBS 1 NA 0
+HG01631 HG01631 HG01631 EUR IBS 1 NA 0
+HG01632 HG01632 HG01632 EUR IBS 2 NA 0
+HG01668 HG01668 HG01668 EUR IBS 2 NA 0
+HG01669 HG01669 HG01669 EUR IBS 1 NA 0
+HG01670 HG01670 HG01670 EUR IBS 2 NA 0
+HG01672 HG01672 HG01672 EUR IBS 1 NA 0
+HG01673 HG01673 HG01673 EUR IBS 2 NA 0
+HG01675 HG01675 HG01675 EUR IBS 1 NA 0
+HG01676 HG01676 HG01676 EUR IBS 2 NA 0
+HG01678 HG01678 HG01678 EUR IBS 1 NA 0
+HG01679 HG01679 HG01679 EUR IBS 2 NA 0
+HG01680 HG01680 HG01680 EUR IBS 1 NA 0
+HG01682 HG01682 HG01682 EUR IBS 1 NA 0
+HG01684 HG01684 HG01684 EUR IBS 2 NA 0
+HG01685 HG01685 HG01685 EUR IBS 2 NA 0
+HG01686 HG01686 HG01686 EUR IBS 1 NA 0
+HG01694 HG01694 HG01694 EUR IBS 1 NA 0
+HG01695 HG01695 HG01695 EUR IBS 2 NA 0
+HG01697 HG01697 HG01697 EUR IBS 2 NA 0
+HG01699 HG01699 HG01699 EUR IBS 1 NA 0
+HG01700 HG01700 HG01700 EUR IBS 1 NA 0
+HG01702 HG01702 HG01702 EUR IBS 2 NA 0
+HG01704 HG01704 HG01704 EUR IBS 2 NA 0
+HG01705 HG01705 HG01705 EUR IBS 1 NA 0
+HG01707 HG01707 HG01707 EUR IBS 2 NA 0
+HG01708 HG01708 HG01708 EUR IBS 1 NA 0
+HG01709 HG01709 HG01709 EUR IBS 1 NA 0
+HG01710 HG01710 HG01710 EUR IBS 2 NA 0
+HG01746 HG01746 HG01746 EUR IBS 2 NA 0
+HG01747 HG01747 HG01747 EUR IBS 1 NA 0
+HG01756 HG01756 HG01756 EUR IBS 1 NA 0
+HG01757 HG01757 HG01757 EUR IBS 2 NA 0
+HG01761 HG01761 HG01761 EUR IBS 1 NA 0
+HG01762 HG01762 HG01762 EUR IBS 2 NA 0
+HG01770 HG01770 HG01770 EUR IBS 2 NA 0
+HG01771 HG01771 HG01771 EUR IBS 1 NA 0
+HG01773 HG01773 HG01773 EUR IBS 2 NA 0
+HG01775 HG01775 HG01775 EUR IBS 1 NA 0
+HG01776 HG01776 HG01776 EUR IBS 2 NA 0
+HG01777 HG01777 HG01777 EUR IBS 1 NA 0
+HG01779 HG01779 HG01779 EUR IBS 2 NA 0
+HG01781 HG01781 HG01781 EUR IBS 1 NA 0
+HG01783 HG01783 HG01783 EUR IBS 1 NA 0
+HG01784 HG01784 HG01784 EUR IBS 2 NA 0
+HG01789 HG01789 HG01789 EUR GBR 1 NA 0
+HG01790 HG01790 HG01790 EUR GBR 2 NA 0
+HG01791 HG01791 HG01791 EUR GBR 1 NA 0
+HG02215 HG02215 HG02215 EUR GBR 2 NA 0
+HG02220 HG02220 HG02220 EUR IBS 2 NA 0
+HG02221 HG02221 HG02221 EUR IBS 1 NA 0
+HG02223 HG02223 HG02223 EUR IBS 2 NA 0
+HG02224 HG02224 HG02224 EUR IBS 1 NA 0
+HG02230 HG02230 HG02230 EUR IBS 2 NA 0
+HG02231 HG02231 HG02231 EUR IBS 1 NA 0
+HG02232 HG02232 HG02232 EUR IBS 2 NA 0
+HG02233 HG02233 HG02233 EUR IBS 1 NA 0
+HG02235 HG02235 HG02235 EUR IBS 2 NA 0
+HG02236 HG02236 HG02236 EUR IBS 1 NA 0
+HG02238 HG02238 HG02238 EUR IBS 1 NA 0
+HG02239 HG02239 HG02239 EUR IBS 2 NA 0
+NA11832 NA11832 NA11832 EUR CEU 2 NA 0
+NA11840 NA11840 NA11840 EUR CEU 2 NA 0
+NA11918 NA11918 NA11918 EUR CEU 2 NA 0
+NA12005 NA12005 NA12005 EUR CEU 1 NA 0
+NA12156 NA12156 NA12156 EUR CEU 2 NA 0
+NA12234 NA12234 NA12234 EUR CEU 2 NA 0
+NA12414 NA12414 NA12414 EUR CEU 2 NA 0
+NA12760 NA12760 NA12760 EUR CEU 1 NA 0
+NA12762 NA12762 NA12762 EUR CEU 1 NA 0
+NA12776 NA12776 NA12776 EUR CEU 2 NA 0
+NA12813 NA12813 NA12813 EUR CEU 2 NA 0
+NA12828 NA12828 NA12828 EUR CEU 2 NA 0
+NA12878 NA12878 NA12878 EUR CEU 2 NA 0
+NA20514 NA20514 NA20514 EUR TSI 2 NA 0
+HG00096 HG00096 HG00096 EUR GBR 1 NA 0
+HG00097 HG00097 HG00097 EUR GBR 2 NA 0
+NA20911 NA20911 NA20911 SAS GIH 1 NA 0
+NA21095 NA21095 NA21095 SAS GIH 1 NA 0

@@ -13,7 +13,16 @@
 
 #' @export 
 #' @author Junfang Chen 
-
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "controlData" 
+#' outputPrefix <- "dataCtl" 
+#' outputPrefix <- "1_02_removedExclInst"  
+#' ## renamePlinkBFile(inputPrefix, outputPrefix, action="move")
 
 renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 
@@ -42,7 +51,9 @@ renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 
 #' @export 
 #' @author Junfang Chen 
-
+#' @examples
+#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")  
+#' getGroupLabel(inputFAMfile=famFile)
 
 getGroupLabel <- function(inputFAMfile){ 
 

@@ -31,7 +31,16 @@ both parental IDs whenever at least one parent is not in the dataset,
 and the affected samples are now considered founders.
 }
 \examples{
- 
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+outputPrefix <- "2_07_removedParentIdsMiss" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedParentIdsMiss(plink, inputPrefix, outputPrefix)
 }
 \author{
 Junfang Chen

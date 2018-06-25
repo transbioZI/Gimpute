@@ -33,6 +33,21 @@ chromosomal location and the strand information.
 The SNP information in the chip annotation file is used as
 the reference.
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))
+inputPrefix <- "controlData"     
+chipType <- "affymetrix"
+outputPrefix <- "updatedSnpInfo"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## updatedSnpInfo(plink, inputPrefix, chipAnnoFile, 
+##                    outputPrefix, outputSNPfile)
+}
 \author{
 Junfang Chen
 }

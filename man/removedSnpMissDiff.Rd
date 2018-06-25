@@ -34,6 +34,19 @@ differential SNPs are removed.
 }
 \examples{
  
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+snpMissDifCutOff <- 0.02
+outputPrefix <- "2_09_removedSnpMissDiff" 
+groupLabel <- "control"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, 
+##                    outputPrefix, groupLabel)
 }
 \author{
 Junfang Chen

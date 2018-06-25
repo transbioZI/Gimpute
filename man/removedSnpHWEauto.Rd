@@ -4,8 +4,8 @@
 \alias{removedSnpHWEauto}
 \title{Hardy Weinberg Equilibrium test for autosomal SNPs}
 \usage{
-removedSnpHWEauto(groupLabel, plink, inputPrefix, pval, outputPvalFile,
-  outputSNPfile, outputPrefix)
+removedSnpHWEauto(groupLabel, plink, inputPrefix, pval = 1e-06,
+  outputPvalFile, outputSNPfile, outputPrefix)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 
@@ -14,10 +14,11 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{pval}{the p-value cutoff for controlling HWE test in either control or 
-case subjects. Only autosomal SNPs are considered.}
+case subjects. Only autosomal SNPs are considered. The default value is
+0.000001.}
 
-\item{outputPvalFile}{the output pure text file that stores autosomal SNPs and 
-their sorted HWE p-values.}
+\item{outputPvalFile}{the output pure text file that stores autosomal SNPs
+and their sorted HWE p-values.}
 
 \item{outputSNPfile}{the output pure text file that stores the removed SNPs, 
 one per line.}
@@ -25,13 +26,27 @@ one per line.}
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
 \value{
-The output PLINK binary files.
+The output PLINK binary files after HWE test on the autosome.
 }
 \description{
 Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium (HWE).
 }
 \examples{
  
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+groupLabel <- "control"
+inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+outputPvalFile <- "2_11_snpHwePvalAuto.txt"
+outputSNPfile <- "2_11_snpRemovedHweAuto.txt" 
+outputPrefix <- "2_11_removedSnpHweAuto" 
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedSnpHWEauto(groupLabel, plink, inputPrefix, pval=0.000001,
+##                   outputPvalFile, outputSNPfile, outputPrefix)
 }
 \author{
 Junfang Chen

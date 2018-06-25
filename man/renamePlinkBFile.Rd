@@ -21,6 +21,17 @@ Rename a set of PLINK binary files (.BED, .BIM and .FAM).
 The original input files can be retained using the action "copy"
 or removed by using "move".
 }
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+outputPrefix <- "dataCtl" 
+outputPrefix <- "1_02_removedExclInst"  
+## renamePlinkBFile(inputPrefix, outputPrefix, action="move")
+}
 \author{
 Junfang Chen
 }

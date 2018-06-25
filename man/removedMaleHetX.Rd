@@ -19,8 +19,8 @@ heterozygous SNPs on the chromosome X.}
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 
 \item{outputSubjHetFile}{the output pure text file that stores male subjects 
-that have heterozygous SNPs with their frequency (if any), i.e. the number of 
-.hh SNPs in this male. Lines are sorted by descending number.}
+that have heterozygous SNPs with their frequency (if any), i.e. the number 
+of .hh SNPs in this male. Lines are sorted by descending number.}
 
 \item{outputRetainSubjectFile}{the output pure text file that stores
 male subjects that have heterozygous SNPs with their frequency after 
@@ -48,6 +48,24 @@ which could be an error given the haploid nature of the male X chromosome.
 In principle, one has to remove all males that have heterozygous SNPs on the 
 chromosome X. However, too many males might be removed in some data sets. 
 Therefore a small percentage of such males in the data set is allowed.
+}
+\examples{
+## In the current working directory
+bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+inputPrefix <- "controlData" 
+hhSubjCutOff <- 15 ##  can be tuned
+outputPrefix <- "2_02_removedInstHetX" 
+outputSubjHetFile <- "2_02_instHetXfreqAll.txt" 
+outputRetainSubjectFile <- "2_02_instHetXfreqRetained.txt"  
+outputHetSNPfile <- "2_02_snpHHfreqAll.txt"
+## Not run: Requires an executable program PLINK, e.g.
+## plink <- "/home/tools/plink"
+## removedMaleHetX(plink, inputPrefix, hhSubjCutOff,
+##                 outputPrefix, outputSubjHetFile, 
+##                 outputRetainSubjectFile, outputHetSNPfile)
 }
 \author{
 Junfang Chen
