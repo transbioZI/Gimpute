@@ -7,7 +7,7 @@
 phaseImpute2(inputPrefix, outputPrefix, prefix4final, plink, shapeit, impute2,
   gtool, windowSize = 3e+06, effectiveSize = 20000, nCore4phase = 1,
   nThread = 40, nCore4impute = 40, nCore4gtool = 40, infoScore = 0.6,
-  outputInfoFile, impRefDIR, tmpImputeDir = "tmpImpute", keepTmpDir = TRUE)
+  outputInfoFile, impRefDIR, tmpImputeDir, keepTmpDir = TRUE)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
