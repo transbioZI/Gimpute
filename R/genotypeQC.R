@@ -1119,8 +1119,7 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     } else { print("ERROR: HWE test on autosome!") }
     ## step 12 
     outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
-    outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
-    # outputPrefix12 <- "2_12_removedSnpHweFemaleXct" 
+    outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt"  
     removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
                                    pval=pval4femaleXctl, outputPvalFile,
                                    outputSNPfile, outputPrefix=outputPrefix)
