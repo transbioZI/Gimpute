@@ -546,7 +546,7 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
 
 #' @param chipType a string name defines the type of the chip annotation file: 
-#' 'illumina', 'affymetrix' or 'psychChip'.
+#' 'SNPIDchip', and 'rsIDchip'.
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
 #' @return The output PLINK binary files after updating SNP information.
@@ -563,7 +563,7 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 #' inputPrefix <- "controlData"     
-#' chipType <- "affymetrix"
+#' chipType <- "rsIDchip"
 #' outputPrefix <- "updatedSnpInfo"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -588,7 +588,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
         }
 
         ## find the overlapping
-        chipAnno <- read.table(file=annoFile, 
+        chipAnno <- read.table(file=chipAnnoFile, 
                                header=TRUE, stringsAsFactors=FALSE)
         system(paste0("rm ", annoFile)) ## 
 
@@ -601,23 +601,17 @@ updatedSnpInfo <- function(plink, inputPrefix,
         comV2 <- cbind(bimV1, annoV1sort) 
 
         ## Update main info  
-        if (chipType == "affymetrix") {      
+        if (chipType == "SNPIDchip") {      
             updateSNP2rs <- subset(comV2, select=c(V2, rsID))
             updateSNPchr <- subset(comV2, select=c(rsID, chr))
             updateSNPpos <- subset(comV2, select=c(rsID, pos)) 
             ## strand 
             updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "rsID"] 
-        } else if (chipType == "illumina"){ 
+        } else if (chipType == "rsIDchip"){ 
             updateSNP2rs <- subset(comV2, select=c(V2, V2))  
             updateSNPchr <- subset(comV2, select=c(V2, chr))
             updateSNPpos <- subset(comV2, select=c(V2, pos)) 
             ## strand
-            updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "V2"]  
-        } else if (chipType == "PsychChip"){ 
-            updateSNP2rs <- subset(comV2, select=c(V2, V2))  
-            updateSNPchr <- subset(comV2, select=c(V2, chr))
-            updateSNPpos <- subset(comV2, select=c(V2, pos)) 
-            ## strand 
             updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "V2"]  
         }
 
@@ -753,155 +747,7 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
            paste0(outputPrefix, ".txt"), " --make-bed --out ", outputPrefix))  
     system(paste0("rm ", paste0(outputPrefix, ".txt")))
 }
-
-##########################################   
-########################################## 
-##########################################   
-########################################## 
-
-
-
-##########################################   
-##########################################   
-#' prepare Affymetrix chip annotation file 
-#'
-#' @description
-#' Prepare Affymetrix chip annotation file into the format of interest.
-
-
-#' @param inputFile an input pure text file that contains the chip annotation
-#' information. 
-#' @param outputFile an output pure text file that stores the chip annotation 
-#' information in a pre-defined format. 
  
-#' @return a pure text file that stores the prepared chip annotation 
-#' information in a user-defined format. 
-#' @details If the chip annotation file is not available for your study, 
-#' it can be downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
-
-##' @export 
-
-#' @author Junfang Chen 
-#' @examples 
-
-.prepareChipAnnoFile4affymetrix <- function(inputFile, outputFile){
-
-    inputNew <- paste0(inputFile, "New")
-    system(paste0("sed 1d ", inputFile, " > ", inputNew) )
-    chipAnnoRefraw <- read.table(file=inputNew, stringsAsFactors=FALSE)  
-    colnames(chipAnnoRefraw) <- c("chipSnpID", "rsID", "chr", "pos", "strand")
-
-    ## remove SNPs with strange strand 
-    whUnknown <- which(chipAnnoRefraw[,"strand"] == "---") 
-    chipAnnoRefraw2 <- chipAnnoRefraw[-whUnknown,]
-
-    ## only see 3 different cases (if 25--> XY)
-    whX <- which(chipAnnoRefraw2[,"chr"] == "X")
-    whY <- which(chipAnnoRefraw2[,"chr"] == "Y")
-    whMT <- which(chipAnnoRefraw2[,"chr"] == "MT")
-
-    chipAnnoRefraw2[whX,"chr"] <- 23 
-    chipAnnoRefraw2[whY,"chr"] <- 24
-    chipAnnoRefraw2[whMT,"chr"] <- 26
-  
-    whAFF <- grep("AFFX-SNP", chipAnnoRefraw2[,"chipSnpID"]) 
-    chipAnnoRefraw3 <- chipAnnoRefraw2[-whAFF,]
-    write.table(chipAnnoRefraw3, file=outputFile, quote=FALSE, 
-                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
-
-}
-
-
-##########################################   
-########################################## 
-#' prepare Illumina chip annotation file 
-#'
-#' @description
-#' Prepare Illumina chip annotation file into the format of interest.
-
-
-#' @param inputFile an input pure text file that contains the chip annotation
-#' information. 
-#' @param outputFile an output pure text file that stores the chip annotation 
-#' information in a pre-defined format. 
- 
-#' @return a pure text file that stores the prepared chip annotation 
-#' information in a user-defined format. 
-#' @details If the chip annotation file is not available for your study, 
-#' it can be downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
-
-
-##' @export  
-#' @author Junfang Chen 
-# #' @examples 
-
-
-.prepareChipAnnoFile4Illumina <- function(inputFile, outputFile){
-
-    chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE)
-    # print(colnames(chipAnnoRefraw))
-    ## c("chipSnpID", "chr", "pos", "match2genom", "strand", "allele")
-    chipAnnoRefraw <- chipAnnoRefraw[,-c(4, 6)]
-    colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", "strand")
-
-    ## only see 3 different cases (if 25--> XY)
-    whX <- which(chipAnnoRefraw[,"chr"] == "X")
-    whY <- which(chipAnnoRefraw[,"chr"] == "Y")
-    whMT <- which(chipAnnoRefraw[,"chr"] == "MT")
-
-    chipAnnoRefraw[whX,"chr"] <- 23 
-    chipAnnoRefraw[whY,"chr"] <- 24
-    chipAnnoRefraw[whMT,"chr"] <- 26 
-
-    chipAnnoNew <- chipAnnoRefraw
-    write.table(chipAnnoNew, file=outputFile, quote=FALSE, 
-                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
-
-}
-
-
-
-##########################################   
-########################################## 
-#' prepare PsychChip chip annotation file 
-#'
-#' @description
-#' Prepare PsychChip chip annotation file into the format of interest.
-
-#' @param inputFile an input pure text file that contains the chip annotation
-#' information. 
-#' @param outputFile an output pure text file that stores the chip annotation 
-#' information in a pre-defined format. 
- 
-#' @return a pure text file that stores the prepared chip annotation 
-#' information in a user-defined format. 
-#' @details If the chip annotation file is not available for your study, 
-#' it can be downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
-
-##' @export 
-#' @author Junfang Chen 
-##' @examples 
-
-.prepareChipAnnoFile4PsychChip <- function(inputFile, outputFile){
-
-    chipAnnoRefraw <- read.table(file=inputFile, stringsAsFactors=FALSE) 
-    colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", 
-                                  "match2genom", "strand", "allele") 
-    chipAnnoRefraw <- chipAnnoRefraw[,-c(4, 6)]
-    colnames(chipAnnoRefraw) <- c("chipSnpID", "chr", "pos", "strand")
- 
-    ## only see 3 different cases (if 25--> XY)
-    whX <- which(chipAnnoRefraw[,"chr"] == "X")
-    whY <- which(chipAnnoRefraw[,"chr"] == "Y")
-    whMT <- which(chipAnnoRefraw[,"chr"] == "MT") 
-    chipAnnoRefraw[whX,"chr"] <- 23 
-    chipAnnoRefraw[whY,"chr"] <- 24
-    chipAnnoRefraw[whMT,"chr"] <- 26  
-
-    write.table(chipAnnoRefraw, file=outputFile, quote=FALSE, 
-                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
-
-}
 
 
 
