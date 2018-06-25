@@ -875,7 +875,7 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
                         nCore4phase=1, nThread=40, 
                         nCore4impute=40, nCore4gtool=40, 
                         infoScore=0.6, outputInfoFile,
-                        impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE){
+                        impRefDIR, tmpImputeDir, keepTmpDir=TRUE){
 
     ## One must create directories for storing tmp imputation output files 
     ## The name of these directories must be fixed for the sake of 

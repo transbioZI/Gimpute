@@ -122,7 +122,7 @@ genoQC(plink, inputPrefix,
 inputPrefix <- "2_12_removedSnpHweFemaleX" 
 outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPCplotFile <- "2_13_eigenvalAfterQC.png"
-nThread = 30
+nThread <- 20
 plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
 
 ## remove outliers 
@@ -194,17 +194,15 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "impute2infoUpdated.txt"
-
+tmpImputeDir <- "tmpImpute"
 phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             plink, shapeit, impute2, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore4phase=1, nThread=40, 
             nCore4impute=40, nCore4gtool=40, 
             infoScore=0.6, outputInfoFile, 
-            impRefDIR, tmpImputeDir="tmpImpute", keepTmpDir=TRUE)
-
+            impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 ##################################################### ###### After imputation
-
 ## step 2 
 ## Final imputed results, including bad imputed genotypes.
 imputedDatasetfn <- "4_2_imputedDataset"
@@ -301,7 +299,6 @@ system(paste0("scp ./3-checkAlign/3_4_snpImpRefAlleles.txt ", dir5))
 system(paste0("scp ./3-checkAlign/3_4_snpDiffAlleles.txt ", dir5))
 system(paste0("scp ./3-checkAlign/3_3_snpMissPos.txt ", dir5))
 system(paste0("scp ./3-checkAlign/3_2_snpSameNameDiffPos.txt ", dir5))
-
 
 setwd("5-reductAndExpand/")
 # 1. Reduce the imputed dataset to the SNPs before imputation. 
