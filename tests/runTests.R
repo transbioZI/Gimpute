@@ -20,7 +20,8 @@ impRefDIRmain <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef"
 impRefDIR <- paste0(impRefDIRmain, "/1000Gphase1/")
 
 ## Genotyping chip annotation file 
-chipAnnoFile <- NULL 
+removedSampIDFile <- system.file("extdata", "coriellAffyChip.txt", 
+                                 package="Gimpute")
 ## Self-defined configuration files
 removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
                                  package="Gimpute")
@@ -57,7 +58,10 @@ removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt",
                                  package="Gimpute")
 excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
                                     package="Gimpute")
-chipAnnoFile <- NULL 
+## Genotyping chip annotation file 
+removedSampIDFile <- system.file("extdata", "coriellAffyChip.txt", 
+                                 package="Gimpute")
+                                  
 ## step 1  
 system(paste0("scp ", metadataFile, " ."))  
  
@@ -68,7 +72,7 @@ inputPrefix <- "controlData"
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
-chipType <- "affymetrix"
+chipType <- "rsIDstudy"
 updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
                chipType, outputPrefix, keepInterFile=TRUE)
