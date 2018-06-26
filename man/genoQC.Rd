@@ -91,6 +91,9 @@ outputPrefix <- "2_12_removedSnpHweFemaleX"
 ##        pval4femaleXctl=0.000001, 
 ##        outputPrefix, keepInterFile=TRUE)
 }
+\references{
+Schizophrenia Working Group of the Psychiatric Genomics, C. (2014). Biological insights from 108 schizophrenia-associated genetic loci. Nature 511(7510): 421-427.
+}
 \author{
 Junfang Chen
 }

@@ -1038,9 +1038,10 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' 10.) Remove chrX SNPs with HWE p < 10-6 in female controls. 
 #' (Optional, if no chrX data). 
 
-
 #' @export  
 #' @author Junfang Chen 
+#' @references Schizophrenia Working Group of the Psychiatric Genomics, C. (2014). Biological insights from 108 schizophrenia-associated genetic loci. Nature 511(7510): 421-427. 
+
 #' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
