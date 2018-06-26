@@ -1,8 +1,19 @@
 
 
+Changes in version 0.99.6
+--------------------------
+
+New Features
+1. Added prepareAnnoFile4affy.R
+2. updated R functions in the section of genotype information update.
+
+
+
+
 Changes in version 0.99.5
 --------------------------
 
 1. Added runnable examples for the functions;
+2. Added references/citations in the tutorial and Rd files;
 2. Updated tutorial;
 3. Updated certain R functions and Rd files.
