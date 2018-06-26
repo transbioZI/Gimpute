@@ -25,7 +25,7 @@ Gimpute runs on any 64-bit x86 Linux distribution. Additional dependencies are d
 ## Tutorial
 Please check [Gimpute tutorial](https://github.com/transbioZI/Gimpute/blob/master/vignettes/GimputeTutorial.Rmd).
 
-The best view of the tutorial is in HTML format. Execute the following R codes as below after you download the tutorial:
+The best view of the tutorial is in HTML format. Execute the following R codes after you have downloaded the tutorial (GimputeTutorial.Rmd) to output the HTML document:
 
 ```{r eval=FALSE}
 install.packages("rmarkdown")
