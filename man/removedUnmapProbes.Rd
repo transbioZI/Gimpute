@@ -4,7 +4,7 @@
 \alias{removedUnmapProbes}
 \title{Remove SNPs not in the chip annotation file}
 \usage{
-removedUnmapProbes(plink, inputPrefix, chipAnnoFile, outputPrefix,
+removedUnmapProbes(plink, inputPrefix, chipAnnoFile, chipType, outputPrefix,
   outputSNPfile)
 }
 \arguments{
@@ -15,6 +15,10 @@ or somewhere in the command path.}
 
 \item{chipAnnoFile}{a pure text file that stores the chip annotation
 information.}
+
+\item{chipType}{a string name defines the type of the chip annotation file: 
+'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+\code{\link{prepareAnnoFile4affy}}.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 
@@ -44,8 +48,11 @@ inputPrefix <- "controlData" ## Specify the input PLINK file prefix
 outputSNPfile <- "1_07_removedUnmapProbes"   
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
-## removedUnmapProbes(plink, inputPrefix, chipAnnoFile, 
+## removedUnmapProbes(plink, inputPrefix, chipAnnoFile, chipType, 
 ##                    outputPrefix, outputSNPfile)
+}
+\seealso{
+\code{\link{prepareAnnoFile4affy}}
 }
 \author{
 Junfang Chen

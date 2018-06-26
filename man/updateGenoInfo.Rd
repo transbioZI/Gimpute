@@ -27,8 +27,9 @@ one per line, which need to be removed. If it is null, no SNPs are removed.}
 \item{chipAnnoFile}{a pure text file that stores the chip annotation
 information.}
 
-\item{chipType}{a string name that defines the type of the chip annotation 
-file: 'illumina', 'affymetrix' or 'psychChip'.}
+\item{chipType}{a string name defines the type of the chip annotation file: 
+'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+\code{\link{prepareAnnoFile4affy}}.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 
@@ -78,7 +79,7 @@ chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
-chipType <- "affymetrix"
+chipType <- "rsIDstudy"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"  
 ## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,

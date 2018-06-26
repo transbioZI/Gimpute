@@ -350,6 +350,9 @@ removedExclProbe <- function(plink, inputPrefix,
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param chipAnnoFile a pure text file that stores the chip annotation
 #' information. 
+#' @param chipType a string name defines the type of the chip annotation file: 
+#' 'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+#' \code{\link{prepareAnnoFile4affy}}.
 #' @param outputSNPfile a pure text file that stores the SNP IDs, 
 #' one per line, which are not mapped to the chip annotation file.
 #' @param outputPrefix the prefix of the output PLINK binary files.
@@ -361,6 +364,7 @@ removedExclProbe <- function(plink, inputPrefix,
 
 #' @export 
 #' @author Junfang Chen 
+#' @seealso \code{\link{prepareAnnoFile4affy}}
 #' @examples
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
@@ -372,40 +376,31 @@ removedExclProbe <- function(plink, inputPrefix,
 #' outputSNPfile <- "1_07_removedUnmapProbes"   
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' ## removedUnmapProbes(plink, inputPrefix, chipAnnoFile, 
+#' ## removedUnmapProbes(plink, inputPrefix, chipAnnoFile, chipType, 
 #' ##                    outputPrefix, outputSNPfile)
 
-removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile, 
+removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile, chipType, 
                                outputPrefix, outputSNPfile){
 
-    if (!is.null(chipAnnoFile)){ 
+    if (!is.null(chipAnnoFile)){  
 
-        annoFile <- "chipAnnoRefb37.txt"
-        if (chipType == "affymetrix") { 
-            .prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
-                                            outputFile=annoFile)
-        } else if (chipType == "illumina"){ 
-            .prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
-                                          outputFile=annoFile)
-        } else if (chipType == "PsychChip"){ 
-            .prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
-                                           outputFile=annoFile)
-        }
-
-        ## find the overlapping
-        chipAnno <- read.table(file=annoFile, 
-                               header=TRUE, stringsAsFactors=FALSE)
+        chipAnno <- read.table(file=chipAnnoFile, header=TRUE, 
+                               stringsAsFactors=FALSE)
         ## check the overlapping SNPs
         bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-        # interSNPs <- intersect(bim[,2], chipAnno[,"chipSnpID"])  
-        interSNPs <- intersect(bim[,2], chipAnno[,"rsID"])  
+        if (chipType == "SNPIDstudy"){
+            interSNPs <- intersect(bim[,2], chipAnno[,"SNPIDstudy"])  
+        } else if (chipType == "rsIDstudy"){
+            interSNPs <- intersect(bim[,2], chipAnno[,"rsIDstudy"])   
+        } else {
+            print("Wrong chipType or column names in the annotation file!")
+        }  
         unmapped <- setdiff(bim[,2], interSNPs) 
         write.table(unmapped, file=outputSNPfile, quote=FALSE, 
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
         system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
                outputSNPfile, " --make-bed --out ", outputPrefix))
-    } else { 
-        ## copy/rename plink files
+    } else {  
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
     }
 }
@@ -417,8 +412,8 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' Remove duplicated SNPs
 #'
 #' @description
-#' Remove duplicated SNPs that have same rs-names or 
-#' duplicated genomic position.
+#' Remove duplicated SNPs that have same rs-names or duplicated genomic  
+#' position.
 
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
@@ -426,20 +421,22 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' @param chipAnnoFile an input chip annotation file. 
 #' If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
-#' @param chipType a string name that defines the type of the chip annotation 
-#' file: 'illumina', 'affymetrix' or 'psychChip'.
+#' @param chipType a string name defines the type of the chip annotation file: 
+#' 'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+#' \code{\link{prepareAnnoFile4affy}}.
 #' @param outputSNPdupFile a pure text file that stores the duplicated SNP IDs, 
 #' which are detected by the use of the chip annotation file.
 #' @param outputPrefix the prefix of the output PLINK binary files.
 
 #' @return The output PLINK binary files after removing duplicated SNP IDs.
 #' @details Duplicated SNPs have two levels of meaning: 1.) SNPs have same 
-#' rs-names but different versions of SNP ID ound in chip annotation file. 
+#' rs-names but different versions of SNP ID in chip annotation file. 
 #' e.g. SNP-A IDs for Affymetrix chip. 2.) SNPs with duplicated genomic 
 #' position: the combination of base pair position and chromosomal location. 
 
 #' @export  
 #' @author Junfang Chen 
+#' @seealso \code{\link{prepareAnnoFile4affy}}
 #' @examples
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
@@ -448,7 +445,7 @@ removedUnmapProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 #' inputPrefix <- "controlData"     
-#' chipType <- "affymetrix"
+#' chipType <- "rsIDstudy"
 #' outputSNPdupFile <- "snpDup.txt"
 #' outputPrefix <- "removedDoubleProbes"
 #' ## Not run: Requires an executable program PLINK, e.g.
@@ -463,56 +460,43 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 
      if (!is.null(chipAnnoFile)){ 
 
-        annoFile <- "chipAnnoRefb37.txt"
-        if (chipType == "affymetrix") { 
-            .prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
-                                            outputFile=annoFile)
-        } else if (chipType == "illumina"){ 
-            .prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
-                                          outputFile=annoFile)
-        } else if (chipType == "PsychChip"){ 
-            .prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
-                                           outputFile=annoFile)
-        }
-
-        ## find the overlapping
-        chipAnno <- read.table(file=annoFile, header=TRUE, 
+        chipAnno <- read.table(file=chipAnnoFile, header=TRUE, 
                                stringsAsFactors=FALSE)  
-        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-        ## cbind (combine) bim and chip annotation files  
-        sharedSNP = intersect(chipAnno[,"chipSnpID"], bim[,2])
-        # chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], sharedSNP,]
-        chipAnnoV1sort <- chipAnno[match(sharedSNP, chipAnno[,"chipSnpID"]),]
-        bimV1 <- bim[match(sharedSNP, bim[,2]), ]
-        comb <- cbind(bimV1, chipAnnoV1sort)   
+        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
+        if (chipType == "SNPIDstudy"){
+            interSNPs <- intersect(bim[,2], chipAnno[,"SNPIDstudy"])  
+            chipAnnoV1 <- chipAnno[match(interSNPs, chipAnno[,"SNPIDstudy"]),]
+        } else if (chipType == "rsIDstudy"){
+            interSNPs <- intersect(bim[,2], chipAnno[,"rsIDstudy"])    
+            chipAnnoV1 <- chipAnno[match(interSNPs, chipAnno[,"rsIDstudy"]),]
+        } else {
+            print("Wrong chipType or column names in the annotation file!")
+        }  
 
-        ## remove SNPs with duplicated position first
-        chrNames <- names(table(comb[,1]))
+        bimV1 <- bim[match(interSNPs, bim[,2]), ]
+        comb <- cbind(bimV1[,seq_len(4)], chipAnnoV1)    
+        ## remove SNPs with duplicated pos 
+        chrNames <- names(table(comb[,"chr"]))
         dupPos <- c()
         for (i in chrNames) { 
             print(i)
-            subData <- comb[which(comb[,1] == i), ]  
-            ## Remove the 1st duplicated ID (or 2nd if there are 3 replicates)
-            subDup <- subData[duplicated(subData[,"pos"], fromLast=TRUE), ] 
-            # print(dim(subDup))
-             dupPos <- rbind(dupPos, subDup)
+            chrData <- comb[which(comb[,"chr"] == i), ]  
+            ## Remove 1st duplicated ID (or 2nd if 3 replicates)
+            subDup <- chrData[duplicated(chrData[,"pos"], fromLast=TRUE), ]  
+            dupPos <- rbind(dupPos, subDup)
         }  
-        snpWithdupPos <- dupPos[,"chipSnpID"]  
-        ## return all the duplicated rs-names (not only either one)
-
-        if (chipType == "affymetrix") { 
-            whDup <- duplicated(comb[,"rsID"]) | 
-                     duplicated(comb[,"rsID"], fromLast=TRUE)
-            snpdup <- comb[whDup, "chipSnpID"] 
-        } else if (chipType == "illumina"){ 
+        ## return all the duplicated rs-names (not only either one) 
+        if (chipType == "SNPIDstudy") { 
+            snpWithdupPos <- dupPos[,"SNPIDstudy"]
+            whDup <- duplicated(comb[,"rs"]) | 
+                     duplicated(comb[,"rs"], fromLast=TRUE)
+            snpdup <- comb[whDup, "SNPIDstudy"] 
+        } else if (chipType == "rsIDstudy"){ 
+            snpWithdupPos <- dupPos[,"rsIDstudy"]
             whDup <- duplicated(comb[,"V2"]) | 
                      duplicated(comb[,"V2"], fromLast=TRUE)
-            snpdup <- comb[whDup, "chipSnpID"]  
-        } else if (chipType == "PsychChip"){ 
-            whDup <- duplicated(comb[,"V2"]) | 
-                     duplicated(comb[,"V2"], fromLast=TRUE)
-            snpdup <- comb[whDup, "chipSnpID"]  
-        }
+            snpdup <- comb[whDup, "rsIDstudy"]  
+        }  
 
         allDupSNPs <- c(snpWithdupPos, snpdup) 
         allDupSNPs <- unique(allDupSNPs)
@@ -520,14 +504,13 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
         system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
                outputSNPdupFile, " --make-bed --out ", outputPrefix))
-
     } else { 
         ## copy/rename plink files
         renamePlinkBFile(inputPrefix, outputPrefix, action="copy")  
     }
 }
 
-
+ 
 
 ##########################################   
 ##########################################  updateSNPinfo
@@ -544,9 +527,10 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' information. 
 #' If the chip annotation file is not available for your study, it can be 
 #' downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
-
 #' @param chipType a string name defines the type of the chip annotation file: 
-#' 'SNPIDchip', and 'rsIDchip'.
+#' 'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+#' \code{\link{prepareAnnoFile4affy}}.
+
 #' @param outputPrefix the prefix of the output PLINK binary files.
  
 #' @return The output PLINK binary files after updating SNP information.
@@ -555,6 +539,7 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 
 #' @export 
 #' @author Junfang Chen  
+#' @seealso \code{\link{prepareAnnoFile4affy}}
 #' @examples
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
@@ -563,51 +548,43 @@ removedDoubleProbes <- function(plink, inputPrefix, chipAnnoFile,
 #' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 #' inputPrefix <- "controlData"     
-#' chipType <- "rsIDchip"
+#' chipType <- "rsIDstudy"
 #' outputPrefix <- "updatedSnpInfo"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
 #' ## updatedSnpInfo(plink, inputPrefix, chipAnnoFile, 
-#' ##                    outputPrefix, outputSNPfile)
+#' ##                chipType, outputPrefix, outputSNPfile)
 
 
 updatedSnpInfo <- function(plink, inputPrefix, 
                            chipAnnoFile, chipType, outputPrefix){
 
-    if (!is.null(chipAnnoFile)){ 
-        annoFile <- "chipAnnoRefb37.txt"
-        if (chipType == "affymetrix") { 
-            .prepareChipAnnoFile4affymetrix(inputFile=chipAnnoFile, 
-                                            outputFile=annoFile)
-        } else if (chipType == "illumina"){ 
-            .prepareChipAnnoFile4Illumina(inputFile=chipAnnoFile, 
-                                          outputFile=annoFile)
-        } else if (chipType == "PsychChip"){ 
-            .prepareChipAnnoFile4PsychChip(inputFile=chipAnnoFile, 
-                                           outputFile=annoFile)
-        }
+    if (!is.null(chipAnnoFile)){   
 
-        ## find the overlapping
         chipAnno <- read.table(file=chipAnnoFile, 
-                               header=TRUE, stringsAsFactors=FALSE)
-        system(paste0("rm ", annoFile)) ## 
+                               header=TRUE, stringsAsFactors=FALSE)  
+        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
 
-        # ## cbind (combine) bim and chip annotation files 
-        bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE) 
-        interSNPs <- intersect(bim[,2], chipAnno[,"chipSnpID"]) 
-        bimV1 <- bim[is.element(bim[,2], interSNPs),]
-        chipAnnoV1 <- chipAnno[is.element(chipAnno[,"chipSnpID"], interSNPs),]
-        annoV1sort <- chipAnnoV1[match(bimV1[,2], chipAnnoV1[,"chipSnpID"]),]
-        comV2 <- cbind(bimV1, annoV1sort) 
+        if (chipType == "SNPIDstudy"){
+            interSNPs <- intersect(bim[,2], chipAnno[,"SNPIDstudy"])  
+            chipAnnoV1 <- chipAnno[match(interSNPs, chipAnno[,"SNPIDstudy"]),]
+        } else if (chipType == "rsIDstudy"){
+            interSNPs <- intersect(bim[,2], chipAnno[,"rsIDstudy"])    
+            chipAnnoV1 <- chipAnno[match(interSNPs, chipAnno[,"rsIDstudy"]),]
+        } else {
+            print("Wrong chipType or column names in the annotation file!")
+        }  
 
-        ## Update main info  
-        if (chipType == "SNPIDchip") {      
-            updateSNP2rs <- subset(comV2, select=c(V2, rsID))
-            updateSNPchr <- subset(comV2, select=c(rsID, chr))
-            updateSNPpos <- subset(comV2, select=c(rsID, pos)) 
+        bimV1 <- bim[match(interSNPs, bim[,2]), ]
+        comV2 <- cbind(bimV1[,], chipAnnoV1)     
+        ## Update geno info  
+        if (chipType == "SNPIDstudy") {      
+            updateSNP2rs <- subset(comV2, select=c(V2, rs))
+            updateSNPchr <- subset(comV2, select=c(rs, chr))
+            updateSNPpos <- subset(comV2, select=c(rs, pos)) 
             ## strand 
-            updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "rsID"] 
-        } else if (chipType == "rsIDchip"){ 
+            updateSNPbackward <- comV2[which(comV2[,"strand"] == "-"), "rs"] 
+        } else if (chipType == "rsIDstudy"){ 
             updateSNP2rs <- subset(comV2, select=c(V2, V2))  
             updateSNPchr <- subset(comV2, select=c(V2, chr))
             updateSNPpos <- subset(comV2, select=c(V2, pos)) 
@@ -631,7 +608,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
         write.table(updateSNPbackward, file=paste0(inputPrefix.strand, ".txt"), 
                     quote=FALSE, row.names=FALSE, col.names=FALSE, 
                     eol="\r\n", sep=" ") 
-        ## update rs, chr, and pos one by one     ## flip to the forward strand
+        ## update rs, chr, and pos one by one  ## flip to the forward strand
         ## --update-name [filename] {new ID col. number} {old ID col.} {skip}
         system(paste0(plink, " --bfile ", inputPrefix, " --update-name ", 
                inputPrefix.rs, ".txt 2 1  --make-bed --out ", inputPrefix.rs))  
@@ -645,8 +622,8 @@ updatedSnpInfo <- function(plink, inputPrefix,
         ## copy/rename all snp info updated plink files
         renamePlinkBFile(inputPrefix.strand, outputPrefix, action="copy")   
          ## remove all tmp files (rs, chr, pos)
-        system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
-        system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
+        # system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
+        # system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
 
     } else { 
         ## copy/rename plink files
@@ -672,8 +649,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
 #' pseudoautosomal region and non-pseudoautosomal region.
 #' @details Genomic coordinate system is on genome build hg19.
 
-#' @export 
-
+#' @export  
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
@@ -751,6 +727,81 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 
 
 
+
+##########################################   
+##########################################   
+#' prepare Affymetrix chip annotation file 
+#'
+#' @description
+#' Prepare Affymetrix chip annotation file into the format of interest.
+
+
+#' @param inputFile an input pure text file that contains the chip annotation
+#' information. 
+#' @param outputFile an output pure text file that stores the chip annotation 
+#' information in a user-defined format. 
+#' @param chipType a string name defines the type of the chip annotation file: 
+#' 'SNPIDstudy', and 'rsIDstudy'.
+
+#' @return a pure text file that stores the prepared chip annotation 
+#' information in a user-defined format. 
+#' @details If the chip annotation file is not available for your study, 
+#' it can be downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.
+#' The chip annotation file is organized into two different types: 
+#' \enumerate{
+#'   \item If the snp name of your study genotype data starts with "SNP_", 
+#'         then the chip type "SNPIDstudy" is used; Usually, Affymetrix chip 
+#'         data belongs to this category. The prepared output annotation file  
+#'         must at least consist of the following column names: 
+#'         SNPIDstudy, rs, chr, pos, strand.
+#'   \item If the snp name of your study genotype data starts with "rs", then
+#'         the chip type "rsIDstudy" is used; The prepared output annotation 
+#'         file must at least consist of the following column names:  
+#'         SNPIDstudy, rs, chr, pos, strand. Illumina chip is often specified 
+#'         in this format.
+#' }
+#' The column "strand" must only have two kinds of values "-" and "+". 
+#' Variants with all other values should be excluded.
+
+#' @export 
+
+#' @author Junfang Chen 
+##' @examples 
+
+prepareAnnoFile4affy <- function(inputFile, outputFile, chipType){
+
+    inputNew <- paste0(inputFile, "NewFile")
+    system(paste0("sed 1d ", inputFile, " > ", inputNew)) ## remove 1st line
+    chipAnnoRaw <- read.table(file=inputNew, stringsAsFactors=FALSE)  
+
+    if (chipType == "SNPIDstudy"){
+        colnames(chipAnnoRaw) <- c("SNPIDstudy", "rs", "chr", "pos", "strand")
+    } else if (chipType == "rsIDstudy"){
+        chipAnnoRaw <- chipAnnoRaw[,-1] ## remove SNP_A ID
+        colnames(chipAnnoRaw) <- c("rsIDstudy", "chr", "pos", "strand")
+    } else {
+        print("Wrong chipType or column names in the annotation file!")
+    }  
+
+    ## remove SNPs with strange strand 
+    whUnknown <- which(chipAnnoRaw[,"strand"] == "---") 
+    chipAnnoRawV2 <- chipAnnoRaw[-whUnknown,]
+
+    ## only see 3 different cases (if 25--> XY)
+    whX <- which(chipAnnoRawV2[,"chr"] == "X")
+    whY <- which(chipAnnoRawV2[,"chr"] == "Y")
+    whMT <- which(chipAnnoRawV2[,"chr"] == "MT")
+
+    chipAnnoRawV2[whX,"chr"] <- 23 
+    chipAnnoRawV2[whY,"chr"] <- 24
+    chipAnnoRawV2[whMT,"chr"] <- 26
+
+    write.table(chipAnnoRawV2, file=outputFile, quote=FALSE, 
+                row.names=FALSE, col.names=TRUE, eol="\r\n", sep="\t")
+}
+
+
+
 ##########################################   
 ##########################################  
 
@@ -775,8 +826,10 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 #' one per line, which need to be removed. If it is null, no SNPs are removed.
 #' @param chipAnnoFile a pure text file that stores the chip annotation
 #' information. 
-#' @param chipType a string name that defines the type of the chip annotation 
-#' file: 'illumina', 'affymetrix' or 'psychChip'.
+#' @param chipType a string name defines the type of the chip annotation file: 
+#' 'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+#' \code{\link{prepareAnnoFile4affy}}.
+
 #' @param keepInterFile a logical value indicating if the intermediate 
 #' processed files should be kept or not. The default is TRUE.
 #' @param outputPrefix the prefix of the output PLINK binary files.
@@ -818,7 +871,7 @@ removedYMtSnp <- function(plink, inputPrefix, outputPrefix){
 #' ancestrySymbol <- "EUR"
 #' outputPrefix <- "1_11_removedYMtSnp" 
 #' metaDataFile <- "1_01_metaData.txt"
-#' chipType <- "affymetrix"
+#' chipType <- "rsIDstudy"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"  
 #' ## updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
@@ -856,7 +909,7 @@ updateGenoInfo <- function(plink, inputPrefix, metaDataFile, removedSampIDFile,
     ## step 7 (Optional, if chip annotation file is not given) 
     outputPrefix7 <- "1_07_removedUnmapProbes"   
     outputSNPfile7 <- "1_07_probesUnmapped2ChipRef.txt"
-    removedUnmapProbes(plink, inputPrefix=outputPrefix6, chipAnnoFile,
+    removedUnmapProbes(plink, inputPrefix=outputPrefix6, chipAnnoFile, chipType,
                        outputPrefix=outputPrefix7, outputSNPfile=outputSNPfile7)
     ## step 8 (Optional, if chip annotation file is not given) 
     outputSNPdupFile8 <- "1_08_probesDouble.txt"

@@ -18,7 +18,8 @@ If the chip annotation file is not available for your study, it can be
 downloaded from http://www.well.ox.ac.uk/~wrayner/strand/.}
 
 \item{chipType}{a string name defines the type of the chip annotation file: 
-'SNPIDchip', and 'rsIDchip'.}
+'SNPIDstudy', and 'rsIDstudy'. The detail is described in 
+\code{\link{prepareAnnoFile4affy}}.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 }
@@ -41,12 +42,15 @@ famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
 chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))
 inputPrefix <- "controlData"     
-chipType <- "rsIDchip"
+chipType <- "rsIDstudy"
 outputPrefix <- "updatedSnpInfo"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
 ## updatedSnpInfo(plink, inputPrefix, chipAnnoFile, 
-##                    outputPrefix, outputSNPfile)
+##                chipType, outputPrefix, outputSNPfile)
+}
+\seealso{
+\code{\link{prepareAnnoFile4affy}}
 }
 \author{
 Junfang Chen
