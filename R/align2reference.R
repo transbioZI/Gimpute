@@ -219,9 +219,11 @@ checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
 #' and return the snp names of the second input file.
 
 #' @param inputFile1 the pure text file that has at least three columns:
-#' chromosomal location, snp name and base-pair position.
+#' chromosomal location, snp name and base-pair position, with the name 
+#' c("chr", "rsID", "pos")
 #' @param inputFile2 the pure text file that has at least three columns:
-#' chromosomal location, snp name and base-pair position.
+#' chromosomal location, snp name and base-pair position, with the name 
+#' c("chr", "rsID", "pos")
 #' @param outputFile the pure text file return the snp name of 
 #' the second input file.
 #' @param nCore the number of cores used for computation.
@@ -238,9 +240,8 @@ checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
     chrDist <- table(inputFile1[,"chr"])
     currentChr <- names(chrDist)
     print(currentChr)
-
+    
     snpSharedPosList <- mclapply(as.list(currentChr), function(i){
-
         print(i)
         inputFile1sub <- inputFile1[which(inputFile1[,"chr"] == i), ]
         sub2 <- inputFile2[which(inputFile2[,"chr"] == i), ]
