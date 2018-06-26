@@ -7,7 +7,8 @@ date: "Modified: 25 Jun 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
   BiocStyle::html_document:
     toc: true
-    number_sections: true
+    number_sections: true 
+
 vignette: >
    %\VignetteIndexEntry{Gimpute tutorial}
    %\VignetteEngine{knitr::rmarkdown}
@@ -25,15 +26,14 @@ options(width=80)
 
 # About Gimpute
 ## Background
-Genome-wide association studies (GWAS) have become an essential tool in assisting the improvement of understanding of neuropathology of diseases. Moreover, the imputation of genotyping data with missing information can enhance the power of GWAS by using haplotype relationships between genetic variants. In the meantime, the imputation can substantially reduce the cost of genotyping large number of samples. Furthermore, the comparison of significant findings across different cohorts and genotyping platforms is also achievable. Currently large amounts of genotyping data are produced at an unprecedented rate to be analyzed; however, the preparation of ready-to-use data sets needs to be of high quality. Thus the implementation of an efficient and reliable genetic data pre-processing and imputation pipeline is desirable.
+Genome-wide association studies (GWAS) have become an essential tool in assisting the improvement of understanding of neuropathology of diseases. Moreover, the imputation of genotyping data with missing information can enhance the power of GWAS by using haplotype relationships between genetic variants [1,2]. In the meantime, the imputation can substantially reduce the cost of genotyping large number of samples. Furthermore, the comparison of significant findings across different cohorts and genotyping platforms is also achievable. Currently large amounts of genotyping data are produced at an unprecedented rate to be analyzed; however, the preparation of ready-to-use data sets needs to be of high quality. Thus the implementation of an efficient and reliable genetic data pre-processing and imputation pipeline is desirable.
 
 ## Scope of the pipeline 
 In order to ensure the reliability and reproducibility of genome-wide association study (GWAS) data, 
 we set up an efficient, automatic and comprehensive genotype data processing and imputation pipeline termed __Gimpute__.
 It consists of pre-processing (genetic variant information updating/matching/liftOver,
 quality control of genetic variants and study samples, the alignment of variants to the imputation references), 
-imputation and post-imputation quality control, as well as an extension to the Genipe framework in this vignette, which is easy-to-follow and user-friendly. 
-
+pre-phasing, imputation and post-imputation quality control [3], as well as an extension to the Genipe framework in this vignette, which is easy-to-follow and user-friendly. 
 
 # Getting started  
 ## Prerequisites
@@ -42,8 +42,8 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 * [R](https://www.r-project.org/) 
 * [PLINK](https://www.cog-genomics.org/plink2) 
 * [GCTA64](http://cnsgenomics.com/software/gcta/#Download) 
-* [SHAPEIT](http://www.shapeit.fr/) 
-* [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
+* [SHAPEIT](http://www.shapeit.fr/) [4] 
+* [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) [5] 
 * [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
 
 ## Installation 
@@ -584,9 +584,11 @@ Copy and rename the results of interest to the directory ./6-finalResults.
 
 # Extending pipelines
 
+Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation and processing tool.
+
 ## Integrate with Genipe
 ### Installation
-To set up Genipe, please refer to Genipe's [installation](http://pgxcentre.github.io/genipe/installation.html#id3) page.
+To set up Genipe, please refer to Genipe's [installation](http://pgxcentre.github.io/genipe/installation.html#id3) page for more details.
 
 ### Additional configuration files 
 * Imputation reference panels
@@ -640,6 +642,17 @@ outputPrefix <- paste0('imputedChr', chr)
 extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
 ```     
  
+# References
+
+[1] Marchini, J., et al. (2010). Genotype imputation for genome-wide association studies. Nat Rev Genet 11(7): 499-511.
+
+[2] Marchini, J., et al. (2007). A new multipoint method for genome-wide association studies by imputation of genotypes. Nat Genet 39(7): 906-913.
+ 
+[3] Schizophrenia Working Group of the Psychiatric Genomics, C. (2014). Biological insights from 108 schizophrenia-associated genetic loci. Nature 511(7510): 421-427. 
+
+[4] Howie, B., et al. (2012). Fast and accurate genotype imputation in genome-wide association studies through pre-phasing. Nat Genet 44(8): 955-959.
+
+[5] Howie, B. N., et al. (2009). A flexible and accurate genotype imputation method for the next generation of genome-wide association studies. PLoS Genet 5(6): e1000529.
 
 # Trouble-shooting 
 If you have any trouble or comment ? --> Contact: junfang.chen@zi-mannheim.de
