@@ -58,6 +58,10 @@
 #' @export 
 
 #' @author Junfang Chen 
+#' @references  Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
+#' genome-wide imputation pipeline with automatic reporting and statistical 
+#' tools. Bioinformatics, 32(23), 3661-3663.
+
 ###' @examples 
 
 
@@ -200,6 +204,10 @@ imputedByGenipe <- function(chrs, impRefDir, inputPrefix,
 #' @export 
 
 #' @author Junfang Chen 
+#' @references  Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
+#' genome-wide imputation pipeline with automatic reporting and statistical 
+#' tools. Bioinformatics, 32(23), 3661-3663.
+
 ##' @examples 
 
 mergeByGenipe <- function(inputImpute2, chr, probability, 
@@ -264,6 +272,10 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 #' @export 
 
 #' @author Junfang Chen 
+#' @references  Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
+#' genome-wide imputation pipeline with automatic reporting and statistical 
+#' tools. Bioinformatics, 32(23), 3661-3663.
+
 ##' @examples  
  
 

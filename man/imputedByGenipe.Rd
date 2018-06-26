@@ -44,6 +44,11 @@ Perform imputation by Genipe for the autosomal and sex chromosome prephased
 known haplotypes with a reference panel. 
 Note that pre-phasing using SHAPEIT is done without the refernce haplotypes.
 }
+\references{
+Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
+genome-wide imputation pipeline with automatic reporting and statistical 
+tools. Bioinformatics, 32(23), 3661-3663.
+}
 \author{
 Junfang Chen
 }

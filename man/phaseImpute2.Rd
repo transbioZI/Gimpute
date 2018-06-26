@@ -108,11 +108,11 @@ phaseImpute2(inputPrefix, outputPrefix, prefix4final,
 \references{
 \enumerate{
   \item Howie, B., et al. (2012). Fast and accurate genotype imputation 
-        in genome-wide association studies through pre-phasing. 
-        Nat Genet 44(8): 955-959.
-  \item Howie, B. N., et al. (2009). A flexible and accurate 
-        genotype imputation method for the next generation of 
-        genome-wide association studies. PLoS Genet 5(6): e1000529.
+        in genome-wide association studies through pre-phasing. Nat Genet 
+        44(8): 955-959.
+  \item Howie, B. N., et al. (2009). A flexible and accurate genotype 
+        imputation method for the next generation of genome-wide association 
+        studies. PLoS Genet 5(6): e1000529.
 }
 }
 \author{

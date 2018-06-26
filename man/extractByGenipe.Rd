@@ -55,6 +55,11 @@ For the filtering of maf and info will be done during post imputation.
 \examples{
  
 }
+\references{
+Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
+genome-wide imputation pipeline with automatic reporting and statistical 
+tools. Bioinformatics, 32(23), 3661-3663.
+}
 \author{
 Junfang Chen
 }

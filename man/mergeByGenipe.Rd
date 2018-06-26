@@ -32,6 +32,11 @@ This is automatically called by the main genipe pipeline to merge IMPUTE2
 files generated for all the genomic segments. 
 For details, see Genipe IMPUTE2 merger options.
 }
+\references{
+Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
+genome-wide imputation pipeline with automatic reporting and statistical 
+tools. Bioinformatics, 32(23), 3661-3663.
+}
 \author{
 Junfang Chen
 }

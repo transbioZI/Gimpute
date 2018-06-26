@@ -584,7 +584,7 @@ Copy and rename the results of interest to the directory ./6-finalResults.
 
 # Extending pipelines
 
-Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation and processing tool.
+Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation tool [6].
 
 ## Integrate with Genipe
 ### Installation
@@ -653,6 +653,9 @@ extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
 [4] Howie, B., et al. (2012). Fast and accurate genotype imputation in genome-wide association studies through pre-phasing. Nat Genet 44(8): 955-959.
 
 [5] Howie, B. N., et al. (2009). A flexible and accurate genotype imputation method for the next generation of genome-wide association studies. PLoS Genet 5(6): e1000529.
+
+[6] Lemieux Perreault, L. P., et al. (2016). genipe: an automated genome-wide imputation pipeline with automatic reporting and statistical tools. Bioinformatics, 32(23), 3661-3663.
+
 
 # Trouble-shooting 
 If you have any trouble or comment ? --> Contact: junfang.chen@zi-mannheim.de
