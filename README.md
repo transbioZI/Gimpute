@@ -20,10 +20,12 @@ library("devtools")
 install_github("transbioZI/Gimpute", build_vignettes=TRUE)
 ```
 This function`install_github()` requires that you build from source, namely, `make` and compilers must be installed on the system.
+
 Gimpute runs on any 64-bit x86 Linux distribution. Additional dependencies are described in the tutorial.
 
 ## Tutorial
 Please check [Gimpute tutorial](https://github.com/transbioZI/Gimpute/blob/master/vignettes/GimputeTutorial.Rmd).
+
 The best view of the tutorial is in HTML format. Execute the following R codes as below after you download the tutorial:
 
 ```{r eval=FALSE}
