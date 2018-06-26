@@ -622,8 +622,8 @@ updatedSnpInfo <- function(plink, inputPrefix,
         ## copy/rename all snp info updated plink files
         renamePlinkBFile(inputPrefix.strand, outputPrefix, action="copy")   
          ## remove all tmp files (rs, chr, pos)
-        # system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
-        # system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
+        system(paste0("rm ", inputPrefix.rs, ".* ", inputPrefix.chr, ".*"))   
+        system(paste0("rm ", inputPrefix.pos, ".* ", inputPrefix.strand, ".*")) 
 
     } else { 
         ## copy/rename plink files
