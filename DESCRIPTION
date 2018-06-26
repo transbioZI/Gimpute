@@ -2,10 +2,11 @@ Package: Gimpute
 Type: Package
 Title: Gimpute: An efficient genetic data processing and imputation pipeline
 Version: 0.99.6
-Date: 2018-06-26 
+Date: 2018-06-27 
 Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"), email="junfang.che33@gmail.com"),
     person("Dietmar", "Lippold", role=c("aut")),
     person("Emanuel", "Schwarz", role=c("aut")))
+Author: Junfang Chen [aut, cre, cph], Dietmar Lippold [aut], Emanuel Schwarz [aut]
 Maintainer: Junfang Chen <junfang.chen33@gmail.com>    
 Description: Genotype imputation is essential for genome-wide association studies 
     (GWAS) to retrieve information of untyped variants and facilitate comparability 
