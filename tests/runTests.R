@@ -4,6 +4,7 @@
 # Version0: 28 Jun 2016
 # VersionX: 25 Jun 2018
    
+## source("/data/noether/R/library/Gimpute/tests/runTests.R")
 
 library(Gimpute)
 
@@ -20,7 +21,7 @@ impRefDIRmain <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef"
 impRefDIR <- paste0(impRefDIRmain, "/1000Gphase1/")
 
 ## Genotyping chip annotation file 
-removedSampIDFile <- system.file("extdata", "coriellAffyChip.txt", 
+chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
                                  package="Gimpute")
 ## Self-defined configuration files
 removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
@@ -59,9 +60,9 @@ removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt",
 excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
                                     package="Gimpute")
 ## Genotyping chip annotation file 
-removedSampIDFile <- system.file("extdata", "coriellAffyChip.txt", 
+chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
                                  package="Gimpute")
-                                  
+
 ## step 1  
 system(paste0("scp ", metadataFile, " ."))  
  
