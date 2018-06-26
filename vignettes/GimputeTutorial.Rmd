@@ -97,11 +97,12 @@ impRefDIR <- "/home/imputeRef/1000Gphase1/"
 ```  
 
 * Genotyping chip annotation file: Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
-This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds.
-```{r} 
-## since the annotation file is too big, we do not upload this file
-## chipAnnoFile <- "/home/affyChip/GenomeWideSNP_6.na32.strand.txt"
-chipAnnoFile <- NULL 
+This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds. Gimpute requires the chip annotation file that is organized into two different types:  1.) If the snp name of your study genotype data starts with "SNP_", then the chip type "SNPIDstudy" is used; Usually, Affymetrix chip belongs to this category. The prepared output annotation file must at least consist of the following column names : SNPIDstudy, rs, chr, pos, strand. 2.) If the snp name of your study genotype data starts with "rs", then the chip type "rsIDstudy" is used; The annotation file should be prepared in advance and must at least consist of the following column names : rsIDstudy, chr, pos, strand. Illumina chip is often specified in this format.
+The column "strand" must only have two kinds of values "-" and "+". Variants with all other values should be excluded.
+
+```{r}  
+chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
+                                 package="Gimpute")
 ``` 
 * Self-defined configuration files
 ```{r} 
@@ -160,7 +161,8 @@ removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt",
                                  package="Gimpute")
 excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
                                     package="Gimpute")
-chipAnnoFile <- NULL 
+chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
+                                 package="Gimpute")
 ```
 
 #### Using pipeline function
