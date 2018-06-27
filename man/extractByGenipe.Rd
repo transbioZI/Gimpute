@@ -33,9 +33,6 @@ output format.
 2.) The markers of the whole chromosome are extracted together. 
 For the filtering of maf and info will be done during post imputation.
 }
-\examples{
- 
-}
 \references{
 Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
 genome-wide imputation pipeline with automatic reporting and statistical 

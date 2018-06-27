@@ -262,8 +262,6 @@ mergeByGenipe <- function(inputImpute2, chr, probability,
 #' @references  Lemieux Perreault, L. P., et al. (2016). genipe: an automated 
 #' genome-wide imputation pipeline with automatic reporting and statistical 
 #' tools. Bioinformatics, 32(23), 3661-3663.
-
-##' @examples  
  
 
 extractByGenipe <- function(inputImpute2, inputMAP, 

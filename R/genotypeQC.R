@@ -103,8 +103,7 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 
             cut4removeHetSNP <- nrow(fam) * hhCutOff
             mostFakeSNPs <- hetSNPsFreq[which(hetSNPsFreq >= cut4removeHetSNP)] 
-            mostFakeSNPs <- names(mostFakeSNPs)
-            str(mostFakeSNPs)
+            mostFakeSNPs <- names(mostFakeSNPs) 
             write.table(mostFakeSNPs, file="mostFakeSNPs.txt", quote=FALSE, 
                         row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ") 
             ## remove these fake SNPs
@@ -224,8 +223,7 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
             hh <- read.table("male23nonPAR.hh", stringsAsFactors=FALSE)
             fam <- read.table("male23nonPAR.fam", stringsAsFactors=FALSE)
                             
-            hetInstFreq <- table(hh[,2])  
-            str(unique(hh[,2]))
+            hetInstFreq <- table(hh[,2])   
             mostFakeInst <- hetInstFreq[which(hetInstFreq >= hhSubjCutOff)]
             whFakeID <- is.element(fam[,2], names(mostFakeInst))  
             mostFakeInstID <- fam[whFakeID, c("V1", "V2")]

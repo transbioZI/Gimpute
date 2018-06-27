@@ -181,8 +181,7 @@ checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
     snpSharedPosAllele <- unique(posAllelTmp)
 
     ## find the different genomic position
-    snpDifpos <- bimSubV2[!is.element(bimSubV2[,2], snpSharedPos), 2]
-    str(snpDifpos)
+    snpDifpos <- bimSubV2[!is.element(bimSubV2[,2], snpSharedPos), 2] 
     write.table(snpDifpos, file=paste0(out3.snp, ".txt"), quote=FALSE,
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
     cmd1 <- paste0(plink, " --bfile ", out2, " --exclude ")
