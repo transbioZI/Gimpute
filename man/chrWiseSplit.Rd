@@ -47,11 +47,11 @@ PAR2    X    154931044    155260560.
 \examples{
  
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
-inputPrefix <- "controlData"
+inputPrefix <- "alignedData"
 chrXPAR1suffix <- "X_PAR1"
 chrXPAR2suffix <- "X_PAR2"
 ## Not run: Requires an executable program PLINK, e.g.

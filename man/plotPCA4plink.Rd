@@ -39,11 +39,11 @@ Only autosomal genotypes are used for principle component analysis.
 \examples{
  
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "QCdata.bed", package="Gimpute")
+bimFile <- system.file("extdata", "QCdata.bim", package="Gimpute") 
+famFile <- system.file("extdata", "QCdata.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-inputPrefix <- "controlData" 
+inputPrefix <- "QCdata" 
 outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPCplotFile <- "2_13_eigenvalAfterQC.png" ## png format
 ## Not run: Requires an executable program GCTA, e.g.

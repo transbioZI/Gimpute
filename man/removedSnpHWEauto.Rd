@@ -34,12 +34,12 @@ Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium (HWE).
 \examples{
  
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 groupLabel <- "control"
-inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+inputPrefix <- "genoUpdatedData" ## Specify the input PLINK file prefix 
 outputPvalFile <- "2_11_snpHwePvalAuto.txt"
 outputSNPfile <- "2_11_snpRemovedHweAuto.txt" 
 outputPrefix <- "2_11_removedSnpHweAuto" 
@@ -47,6 +47,9 @@ outputPrefix <- "2_11_removedSnpHweAuto"
 ## plink <- "/home/tools/plink"
 ## removedSnpHWEauto(groupLabel, plink, inputPrefix, pval=0.000001,
 ##                   outputPvalFile, outputSNPfile, outputPrefix)
+}
+\seealso{
+\code{\link{removedSnpFemaleChrXhweControl}}
 }
 \author{
 Junfang Chen

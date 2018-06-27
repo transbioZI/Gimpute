@@ -51,11 +51,11 @@ Therefore a small percentage of such males in the data set is allowed.
 }
 \examples{
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-inputPrefix <- "controlData" 
+inputPrefix <- "genoUpdatedData" 
 hhSubjCutOff <- 15 ##  can be tuned
 outputPrefix <- "2_02_removedInstHetX" 
 outputSubjHetFile <- "2_02_instHetXfreqAll.txt" 

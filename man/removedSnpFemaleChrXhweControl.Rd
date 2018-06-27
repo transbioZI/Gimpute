@@ -36,11 +36,11 @@ female controls.
 \examples{
  
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
-inputPrefix <- "controlData"  
+inputPrefix <- "genoUpdatedData"  
 outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
 outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
 outputPrefix <- "2_12_removedSnpHweFemaleX"
@@ -49,6 +49,9 @@ outputPrefix <- "2_12_removedSnpHweFemaleX"
 ## removedSnpFemaleChrXhweControl(plink, inputPrefix, pval=0.000001,
 ##                                outputPvalFile, outputSNPfile, 
 ##                                outputPrefix)
+}
+\seealso{
+\code{\link{removedSnpHWEauto}}
 }
 \author{
 Junfang Chen

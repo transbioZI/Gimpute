@@ -55,11 +55,11 @@ by assigning an appropriate cutoff.
 \examples{
  
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "QCdata.bed", package="Gimpute")
+bimFile <- system.file("extdata", "QCdata.bim", package="Gimpute") 
+famFile <- system.file("extdata", "QCdata.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-inputPrefix <- "controlData"  
+inputPrefix <- "QCdata"  
 cutoff <- NULL ## no outlier to be removed
 cutoffSign <- "greater" ## not used if cutoff == NULL
 inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"

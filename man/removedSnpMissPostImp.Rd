@@ -31,11 +31,11 @@ number of instances.
 }
 \examples{
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
-inputPrefix <- "controlData" 
+inputPrefix <- "alignedData" 
 outputPrefix <- "removedSnpMissPostImp" 
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"

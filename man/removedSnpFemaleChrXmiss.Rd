@@ -27,12 +27,12 @@ missingness in females.
 \examples{
  
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 femaleChrXmissCutoff <- 0.05
-inputPrefix <- "controlData"  
+inputPrefix <- "genoUpdatedData"  
 outputPrefix <- "2_10_removedSnpFemaleChrXmiss" 
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"

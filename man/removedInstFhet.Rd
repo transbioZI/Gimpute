@@ -30,12 +30,12 @@ automatically skip haploid markers (male X and Y chromosome markers).
 }
 \examples{
 ## In the current working directory
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 Fhet <- 0.2
-inputPrefix <- "controlData" 
+inputPrefix <- "genoUpdatedData" 
 outputPrefix <- "2_06_removedInstFhet" 
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"

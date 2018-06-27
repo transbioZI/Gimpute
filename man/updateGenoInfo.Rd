@@ -86,6 +86,11 @@ chipType <- "rsIDstudy"
 ##                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
 ##                chipType, outputPrefix, keepInterFile=TRUE)
 }
+\references{
+Purcell, Shaun, et al. PLINK: a tool set for whole-genome 
+association and population-based linkage analyses. The American Journal of 
+Human Genetics 81.3 (2007): 559-575.
+}
 \author{
 Junfang Chen
 }
