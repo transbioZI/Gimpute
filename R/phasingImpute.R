@@ -202,8 +202,8 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' Chunk each chromosome genotyping data into multiple segments 
 #' by a predefined window size.
 
-#' @param inputPrefix the prefix of the input PLINK binary files for 
-#' each chromosome.
+#' @param inputPrefix the prefix of the input PLINK .bim file for 
+#' each chromosome, without the chromosome codes.
 #' @param outputPrefix the prefix of the output pure text files that keep 
 #' all the chunks for each chromosome separately.
 #' @param chrs specifiy the chromosome codes for chunking.
@@ -217,16 +217,11 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-#' system(paste0("scp ", bedFile, " ."))   
-#' system(paste0("scp ", bimFile, " ."))   
-#' system(paste0("scp ", famFile, " ."))   
-#' inputPrefix <- "alignedData"
+#' bimFile <- system.file("extdata", "gwas_data_chr23.bim", package="Gimpute") 
+#' inputPrefix <- "gwas_data_chr"
 #' outputPrefix <- "chunks_chr"
 #' bimCurrent <- read.table(file=bimFile, stringsAsFactors=FALSE)  
-#' chrs <- names(table(bimCurrent[,1]))
+#' chrs <- 23
 #' print(chrs)   
 #' chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
 
