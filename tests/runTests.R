@@ -354,12 +354,11 @@ setwd("..")
 ### code chunk number 6: Final result
 ############################################################
 
-system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ./6-finalResults/ " ))
-system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* 
-       ./6-finalResults/"))  
-system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* 
-       ./6-finalResults/"))
-setwd("./6-finalResults/")
+dir6 <- "./6-finalResults/"
+system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ", dir6))
+system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ", dir6))  
+system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ", dir6))
+setwd(dir6)
 renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
                  outputPrefix="imputedSnpsDataset", action="move")
 renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.", 
@@ -380,8 +379,8 @@ inputPrefix <- "controlData"
 thread4impute2 <- 20 ## tune by yourself
 thread4shapeit <- 30
 segmentSize <- 3000000
-imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute2, 
-                plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
+# imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute2, 
+#                plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
 
 ## merge chunked genomic imputed results
 ## example
@@ -391,8 +390,8 @@ probability <- 0.9
 completionRate <- 0.98
 # info <- 0.6
 outputPrefix <- paste0("imputedChr", chr)
-mergeByGenipe(inputImpute2, chr, probability, 
-              completionRate, info, outputPrefix)
+# mergeByGenipe(inputImpute2, chr, probability, 
+#              completionRate, info, outputPrefix)
  
 ## extract imputed markers using Genipe 
 chr <- 3
@@ -401,6 +400,6 @@ inputMAP <- paste0("chr", chr,".imputed.map")
 format <- "bed"
 prob <- 0.9
 outputPrefix <- paste0("imputedChr", chr)  
-extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
+# extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
    
  
