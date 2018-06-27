@@ -6,7 +6,7 @@ Date: 2018-06-27
 Authors@R: c(person("Junfang", "Chen", role=c("aut", "cre", "cph"), email="junfang.che33@gmail.com"),
     person("Dietmar", "Lippold", role=c("aut")),
     person("Emanuel", "Schwarz", role=c("aut")))
-Author: Junfang Chen [aut, cre, cph], Dietmar Lippold [aut], Emanuel Schwarz [aut]
+Author: Junfang Chen, Dietmar Lippold, Emanuel Schwarz
 Maintainer: Junfang Chen <junfang.chen33@gmail.com>    
 Description: Genotype imputation is essential for genome-wide association studies 
     (GWAS) to retrieve information of untyped variants and facilitate comparability 
@@ -18,9 +18,9 @@ Description: Genotype imputation is essential for genome-wide association studie
     and the extension to other existing pipeline. 
 License: GPL-3
 Imports:
-    doParallel, lattice, BiocStyle, knitr
+    doParallel, lattice
 Depends: R (>= 3.5.0)
-Suggests: BiocStyle, knitr, testthat 
+Suggests: BiocStyle, knitr 
 VignetteBuilder: knitr
 biocViews: Genetics, GenomicVariation, SNP, GenomeWideAssociation, QualityControl, VariantDetection, Alignment
 Encoding: UTF-8
