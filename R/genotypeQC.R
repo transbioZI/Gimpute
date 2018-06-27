@@ -60,11 +60,11 @@
 #' @author Junfang Chen  
 #' @examples 
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' hhCutOff <- 0.005 ##  can be tuned
 #' outputPrefix <- "2_01_removedSnpHetX" 
 #' outputHetSNPfile <- "2_01_snpHHfreqAll.txt"
@@ -182,11 +182,11 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 #' @author Junfang Chen 
 #' @examples 
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' hhSubjCutOff <- 15 ##  can be tuned
 #' outputPrefix <- "2_02_removedInstHetX" 
 #' outputSubjHetFile <- "2_02_instHetXfreqAll.txt" 
@@ -302,11 +302,11 @@ removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix,
 #' @author Junfang Chen 
 #' @examples
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' outputPrefix <- "2_03_setHeteroHaploMissing" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -342,12 +342,12 @@ setHeteroHaploMissing <- function(plink, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' snpMissCutOff <- 0.05
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' outputPrefix <- "2_04_removedSnpMissPre" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -382,12 +382,12 @@ removedSnpMiss <- function(plink, snpMissCutOff, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' sampleMissCutOff <- 0.02
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' outputPrefix <- "2_05_removedInstMiss" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -427,12 +427,12 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 #' @examples
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' Fhet <- 0.2
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' outputPrefix <- "2_06_removedInstFhet" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -489,11 +489,11 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 #' @examples
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' outputPrefix <- "2_07_removedParentIdsMiss" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -534,11 +534,11 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' snpMissDifCutOff <- 0.02
 #' outputPrefix <- "2_09_removedSnpMissDiff" 
 #' groupLabel <- "control"
@@ -601,12 +601,12 @@ removedSnpMissDiff <- function(plink, inputPrefix, snpMissDifCutOff,
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' femaleChrXmissCutoff <- 0.05
-#' inputPrefix <- "controlData"  
+#' inputPrefix <- "genoUpdatedData"  
 #' outputPrefix <- "2_10_removedSnpFemaleChrXmiss" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -679,14 +679,15 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 
 #' @export 
 #' @author Junfang Chen 
+#' @seealso \code{\link{removedSnpFemaleChrXhweControl}}
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' groupLabel <- "control"
-#' inputPrefix <- "controlData" ## Specify the input PLINK file prefix 
+#' inputPrefix <- "genoUpdatedData" ## Specify the input PLINK file prefix 
 #' outputPvalFile <- "2_11_snpHwePvalAuto.txt"
 #' outputSNPfile <- "2_11_snpRemovedHweAuto.txt" 
 #' outputPrefix <- "2_11_removedSnpHweAuto" 
@@ -759,13 +760,14 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 
 #' @export 
 #' @author Junfang Chen 
+#' @seealso \code{\link{removedSnpHWEauto}}
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
-#' inputPrefix <- "controlData"  
+#' inputPrefix <- "genoUpdatedData"  
 #' outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
 #' outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt" 
 #' outputPrefix <- "2_12_removedSnpHweFemaleX"
@@ -843,11 +845,11 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval=0.000001,
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "QCdata.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "QCdata.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "QCdata.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "QCdata" 
 #' outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 #' outputPCplotFile <- "2_13_eigenvalAfterQC.png" ## png format
 #' ## Not run: Requires an executable program GCTA, e.g.
@@ -924,11 +926,11 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread=20,
 #' @author Junfang Chen 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "QCdata.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "QCdata.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "QCdata.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData"  
+#' inputPrefix <- "QCdata"  
 #' cutoff <- NULL ## no outlier to be removed
 #' cutoffSign <- "greater" ## not used if cutoff == NULL
 #' inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
@@ -1046,11 +1048,11 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 
 #' @examples  
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+#' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
-#' inputPrefix <- "controlData" 
+#' inputPrefix <- "genoUpdatedData" 
 #' outputPrefix <- "2_12_removedSnpHweFemaleX"  
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"

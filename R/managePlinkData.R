@@ -52,7 +52,7 @@ renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 #' @export 
 #' @author Junfang Chen 
 #' @examples
-#' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")  
+#' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")  
 #' getGroupLabel(inputFAMfile=famFile)
 
 getGroupLabel <- function(inputFAMfile){ 
