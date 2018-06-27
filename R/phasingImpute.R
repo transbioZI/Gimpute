@@ -224,7 +224,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' bimCurrent <- read.table(file=bimFile, stringsAsFactors=FALSE)  
 #' chrs <- 23
 #' print(chrs)   
-#' chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
+#' chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize=3000000)
 
 chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){  
 

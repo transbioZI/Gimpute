@@ -43,7 +43,7 @@ renamePlinkBFile <- function(inputPrefix, outputPrefix, action){
 #' @description
 #' Get the group label from the PLINK FAM file.
 #' 
-#' @param inputPrefix the PLINK FAM file. 
+#' @param inputFAMfile the PLINK FAM file. 
  
 #' @return  The group label of the genotype data: "control" or "case" or 
 #' "caseControl" indicating both groups exist.
