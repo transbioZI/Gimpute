@@ -33,7 +33,6 @@ bimFile <- system.file("extdata", "gwas_data_chr23.bim", package="Gimpute")
 system(paste0("scp ", bimFile, " ."))    
 inputPrefix <- "gwas_data_chr"
 outputPrefix <- "chunks_chr"
-bimCurrent <- read.table(file=bimFile, stringsAsFactors=FALSE)  
 chrs <- 23
 print(chrs)   
 chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize=3000000)
