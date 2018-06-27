@@ -3,7 +3,7 @@ title: "Gimpute: An efficient genetic data imputation pipeline"
 author:
  - name: Junfang Chen, Dietmar Lippold and Emanuel Schwarz
    affiliation: Central Institute of Mental Health, Heidelberg University, Germany  
-date: "Modified: 25 Jun 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
+date: "Modified: 27 Jun 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
   BiocStyle::html_document:
     toc: true
@@ -37,13 +37,13 @@ pre-phasing, imputation and post-imputation quality control [3], as well as an e
 
 # Getting started  
 ## Prerequisites
-Gimpute runs on any 64-bit x86 Linux distribution and it requires the following tools:
+Gimpute runs on any 64-bit x86 Linux distribution and it requires the following tools [4,5,6]:
 
 * [R](https://www.r-project.org/) 
 * [PLINK](https://www.cog-genomics.org/plink2) 
 * [GCTA64](http://cnsgenomics.com/software/gcta/#Download) 
-* [SHAPEIT](http://www.shapeit.fr/) [4] 
-* [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) [5] 
+* [SHAPEIT](http://www.shapeit.fr/) 
+* [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
 * [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
 
 ## Installation 
@@ -88,30 +88,6 @@ The recommended directories are named as follows:
 
 * 6-finalResults: Final processed and filtered imputed genotype files are generated in this directory.
  
-### Configuration 
-* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference), such as haplotypes from [1000 genome project](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz). 
-
-```{r} 
-## Define the directory where you place the imputation reference files 
-impRefDIR <- "/home/imputeRef/1000Gphase1/"
-```  
-
-* Genotyping chip annotation file: Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
-This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds. Gimpute requires the chip annotation file that is organized into two different types:  1.) If the snp name of your study genotype data starts with "SNP_", then the chip type "SNPIDstudy" is used; Usually, Affymetrix chip belongs to this category. The prepared output annotation file must at least consist of the following column names : SNPIDstudy, rs, chr, pos, strand. 2.) If the snp name of your study genotype data starts with "rs", then the chip type "rsIDstudy" is used; The annotation file should be prepared in advance and must at least consist of the following column names : rsIDstudy, chr, pos, strand. Illumina chip is often specified in this format.
-The column "strand" must only have two kinds of values "-" and "+". Variants with all other values should be excluded.
-
-```{r}  
-chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
-                                 package="Gimpute")
-``` 
-* Self-defined configuration files
-```{r} 
-removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
-                                 package="Gimpute")
-excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
-                                    package="Gimpute")
-```
-  
 ### Required packages and tools
 ```{r} 
 ## Gimpute has the following dependencies:
@@ -124,6 +100,27 @@ shapeit <- "/home/tools/shapeit"
 impute2 <- "/home/tools/impute2"
 gtool <- "/home/tools/gtool"
 ```
+
+### Configuration 
+
+* Self-defined configuration 
+    + removedSampIDFile: A text file that stores sample IDs, each ID per line, which will be excluded.
+    + excludedProbeIdsFile: A text file that stores probe IDs, each ID per line, which will be excluded.
+    + ancestrySymbol: A string symbol for self-identified ancestry (AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian)
+
+* Genotyping chip annotation file: Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
+This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds. Gimpute requires the chip annotation file that is organized into two different types:  
+
+    + If the snp name of your study genotype data starts with "SNP_", then the chip type "SNPIDstudy" is used; Usually, Affymetrix chip belongs to this category. The prepared output annotation file must consist of at least the following column names : SNPIDstudy, rs, chr, pos, strand. The column "strand" must only have two kinds of values "-" and "+". Variants with all other values are excluded. 
+    + If the snp name of your study genotype data starts with "rs", then the chip type "rsIDstudy" is used; The annotation file should be prepared in advance and must consist of at least the following column names : rsIDstudy, chr, pos, strand. Illumina chip is often specified in this format. The column "strand" must only have two kinds of values "-" and "+". Variants with all other values are excluded.
+
+
+* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from [1000 genome project phase1v3](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz) are used as an example in our package. 
+
+```{r} 
+## Define the directory where you place the imputation reference files 
+impRefDIR <- "/home/imputeRef/1000Gphase1/"
+```  
 
 # Running pipeline 
 ## Genotype information update
@@ -151,12 +148,8 @@ All files named in this subsection are in the directory 1-genoUpdate/.
 bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
-# system(paste0("scp ", bedFile, " ."))   
-# system(paste0("scp ", bimFile, " ."))   
-# system(paste0("scp ", famFile, " ."))  
 
 metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
-# system(paste0("scp ", metadataFile, " .")) ## Not run
 removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
                                  package="Gimpute")
 excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
@@ -586,7 +579,7 @@ Copy and rename the results of interest to the directory ./6-finalResults.
 
 # Extending pipelines
 
-Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation tool [6].
+Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation tool [7].
 
 ## Integrate with Genipe
 ### Installation
@@ -652,11 +645,13 @@ extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
  
 [3] Schizophrenia Working Group of the Psychiatric Genomics, C. (2014). Biological insights from 108 schizophrenia-associated genetic loci. Nature 511(7510): 421-427. 
 
-[4] Howie, B., et al. (2012). Fast and accurate genotype imputation in genome-wide association studies through pre-phasing. Nat Genet 44(8): 955-959.
+[4] Purcell, Shaun, et al. PLINK: a tool set for whole-genome association and population-based linkage analyses. The American Journal of Human Genetics 81.3 (2007): 559-575.
 
-[5] Howie, B. N., et al. (2009). A flexible and accurate genotype imputation method for the next generation of genome-wide association studies. PLoS Genet 5(6): e1000529.
+[5] Howie, B., et al. (2012). Fast and accurate genotype imputation in genome-wide association studies through pre-phasing. Nat Genet 44(8): 955-959.
 
-[6] Lemieux Perreault, L. P., et al. (2016). genipe: an automated genome-wide imputation pipeline with automatic reporting and statistical tools. Bioinformatics, 32(23), 3661-3663.
+[6] Howie, B. N., et al. (2009). A flexible and accurate genotype imputation method for the next generation of genome-wide association studies. PLoS Genet 5(6): e1000529.
+
+[7] Lemieux Perreault, L. P., et al. (2016). genipe: an automated genome-wide imputation pipeline with automatic reporting and statistical tools. Bioinformatics, 32(23), 3661-3663.
 
 
 # Trouble-shooting 
