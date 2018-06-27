@@ -28,6 +28,9 @@ working directory or somewhere in the command path.}
 \item{impute2}{an executable IMPUTE2 binary program in either the current 
 working directory or somewhere in the command path.}
 
+\item{plink}{an executable program in either the current working directory 
+or somewhere in the command path.}
+
 \item{fastaFile}{the human reference files for the initial strand check.}
 
 \item{segmentSize}{the length of a single segment for imputation.}

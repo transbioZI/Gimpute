@@ -18,8 +18,9 @@ cases and controls.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 
-\item{groupLabel}{a string value indicating the outcome label: "control", or, 
-"case" or "caseControl" for both existing groups.}
+\item{groupLabel}{a string value indicating the outcome label: "control",
+or, "case" or "caseControl" for both existing groups. For more details, see 
+\code{\link{getGroupLabel}}.}
 }
 \value{
 The output PLINK binary files.
@@ -47,6 +48,9 @@ groupLabel <- "control"
 ## plink <- "/home/tools/plink"
 ## removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, 
 ##                    outputPrefix, groupLabel)
+}
+\seealso{
+\code{\link{getGroupLabel}}.
 }
 \author{
 Junfang Chen

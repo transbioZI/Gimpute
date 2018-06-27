@@ -49,7 +49,9 @@
 #' bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 #' famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' system(paste0("scp ", bedFile, " ."))   
+#' system(paste0("scp ", bimFile, " ."))   
+#' system(paste0("scp ", famFile, " ."))   
 #' inputPrefix <- "alignedData"
 #' outputPrefix <- "removedMonoSnp" 
 #' outputSNPfile <- "monoSNP.txt"  
@@ -82,10 +84,7 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' @param plink an executable program in either the current 
 #' working directory or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files 
-#' before splitting.
-#' @param outputPrefix the prefix of the output PLINK binary files 
-#' after splitting  
-#' separately for each chromosome, appended with the chromosome codes.
+#' before splitting. 
 #' @param chrXPAR1suffix  if chromosome 25 is available and with PAR1, 
 #' then generate the suffix with X_PAR1 for chrX_PAR1. 
 #' @param chrXPAR2suffix  if chromosome 25 is available and with PAR2, 
@@ -93,8 +92,9 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' @param nCore the number of cores used for parallel computation. 
 #' The default value is 25.  
 
-#' @return The output PLINK binary files for each chromosome and possibly 
-#' also the logical value for the pseudo-autosomal region (PAR)
+#' @return The output PLINK binary files for each chromosome with the same 
+#' prefix as the inputPrefix but appended with the chromosome codes, and  
+#' possibly also the logical value for the pseudo-autosomal region (PAR)
 #' indicating if PAR exists in the input genotyping data or not.   
 
 #' @details If chromosome 25 is also available, namely the pseudo-autosomal
@@ -113,13 +113,16 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
 #' bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 #' famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' system(paste0("scp ", bedFile, " ."))   
+#' system(paste0("scp ", bimFile, " ."))   
+#' system(paste0("scp ", famFile, " ."))    
 #' inputPrefix <- "alignedData"
 #' chrXPAR1suffix <- "X_PAR1"
 #' chrXPAR2suffix <- "X_PAR2"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
 #' ## chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore)
+ 
 
 chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix, 
                          chrXPAR2suffix, nCore=25){ 
@@ -217,10 +220,12 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 #' bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 #' famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' system(paste0("scp ", bedFile, " ."))   
+#' system(paste0("scp ", bimFile, " ."))   
+#' system(paste0("scp ", famFile, " ."))   
 #' inputPrefix <- "alignedData"
 #' outputPrefix <- "chunks_chr"
-#' bimCurrent <- read.table(file=famFile, stringsAsFactors=FALSE)  
+#' bimCurrent <- read.table(file=bimFile, stringsAsFactors=FALSE)  
 #' chrs <- names(table(bimCurrent[,1]))
 #' print(chrs)   
 #' chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
@@ -758,7 +763,9 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 #' bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 #' famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+#' system(paste0("scp ", bedFile, " ."))   
+#' system(paste0("scp ", bimFile, " ."))   
+#' system(paste0("scp ", famFile, " ."))    
 #' inputPrefix <- "alignedData" 
 #' outputPrefix <- "removedSnpMissPostImp" 
 #' ## Not run: Requires an executable program PLINK, e.g.
@@ -860,11 +867,13 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 
 #' @examples 
 #' ## In the current working directory
-#' bedFile <- system.file("extdata", "removedMonoSnp.bed", package="Gimpute")
-#' bimFile <- system.file("extdata", "removedMonoSnp.bim", package="Gimpute") 
-#' famFile <- system.file("extdata", "removedMonoSnp.fam", package="Gimpute")
-#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
-#' inputPrefix <- "removedMonoSnp"  
+#' bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, " ."))   
+#' system(paste0("scp ", bimFile, " ."))   
+#' system(paste0("scp ", famFile, " ."))   
+#' inputPrefix <- "alignedData"  
 #' outputPrefix <- "gwasImputedFiltered"
 #' prefix4final <- "gwasImputed"   
 #' outputInfoFile <- "impute2infoUpdated.txt"

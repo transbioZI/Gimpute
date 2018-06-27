@@ -13,9 +13,6 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
-
-\item{metaDataFile}{a pure text file that stores the meta information of 
-the samples.}
 }
 \value{
 The output PLINK binary files after removing samples without group 

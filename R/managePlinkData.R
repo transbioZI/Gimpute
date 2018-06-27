@@ -6,6 +6,7 @@
 #' 
 #' @param inputPrefix the prefix of the input PLINK binary files. 
 #' @param outputPrefix  the prefix of the output PLINK binary files. 
+#' @param action  a string indicating if the action is "copy" or "move".
 
 #' @return  Renamed PLINK binary files. 
 #' @details The original input files can be retained using the action "copy"

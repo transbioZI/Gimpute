@@ -21,14 +21,11 @@ then generate the suffix with X_PAR2 for chrX_PAR2.}
 
 \item{nCore}{the number of cores used for parallel computation. 
 The default value is 25.}
-
-\item{outputPrefix}{the prefix of the output PLINK binary files 
-after splitting  
-separately for each chromosome, appended with the chromosome codes.}
 }
 \value{
-The output PLINK binary files for each chromosome and possibly 
-also the logical value for the pseudo-autosomal region (PAR)
+The output PLINK binary files for each chromosome with the same 
+prefix as the inputPrefix but appended with the chromosome codes, and  
+possibly also the logical value for the pseudo-autosomal region (PAR)
 indicating if PAR exists in the input genotyping data or not.
 }
 \description{
@@ -50,7 +47,9 @@ PAR2    X    154931044    155260560.
 bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+system(paste0("scp ", bedFile, " ."))   
+system(paste0("scp ", bimFile, " ."))   
+system(paste0("scp ", famFile, " ."))    
 inputPrefix <- "alignedData"
 chrXPAR1suffix <- "X_PAR1"
 chrXPAR2suffix <- "X_PAR2"

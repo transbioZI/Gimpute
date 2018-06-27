@@ -32,10 +32,12 @@ by a predefined window size.
 bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+system(paste0("scp ", bedFile, " ."))   
+system(paste0("scp ", bimFile, " ."))   
+system(paste0("scp ", famFile, " ."))   
 inputPrefix <- "alignedData"
 outputPrefix <- "chunks_chr"
-bimCurrent <- read.table(file=famFile, stringsAsFactors=FALSE)  
+bimCurrent <- read.table(file=bimFile, stringsAsFactors=FALSE)  
 chrs <- names(table(bimCurrent[,1]))
 print(chrs)   
 chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)

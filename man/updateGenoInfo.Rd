@@ -14,6 +14,17 @@ or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
+\item{metaDataFile}{a pure text file that stores the meta information of 
+the samples. This file must contain at least the following content 
+(column names are in parentheses):
+family ID in the PLINK files (FID), individual ID in the PLINK files (IID), 
+ID in the description files (descID), self identified ancestry 
+(ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, 
+EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), 
+age (age), group (group; 0 = control/unaffected, 1 = case/affected). 
+All unknown and missing values are represented by the value NA. 
+Lines with a missing value for FID or IID are not contained.}
+
 \item{removedSampIDFile}{a pure text file that stores the useless sample IDs, 
 each ID per line. If it is null, then duplicate the input PLINK files from 
 the last step as the output files.}

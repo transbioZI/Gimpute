@@ -34,7 +34,9 @@ number of instances.
 bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+system(paste0("scp ", bedFile, " ."))   
+system(paste0("scp ", bimFile, " ."))   
+system(paste0("scp ", famFile, " ."))    
 inputPrefix <- "alignedData" 
 outputPrefix <- "removedSnpMissPostImp" 
 ## Not run: Requires an executable program PLINK, e.g.

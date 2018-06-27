@@ -523,8 +523,9 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 #' @param snpMissDifCutOff the cutoff of the difference in missingness between 
 #' cases and controls. 
 #' @param outputPrefix the prefix of the output PLINK binary files.
-#' @param groupLabel a string value indicating the outcome label: "control", or, 
-#' "case" or "caseControl" for both existing groups.
+#' @param groupLabel a string value indicating the outcome label: "control",  
+#' or, "case" or "caseControl" for both existing groups. For more details, see 
+#' \code{\link{getGroupLabel}}.
  
 #' @return The output PLINK binary files.
 #' @details Only if both case-control groups exist in the input genotype data, 
@@ -532,6 +533,7 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 #' @export 
 #' @author Junfang Chen 
+#' @seealso \code{\link{getGroupLabel}}.
 #' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")
@@ -662,6 +664,9 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 #' @description
 #' Remove autosomal SNPs deviating from Hardy Weinberg Equilibrium (HWE).
  
+#' @param groupLabel a string value indicating the outcome label: "control",  
+#' or, "case" or "caseControl" for both existing groups. For more details, see 
+#' \code{\link{getGroupLabel}}.
 #' @param plink an executable program in either the current working directory 
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
@@ -679,7 +684,8 @@ removedSnpFemaleChrXmiss <- function(plink, femaleChrXmissCutoff,
 
 #' @export 
 #' @author Junfang Chen 
-#' @seealso \code{\link{removedSnpFemaleChrXhweControl}}
+#' @seealso \code{\link{removedSnpFemaleChrXhweControl}}, 
+#' \code{\link{getGroupLabel}}.
 #' @examples  
 #' ## In the current working directory
 #' bedFile <- system.file("extdata", "genoUpdatedData.bed", package="Gimpute")

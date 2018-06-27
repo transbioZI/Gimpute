@@ -31,7 +31,9 @@ Detect monomorphic SNPs from PLINK BIM file and exclude them if any.
 bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
 bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
 famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
-system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
+system(paste0("scp ", bedFile, " ."))   
+system(paste0("scp ", bimFile, " ."))   
+system(paste0("scp ", famFile, " ."))   
 inputPrefix <- "alignedData"
 outputPrefix <- "removedMonoSnp" 
 outputSNPfile <- "monoSNP.txt"  

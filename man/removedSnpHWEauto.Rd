@@ -8,6 +8,10 @@ removedSnpHWEauto(groupLabel, plink, inputPrefix, pval = 1e-06,
   outputPvalFile, outputSNPfile, outputPrefix)
 }
 \arguments{
+\item{groupLabel}{a string value indicating the outcome label: "control",
+or, "case" or "caseControl" for both existing groups. For more details, see 
+\code{\link{getGroupLabel}}.}
+
 \item{plink}{an executable program in either the current working directory 
 or somewhere in the command path.}
 
@@ -49,7 +53,8 @@ outputPrefix <- "2_11_removedSnpHweAuto"
 ##                   outputPvalFile, outputSNPfile, outputPrefix)
 }
 \seealso{
-\code{\link{removedSnpFemaleChrXhweControl}}
+\code{\link{removedSnpFemaleChrXhweControl}}, 
+\code{\link{getGroupLabel}}.
 }
 \author{
 Junfang Chen

@@ -86,11 +86,13 @@ reference data;
 }
 \examples{
 ## In the current working directory
-bedFile <- system.file("extdata", "removedMonoSnp.bed", package="Gimpute")
-bimFile <- system.file("extdata", "removedMonoSnp.bim", package="Gimpute") 
-famFile <- system.file("extdata", "removedMonoSnp.fam", package="Gimpute")
-system(paste0("scp ", bedFile, bimFile, famFile, " ."))   
-inputPrefix <- "removedMonoSnp"  
+bedFile <- system.file("extdata", "alignedData.bed", package="Gimpute")
+bimFile <- system.file("extdata", "alignedData.bim", package="Gimpute") 
+famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
+system(paste0("scp ", bedFile, " ."))   
+system(paste0("scp ", bimFile, " ."))   
+system(paste0("scp ", famFile, " ."))   
+inputPrefix <- "alignedData"  
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "impute2infoUpdated.txt"
