@@ -99,13 +99,13 @@ outputInfoFile <- "impute2infoUpdated.txt"
 tmpImputeDir <- "tmpImpute"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
-phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-            plink, shapeit, impute2, gtool, 
-            windowSize=3000000, effectiveSize=20000, 
-            nCore4phase=1, nThread=40, 
-            nCore4impute=40, nCore4gtool=40, 
-            infoScore=0.6, outputInfoFile, 
-            impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+## phaseImpute2(inputPrefix, outputPrefix, prefix4final,
+##             plink, shapeit, impute2, gtool, 
+##             windowSize=3000000, effectiveSize=20000, 
+##             nCore4phase=1, nThread=40, 
+##             nCore4impute=40, nCore4gtool=40, 
+##             infoScore=0.6, outputInfoFile, 
+##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 }
 \references{
 \enumerate{

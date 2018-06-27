@@ -848,6 +848,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' 5.) Filtering out imputed variants with bad imputation quality. 
 
 #' @export 
+#' @import doParallel 
 #' @author Junfang Chen
 
 #' @references  
@@ -875,13 +876,13 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-#'             plink, shapeit, impute2, gtool, 
-#'             windowSize=3000000, effectiveSize=20000, 
-#'             nCore4phase=1, nThread=40, 
-#'             nCore4impute=40, nCore4gtool=40, 
-#'             infoScore=0.6, outputInfoFile, 
-#'             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+#' ## phaseImpute2(inputPrefix, outputPrefix, prefix4final,
+#' ##             plink, shapeit, impute2, gtool, 
+#' ##             windowSize=3000000, effectiveSize=20000, 
+#' ##             nCore4phase=1, nThread=40, 
+#' ##             nCore4impute=40, nCore4gtool=40, 
+#' ##             infoScore=0.6, outputInfoFile, 
+#' ##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
 phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
