@@ -36,7 +36,7 @@ outputPrefix <- "chunks_chr"
 bimCurrent <- read.table(file=bimFile, stringsAsFactors=FALSE)  
 chrs <- 23
 print(chrs)   
-chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize)
+chunk4eachChr(inputPrefix, outputPrefix, chrs, windowSize=3000000)
 }
 \author{
 Junfang Chen

@@ -7,7 +7,7 @@
 getGroupLabel(inputFAMfile)
 }
 \arguments{
-\item{inputPrefix}{the PLINK FAM file.}
+\item{inputFAMfile}{the PLINK FAM file.}
 }
 \value{
 The group label of the genotype data: "control" or "case" or 
