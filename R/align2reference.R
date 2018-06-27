@@ -117,10 +117,11 @@
 
 
 checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
-    out2, out2.snp, out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore=25){
+                           out2, out2.snp, out3, out3.snp, out4, 
+                           out4.snp, out4.snpRetained, nCore=25){
 
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
-    impRef <- read.table(file=bimReferenceFile, header=TRUE, 
+    impRef <- read.table(file=bimReferenceFile, header=TRUE,
                          stringsAsFactors=FALSE)
 
     ## step 1: for the same SNP names, but with different genomic position
