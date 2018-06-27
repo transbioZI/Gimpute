@@ -879,9 +879,9 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread=20,
     pcWithGroup <- cbind(pcs, stringsAsFactors=FALSE)
 
     png(outputPCplotFile, width=8, height=6, units="in", res=800)
-    print( xyplot(pcWithGroup[,4] ~ pcWithGroup[,3], data=pcWithGroup, 
+    print(xyplot(pcWithGroup[,4] ~ pcWithGroup[,3], data=pcWithGroup, 
            auto.key=list(space="right"),  
-           jitter.x=TRUE, jitter.y=TRUE, xlab="PC1", ylab="PC2") )
+           jitter.x=TRUE, jitter.y=TRUE, xlab="PC1", ylab="PC2"))
     dev.off()
     ## remove unwanted files
     system(paste0("rm ", autosomefn, ".*"))
