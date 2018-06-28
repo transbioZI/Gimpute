@@ -899,6 +899,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' The default value is 40. 
 #' @param nCore4impute the number of cores used for imputation. 
 #' The default value is 40. 
+#' @param threshold threshold for merging genotypes from GEN probability. 
+#' Default 0.9. 
 #' @param nCore4gtool the number of cores used for computation. 
 #' The default value is 40. 
 #' @param infoScore the cutoff of filtering imputation quality score for 
@@ -968,6 +970,156 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
                         plink, shapeit, impute2, gtool, 
                         windowSize=3000000, effectiveSize=20000, 
                         nCore4phase=1, nThread=40, 
+                        nCore4impute=40, threshold=0.9, nCore4gtool=40, 
+                        infoScore=0.6, outputInfoFile,
+                        impRefDIR, tmpImputeDir, keepTmpDir=TRUE){
+
+    ## One must create directories for storing tmp imputation output files 
+    ## The name of these directories must be fixed for the sake of 
+    ## the subsequent steps.
+    system(paste0("mkdir ", tmpImputeDir))
+    setwd(tmpImputeDir) ## 
+    ## sub-directories  
+    system("mkdir 1-dataFiles")
+    system("mkdir 2-chunkFile") 
+    system("mkdir 3-phaseResults")
+    system("mkdir 4-imputeResults")
+    system("mkdir 5-postImpute")
+    system("mkdir 6-finalResults")  
+    # define directories
+    dataDIR <- "./1-dataFiles/"  
+    chunkDIR <- "./2-chunkFile/"
+    phaseDIR <- "./3-phaseResults/"  
+    imputedDIR <- "./4-imputeResults/"  
+    postImputeDIR <- "./5-postImpute/" 
+    finalImputeDIR <- "./6-finalResults/"  
+    setwd("..")  
+    ## step 2.1 
+    ## copy plink files without monomorphic SNPs; prepare for the imputation.
+    prefix4eachChr <- "gwas_data_chr"  
+    system(paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
+    setwd(paste0("./", tmpImputeDir, "/1-dataFiles/"))  
+    renamePlinkBFile(inputPrefix, outputPrefix=prefix4eachChr, action="move")
+    bimCurrent <- read.table(file=paste0(prefix4eachChr, ".bim"), 
+                             stringsAsFactors=FALSE)  
+    currentChr <- names(table(bimCurrent[,1]))
+    print(currentChr)  
+    chrXPAR1suffix <- "X_PAR1"
+    chrXPAR2suffix <- "X_PAR2"
+    ## nCore is chosen as the number of chromosomes available 
+    PAR <- chrWiseSplit(plink, inputPrefix=prefix4eachChr, chrXPAR1suffix, 
+                        chrXPAR2suffix, nCore=length(currentChr))
+    print(PAR)  
+    if (PAR[[1]]) {par1 <- "X_PAR1"} else {par1 <- NULL}
+    if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
+    ## step 2.2
+    chunkPrefix <- "chunks_chr" 
+    chrs <- c(currentChr, par1, par2)    
+    chunk4eachChr(inputPrefix, 
+                  outputPrefix=chunkPrefix, chrs, windowSize) 
+
+    setwd("..") 
+    system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
+    ## step 2.3     
+    .prePhasingByShapeit(shapeit, chrs, dataDIR, 
+                        prefix4eachChr, 
+                        impRefDIR, phaseDIR, nThread, 
+                        effectiveSize, nCore4phase)
+    ## step 2.4   
+    prefixChunk <- paste0(chunkDIR, chunkPrefix)        
+    .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
+                     imputedDIR, prefix4eachChr, 
+                     nCore4impute, effectiveSize)
+    ## step 2.5   
+    ## extract only SNPs (without INDELs)
+    #######################################################
+    setwd(imputedDIR)  
+    ## extract only SNPs starting with "rs";  .
+    ls <- system("ls gwas*.impute2", intern=TRUE)
+    snpPrefix <- "rs" 
+    biglists <- as.list(ls)
+    mclapply(biglists, function(i){ 
+        arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
+        arg2 <- paste0(i, "noINDEL.impute2")   
+        system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
+    }, mc.cores=length(biglists)) 
+    setwd("..") 
+    suffix4imputed <- ".impute2noINDEL.impute2"   
+    .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
+                          prefix4eachChr, suffix4imputed, 
+                          postImputeDIR, threshold, nCore4gtool)
+
+    ## step 2.6  
+    ####################################################### 
+    ## Modify missing genotype format.
+    setwd(postImputeDIR)   
+    ## replace 'N' in the .ped files into 0 > missing values.
+    chrslist <- as.list(chrs) 
+    fn <- mclapply(chrslist, function(i){
+        system(paste0("sed -i 's/N/0/g' ", prefix4eachChr, i, ".*ped "))
+    }, mc.cores=length(chrslist)) 
+    prefixMerge <- "gwasMerged" 
+    .mergePlinkData(plink, chrs, prefix4eachChr, 
+                    prefixMerge, nCore=length(chrslist))
+    ## fam IDs may be changed: a.) if IDs have 'N'; 
+    ## b.) IID, FID may be switched.
+    ## >> update this as below 
+    ## the original PLINK files before imputation
+    setwd("..")
+    system(paste0("scp ", dataDIR, prefix4eachChr, ".fam ", postImputeDIR)) 
+    setwd(postImputeDIR) 
+    ## update FAM IDs in the imputed PLINK files
+    famOrig <- read.table(paste0(prefix4eachChr, ".fam"), 
+                          stringsAsFactors=FALSE) 
+    famImpute <- read.table(paste0(prefixMerge,".fam"), 
+                            stringsAsFactors=FALSE) 
+    ## changes ID codes for individuals specified in recoded.txt, 
+    ## which should be in the format of 4 cols per row: 
+    ## old FID, old IID, new FID, new IID, e.g.
+    recodMat <- cbind(famImpute[,c("V1", "V2")], famOrig[,c("V1", "V2")]) 
+    write.table(recodMat, file="recoded.txt", quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+
+    system(paste0(plink, " --bfile ", prefixMerge, 
+           " --update-ids recoded.txt --make-bed --out ", prefix4final)) 
+    #######################################################
+    setwd("..")
+    system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
+    system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
+    ## step 2.7    
+    setwd(finalImputeDIR)
+    suffix4impute2info <- ".impute2_info"
+    badImputeSNPfile <- "badImputeSNPs.txt" 
+    .filterImputeData(plink, suffix4impute2info, 
+                     outputInfoFile, infoScore, badImputeSNPfile, 
+                     inputPrefix=prefix4final, outputPrefix)
+    setwd("..")
+    setwd("..")
+    if (keepTmpDir == FALSE){
+        system(paste0("rm -r ", tmpImputeDir))
+    } else if (keepTmpDir == TRUE){
+        print("Keep the temporary imputation folder.")
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
+                        plink, shapeit, impute4, qctool, 
+                        windowSize=3000000, effectiveSize=20000, 
+                        nCore4phase=1, nThread=40, 
                         nCore4impute=40, nCore4gtool=40, 
                         infoScore=0.6, outputInfoFile,
                         impRefDIR, tmpImputeDir, keepTmpDir=TRUE){
@@ -1033,16 +1185,21 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
     #######################################################
     setwd(imputedDIR)  
     ## extract only SNPs starting with "rs";  .
-    ls <- system("ls gwas*.impute2", intern=TRUE)
+    
+    setwd(imputedDIR)  
+    ## extract only SNPs starting with "rs";  .
+    ls <- system("ls gwas*.gen", intern=TRUE)
     snpPrefix <- "rs" 
     biglists <- as.list(ls)
     mclapply(biglists, function(i){ 
         arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
-        arg2 <- paste0(i, "noINDEL.impute2")   
+        arg2 <- paste0(i, "noINDEL.gen")   
         system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
     }, mc.cores=length(biglists)) 
     setwd("..") 
-    suffix4imputed <- ".impute2noINDEL.impute2"   
+    suffix4imputed <- ".genNoINDEL.gen" 
+
+
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                           prefix4eachChr, suffix4imputed, 
                           postImputeDIR, nCore4gtool)
