@@ -36,8 +36,7 @@ gcta <- "/home/junfang.chen/Gimpute/tools/gcta64"
 shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
 impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
 gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
-## Gimpute has the following dependencies:
-shapeit3 <- "/home/junfang.chen/Gimpute/tools/shapeit3.r884.2"
+## Gimpute has the following dependencies: 
 impute4 <- "/home/junfang.chen/Gimpute/tools/impute4.1_r291.2"
 
 library(lattice)
@@ -214,7 +213,7 @@ phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             nCore4impute=40, nCore4gtool=40, 
             infoScore=0.6, outputInfoFile, 
             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
-##################################################### ###### After imputation
+##################################################### After imputation
 ## step 2 
 ## Final imputed results, including bad imputed genotypes.
 imputedDatasetfn <- "4_2_imputedDataset"

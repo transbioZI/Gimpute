@@ -8,9 +8,10 @@ output:
   BiocStyle::html_document:
     toc: true
     number_sections: true 
+    href: GimputeTutorial2.html 
 
 vignette: >
-   %\VignetteIndexEntry{Gimpute tutorial}
+   %\VignetteIndexEntry{GimputeTutorial}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---
