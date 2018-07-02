@@ -65,6 +65,8 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' @param prefixChunk  the prefix of the chunk files for each chromosome, 
 #' along with the proper location directory.
 #' @param phaseDIR the directory where prephased haplotypes are located.
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.
 #' @param imputedDIR the directory where imputed files will be located.
@@ -87,8 +89,8 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 
 
 .imputedByImpute4 <- function(impute4, chrs, prefixChunk, phaseDIR, 
-                             impRefDIR, imputedDIR, prefix4eachChr, 
-                             nCore, effectiveSize=20000){ 
+                              referencePanel, impRefDIR, imputedDIR, 
+                              prefix4eachChr, nCore, effectiveSize=20000){ 
 
     for (i in chrs){     
 
@@ -105,11 +107,20 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
             ## reference data files 
             GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
                                   "_combined_b37.txt ")
-            HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", 
-                                i, "_impute_macGT1.hap.gz ") 
-            LEGEND_FILE <- paste0(impRefDIR, 
-                                  "ALL_1000G_phase1integrated_v3_chr", i, 
-                                  "_impute_macGT1.legend.gz ") 
+            if (referencePanel == "1000Gphase1v3_macGT1"){ 
+                HAPS_FILE <- paste0(impRefDIR, 
+                                    "ALL_1000G_phase1integrated_v3_chr", i, 
+                                    "_impute_macGT1.hap.gz ") 
+                LEGEND_FILE <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", i, 
+                                      "_impute_macGT1.legend.gz ")
+            } else if (referencePanel == "1000Gphase3"){
+                HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
+                                    ".hap.gz ") 
+                LEGEND_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
+                                      ".legend.gz ")
+            } 
+
             ## Output file GEN format   
             OUTPUT_FILE <- paste0(imputedDIR, prefix4eachChr, i, 
                                   ".pos", chunkSTART, 
@@ -147,7 +158,6 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
         }, mc.cores=nCore)  
     } 
 }
-
 
 
 
@@ -192,7 +202,9 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant. The default value is 0.6. 
 #' @param outputInfoFile the output file of info scores consisting of 
-#' two columns: all imputed SNPs and their info scores.   
+#' two columns: all imputed SNPs and their info scores.  
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3"). 
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.  
 #' @param tmpImputeDir the name of the temporary directory used for 
@@ -249,7 +261,7 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' ##             windowSize=3000000, effectiveSize=20000, 
 #' ##             nCore4phase=1, nThread=40, 
 #' ##             nCore4impute=40, nCore4gtool=40, 
-#' ##             infoScore=0.6, outputInfoFile, 
+#' ##             infoScore=0.6, outputInfoFile, referencePanel, 
 #' ##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
@@ -261,7 +273,8 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
                         nCore4phase=1, nThread=40, 
                         nCore4impute=40, threshold=0.9, 
                         nCore4gtool=40, infoScore=0.6, outputInfoFile,
-                        impRefDIR, tmpImputeDir, keepTmpDir=TRUE){
+                        referencePanel, impRefDIR, 
+                        tmpImputeDir, keepTmpDir=TRUE){
 
     ## One must create directories for storing tmp imputation output files 
     ## The name of these directories must be fixed for the sake of 
@@ -311,15 +324,16 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
     ## step 2.3     
     .prePhasingByShapeit(shapeit, chrs, dataDIR, 
-                        prefix4eachChr, 
-                        impRefDIR, phaseDIR, nThread, 
-                        effectiveSize, nCore=nCore4phase) 
+                         prefix4eachChr, referencePanel, 
+                         impRefDIR, phaseDIR, nThread, 
+                         effectiveSize, nCore=nCore4phase) 
 
     ## step 2.4  ############################# 
     prefixChunk <- paste0(chunkDIR, chunkPrefix)        
-    .imputedByImpute4(impute4, chrs, prefixChunk, phaseDIR, impRefDIR, 
-                     imputedDIR, prefix4eachChr, 
-                     nCore4impute, effectiveSize)
+    .imputedByImpute4(impute4, chrs, prefixChunk, phaseDIR, 
+                      referencePanel, impRefDIR, 
+                      imputedDIR, prefix4eachChr, 
+                      nCore4impute, effectiveSize)
     ## step 2.5  #############################  
     ## extract only SNPs (without INDELs)
     #######################################################

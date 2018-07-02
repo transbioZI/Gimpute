@@ -290,6 +290,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @param dataDIR the directory where genotype PLINK binary files are located.
 #' @param prefix4eachChr the prefix of PLINK binary files for 
 #' each chromosome.
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.
 #' @param phaseDIR the directory where resulting pre-phased files 
@@ -311,9 +313,9 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @seealso \code{\link{phaseImpute2}}.
 
 
-.prePhasingByShapeit <- function(shapeit, chrs, dataDIR, 
-                                prefix4eachChr, impRefDIR, phaseDIR, 
-                                nThread=40, effectiveSize=20000, nCore=1){
+.prePhasingByShapeit <- function(shapeit, chrs, dataDIR, prefix4eachChr,  
+                                 referencePanel, impRefDIR, phaseDIR, 
+                                 nThread=40, effectiveSize=20000, nCore=1){
 
     chrslist <- as.list(chrs)
     mclapply(chrslist, function(i){
@@ -325,13 +327,21 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
         # reference data files
         GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
                               "_combined_b37.txt ")
-        HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", i, 
-                            "_impute_macGT1.hap.gz ") 
-        LEGEND_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", 
-                              i, "_impute_macGT1.legend.gz ")
-        SAMPLE_FILE <- paste0(impRefDIR, 
-                              "ALL_1000G_phase1integrated_v3.sample ")
-
+        if (referencePanel == "1000Gphase1v3_macGT1"){ 
+            HAPS_FILE <- paste0(impRefDIR, 
+                                "ALL_1000G_phase1integrated_v3_chr", i, 
+                                "_impute_macGT1.hap.gz ") 
+            LEGEND_FILE <- paste0(impRefDIR, 
+                                  "ALL_1000G_phase1integrated_v3_chr", i, 
+                                  "_impute_macGT1.legend.gz ")
+            SAMPLE_FILE <- paste0(impRefDIR, 
+                                  "ALL_1000G_phase1integrated_v3.sample ") 
+        } else if (referencePanel == "1000Gphase3"){
+            HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, ".hap.gz ") 
+            LEGEND_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
+                                  ".legend.gz ")
+            SAMPLE_FILE <- paste0(impRefDIR, "1000GP_Phase3.sample ")
+        }    
         # main output file
         OUTPUT_HAPS <- paste0(phaseDIR, "chr", i, ".haps ")     
         OUTPUT_SAMPLE <- paste0(phaseDIR, "chr", i, ".sample ")     
@@ -380,6 +390,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @param prefixChunk  the prefix of the chunk files for each chromosome, 
 #' along with the proper location directory.
 #' @param phaseDIR the directory where prephased haplotypes are located.
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.
 #' @param imputedDIR the directory where imputed files will be located.
@@ -400,8 +412,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 .imputedByImpute2 <- function(impute2, chrs, prefixChunk, phaseDIR, 
-                             impRefDIR, imputedDIR, prefix4eachChr, 
-                             nCore, effectiveSize=20000){ 
+                              referencePanel, impRefDIR, imputedDIR, 
+                              prefix4eachChr, nCore, effectiveSize=20000){ 
 
     for (i in chrs){     
 
@@ -418,11 +430,71 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             ## reference data files 
             GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
                                   "_combined_b37.txt ")
-            HAPS_FILE <- paste0(impRefDIR, "ALL_1000G_phase1integrated_v3_chr", 
-                                i, "_impute_macGT1.hap.gz ") 
-            LEGEND_FILE <- paste0(impRefDIR, 
-                                  "ALL_1000G_phase1integrated_v3_chr", i, 
-                                  "_impute_macGT1.legend.gz ") 
+            GENMAP.chrXnonPAR <- paste0(impRefDIR, "genetic_map_chr",
+                                  "X_nonPAR_combined_b37.txt ")
+            GENMAP.chrXPAR1 <- paste0(impRefDIR, "genetic_map_chr", 
+                                  "X_PAR1_combined_b37.txt ")
+            GENMAP.chrXPAR2 <- paste0(impRefDIR, "genetic_map_chr", 
+                                  "X_PAR2_combined_b37.txt ")
+ 
+            if (referencePanel == "1000Gphase1v3_macGT1"){ 
+                SAMPLE_FILE <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3.sample ") 
+
+                HAPS_FILE <- paste0(impRefDIR, 
+                                    "ALL_1000G_phase1integrated_v3_chr", i, 
+                                    "_impute_macGT1.hap.gz ") 
+                LEGEND_FILE <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", i, 
+                                      "_impute_macGT1.legend.gz ") 
+                ## chrX_nonPAR
+                HAPS.chrXnonPAR <- paste0(impRefDIR, 
+                                          "ALL_1000G_phase1integrated_v3_chr", 
+                                          "X_nonPAR_impute_macGT1.hap.gz ") 
+                LEGEND.chrXnonPAR <- paste0(impRefDIR, 
+                                            "ALL_1000G_phase1integrated_v3_chr", 
+                                            "X_nonPAR_impute_macGT1.legend.gz ") 
+                ## .chrXPAR1  
+                HAPS.chrXPAR1 <- paste0(impRefDIR, 
+                                    "ALL_1000G_phase1integrated_v3_chr",
+                                    "X_PAR1_impute_macGT1.hap.gz ") 
+                LEGEND.chrXPAR1  <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", 
+                                      "X_PAR1_impute_macGT1.legend.gz ") 
+                ## .chrXPAR2
+                HAPS.chrXPAR2  <- paste0(impRefDIR, 
+                                    "ALL_1000G_phase1integrated_v3_chr", 
+                                    "X_PAR2_impute_macGT1.hap.gz ") 
+                LEGEND.chrXPAR2  <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", 
+                                      "X_PAR2_impute_macGT1.legend.gz ") 
+
+            } else if (referencePanel == "1000Gphase3"){
+                HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
+                                    ".hap.gz ") 
+                LEGEND_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
+                                      ".legend.gz ")
+                SAMPLE_FILE <- paste0(impRefDIR, "1000GP_Phase3.sample ")
+
+                ## chrX_nonPAR
+                HAPS.chrXnonPAR <- paste0(impRefDIR, 
+                                          "1000GP_Phase3_chrX_NONPAR.hap.gz ") 
+                LEGEND.chrXnonPAR <- paste0(impRefDIR, 
+                                            "1000GP_Phase3_chr", 
+                                            "X_NONPAR.legend.gz ") 
+                ## .chrXPAR1  
+                HAPS.chrXPAR1 <- paste0(impRefDIR, 
+                                        "1000GP_Phase3_chrX_PAR1.hap.gz ") 
+                LEGEND.chrXPAR1 <- paste0(impRefDIR, 
+                                          "1000GP_Phase3_chrX_PAR1.legend.gz ") 
+                ## .chrXPAR2
+                HAPS.chrXPAR2 <- paste0(impRefDIR, 
+                                        "1000GP_Phase3_chrX_PAR2.hap.gz ") 
+                LEGEND.chrXPAR2 <- paste0(impRefDIR, 
+                                          "1000GP_Phase3_chrX_PAR2.legend.gz ") 
+            } 
+
+
             ## main output file    
             OUTPUT_FILE <- paste0(imputedDIR, prefix4eachChr, i, 
                                   ".pos", chunkSTART, 
@@ -446,7 +518,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                 " -o ", OUTPUT_FILE, " \ ", 
                 " -allow_large_regions \ ",
                 " -seed 367946 \ " ))
-            } else if (is.element(i, c("X_PAR1", "X_PAR2"))){  
+            } else if (i == "X_PAR1"){  
                 ## impute for chrX PAR >> with an additional flag: --Xpar.
                 system(paste0(impute2, 
                 " -iter 30  \ ", 
@@ -454,9 +526,27 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                 " -k_hap 500  \ ", 
                 " -use_prephased_g  \ ", 
                 " -Xpar \ ",     ########## special
-                " -m ", GENMAP_FILE, " \ ",  
-                " -h ", HAPS_FILE, " \ ", 
-                " -l ", LEGEND_FILE, " \ ", 
+                " -m ", GENMAP.chrXPAR1, " \ ",  
+                " -h ", HAPS.chrXPAR1, " \ ", 
+                " -l ", LEGEND.chrXPAR1, " \ ", 
+                " -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
+                " -Ne ", effectiveSize, " \ ", 
+                " -int ", chunkSTART, " ", chunkEND, " \ ", 
+                " -buffer 1000  \ ",
+                " -o ", OUTPUT_FILE, " \ ", 
+                " -allow_large_regions \ ",
+                " -seed 367946 \ " ))
+            } else if (i == "X_PAR2"){  
+                ## impute for chrX PAR >> with an additional flag: --Xpar.
+                system(paste0(impute2, 
+                " -iter 30  \ ", 
+                " -burnin 10  \ ", 
+                " -k_hap 500  \ ", 
+                " -use_prephased_g  \ ", 
+                " -Xpar \ ",     ########## special
+                " -m ", GENMAP.chrXPAR2, " \ ",  
+                " -h ", HAPS.chrXPAR1, " \ ", 
+                " -l ", LEGEND.chrXPAR1, " \ ", 
                 " -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
                 " -Ne ", effectiveSize, " \ ", 
                 " -int ", chunkSTART, " ", chunkEND, " \ ", 
@@ -473,9 +563,9 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                 " -k_hap 500  \ ", 
                 " -use_prephased_g  \ ", 
                 " -chrX \ ",   ########### special
-                " -m ", GENMAP_FILE, " \ ",  
-                " -h ", HAPS_FILE, " \ ", 
-                " -l ", LEGEND_FILE, " \ ", 
+                " -m ", GENMAP.chrXnonPAR, " \ ",  
+                " -h ", HAPS.chrXnonPAR, " \ ", 
+                " -l ", LEGEND.chrXnonPAR, " \ ", 
                 " -known_haps_g ", GWAS_HAPS_FILE, " \ ", 
                 " -sample_known_haps_g ", GWAS_SAMP_FILE, " \ ",   
                 " -Ne ", effectiveSize, " \ ", 
@@ -484,7 +574,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                 " -o ", OUTPUT_FILE, " \ ", 
                 " -allow_large_regions \ ",
                 " -seed 367946 \ " ))
-            }
+            } else { print(" wrong chromosome code during phasing!!") }
         }, mc.cores=nCore)  
     } 
 }
@@ -891,6 +981,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' each variant. The default value is 0.6. 
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.   
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.  
 #' @param tmpImputeDir the name of the temporary directory used for 
@@ -946,7 +1038,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' ##             windowSize=3000000, effectiveSize=20000, 
 #' ##             nCore4phase=1, nThread=40, 
 #' ##             nCore4impute=40, nCore4gtool=40, 
-#' ##             infoScore=0.6, outputInfoFile, 
+#' ##             infoScore=0.6, outputInfoFile, referencePanel, 
 #' ##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
@@ -956,7 +1048,8 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
                         nCore4phase=1, nThread=40, 
                         nCore4impute=40, threshold=0.9, 
                         nCore4gtool=40, infoScore=0.6, outputInfoFile,
-                        impRefDIR, tmpImputeDir, keepTmpDir=TRUE){
+                        referencePanel, impRefDIR, 
+                        tmpImputeDir, keepTmpDir=TRUE){
 
     ## One must create directories for storing tmp imputation output files 
     ## The name of these directories must be fixed for the sake of 
@@ -1006,14 +1099,14 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
     system(paste0("mv ", dataDIR, chunkPrefix, "*.txt  ", chunkDIR)) 
     ## step 2.3     
     .prePhasingByShapeit(shapeit, chrs, dataDIR, 
-                        prefix4eachChr, 
-                        impRefDIR, phaseDIR, nThread, 
-                        effectiveSize, nCore=nCore4phase)
+                         prefix4eachChr, referencePanel, 
+                         impRefDIR, phaseDIR, nThread, 
+                         effectiveSize, nCore=nCore4phase)
     ## step 2.4   
     prefixChunk <- paste0(chunkDIR, chunkPrefix)        
-    .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, impRefDIR, 
-                     imputedDIR, prefix4eachChr, 
-                     nCore4impute, effectiveSize)
+    .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, referencePanel, 
+                      impRefDIR, imputedDIR, prefix4eachChr, 
+                      nCore4impute, effectiveSize)
     ## step 2.5   
     ## extract only SNPs (without INDELs)
     #######################################################
