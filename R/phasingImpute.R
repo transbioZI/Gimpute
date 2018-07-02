@@ -741,6 +741,30 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 }
 
 
+
+
+
+.filterImputeData2 <- function(plink, outputInfoFile, infoScore=0.6, 
+                               badImputeSNPfile, inputPrefix, 
+                               outputPrefix){ 
+ 
+    ## with colnames: rsid, info
+    impute2info <- read.table(file=outputInfoFile, 
+                              stringsAsFactors=FALSE, header=TRUE)
+    impute2info[,2] <- round(impute2info[,2], 3)
+ 
+    ## filtering   
+    snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
+    write.table(snpWithBadInfo, file=badImputeSNPfile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    ## extract filtered SNPs  
+    system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
+           badImputeSNPfile, " --make-bed --out ", outputPrefix))  
+
+}
+
+ 
+
 ##########################################################################
 ## removedSnpMissPostImp.R
 ########################################################################## 
@@ -886,7 +910,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' inputPrefix <- "alignedData"  
 #' outputPrefix <- "gwasImputedFiltered"
 #' prefix4final <- "gwasImputed"   
-#' outputInfoFile <- "impute2infoUpdated.txt"
+#' outputInfoFile <- "infoScore.txt"
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -975,7 +999,7 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
         arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
         arg2 <- paste0(i, "noINDEL.impute2")   
         system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
-    }, mc.cores=length(biglists)) 
+    }, mc.cores=40) ## by default  
     setwd("..") 
     suffix4imputed <- ".impute2noINDEL.impute2"   
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
