@@ -380,7 +380,7 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     #######################################################
     setwd("..")
     system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
-    system(paste0("mv ", imputedDIR, " ", outputInfoFile,   finalImputeDIR)) 
+    system(paste0("mv ", imputedDIR, outputInfoFile,  " ", finalImputeDIR)) 
 
     setwd(finalImputeDIR)
     ## step 2.7  ## 
