@@ -38,6 +38,7 @@ impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
 gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
 ## Gimpute has the following dependencies: 
 impute4 <- "/home/junfang.chen/Gimpute/tools/impute4.1_r291.2"
+qctool <- "/home/junfang.chen/Gimpute/tools/qctool"
 
 library(lattice)
 library(doParallel)
@@ -204,7 +205,7 @@ removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef,
 inputPrefix <- "4_1_removedMonoSnp"  
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
-outputInfoFile <- "impute2infoUpdated.txt"
+outputInfoFile <- "infoScore.txt"
 tmpImputeDir <- "tmpImpute"
 phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             plink, shapeit, impute2, gtool, 
