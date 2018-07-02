@@ -77,6 +77,8 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' --chrX flag, specifically for chrX imputation'
 #' @return The imputed files for all chunks from given chromosomes, except   
 #' sex chromosomes. 
+
+#' @export 
 #' @import doParallel  
 
 #' @author Junfang Chen 
@@ -243,7 +245,7 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
 #' ## phaseImpute4(inputPrefix, outputPrefix, prefix4final,
-#' ##             plink, shapeit, impute4, qctool, 
+#' ##             plink, shapeit, impute4, qctool, gtool,
 #' ##             windowSize=3000000, effectiveSize=20000, 
 #' ##             nCore4phase=1, nThread=40, 
 #' ##             nCore4impute=40, nCore4gtool=40, 
@@ -254,7 +256,7 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 
 
 phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
-                        plink, shapeit, impute4, qctool, 
+                        plink, shapeit, impute4, qctool, gtool, 
                         windowSize=3000000, effectiveSize=20000, 
                         nCore4phase=1, nThread=40, 
                         nCore4impute=40, threshold=0.9, 

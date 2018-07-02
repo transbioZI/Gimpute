@@ -5,10 +5,10 @@
 \title{Phasing and imputation}
 \usage{
 phaseImpute4(inputPrefix, outputPrefix, prefix4final, plink, shapeit, impute4,
-  qctool, windowSize = 3e+06, effectiveSize = 20000, nCore4phase = 1,
-  nThread = 40, nCore4impute = 40, threshold = 0.9, nCore4gtool = 40,
-  infoScore = 0.6, outputInfoFile, impRefDIR, tmpImputeDir,
-  keepTmpDir = TRUE)
+  qctool, gtool, windowSize = 3e+06, effectiveSize = 20000,
+  nCore4phase = 1, nThread = 40, nCore4impute = 40, threshold = 0.9,
+  nCore4gtool = 40, infoScore = 0.6, outputInfoFile, impRefDIR,
+  tmpImputeDir, keepTmpDir = TRUE)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
@@ -27,6 +27,9 @@ working directory or somewhere in the command path.}
 working directory or somewhere in the command path.}
 
 \item{impute4}{an executable program in either the current 
+working directory or somewhere in the command path.}
+
+\item{gtool}{an executable program in either the current 
 working directory or somewhere in the command path.}
 
 \item{windowSize}{the window size of each chunk. 
@@ -64,9 +67,6 @@ storing phasing and imputation results.}
 
 \item{keepTmpDir}{a logical value indicating if the directory 
 'tmpImputeDir' should be kept or not. The default is TRUE.}
-
-\item{gtool}{an executable program in either the current 
-working directory or somewhere in the command path.}
 }
 \value{
 1.) The filtered imputed PLINK binary files; 
@@ -106,7 +106,7 @@ tmpImputeDir <- "tmpImpute"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
 ## phaseImpute4(inputPrefix, outputPrefix, prefix4final,
-##             plink, shapeit, impute4, qctool, 
+##             plink, shapeit, impute4, qctool, gtool,
 ##             windowSize=3000000, effectiveSize=20000, 
 ##             nCore4phase=1, nThread=40, 
 ##             nCore4impute=40, nCore4gtool=40, 
