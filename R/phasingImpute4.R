@@ -343,7 +343,7 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     suffix4imputed <- ".genNoINDEL.gen"  
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                            prefix4eachChr, suffix4imputed, 
-                           postImputeDIR, nCore4gtool)
+                           postImputeDIR, threshold, nCore=nCore4gtool)
     ## step 2.6  
     ####################################################### 
     ## Modify missing genotype format.
