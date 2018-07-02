@@ -1,6 +1,55 @@
 
 
+##########################################################################
+## computeInfoByQctool
+########################################################################## 
+#' Calculate the info score by QCTOOL  
+#'
+#' @description
+#' Calculate the info score by QCTOOL for a set of SNPs from .GEN files.
+#' 
+#' @param qctool an executable program in either the current working 
+#' directory or somewhere in the command path.
+#' @param inputSuffix the suffix of input .GEN files within current directory. 
+#' @param outputInfoFile the output info scores file consisting of 
+#' two columns: all SNPs from .GEN files and their info scores.    
 
+#' @return A pure text file contains the info scores of all SNPs from .GEN  
+#' files with two columns: SNP names and the corresponding info scores.  
+
+#' @details These .GEN files may come from the output of impute4 results.
+#' The intermediate generated files are retained in the directory.
+
+#' @export 
+#' @author Junfang Chen 
+#' @examples 
+#' ## In the current working directory
+#' inputSuffix <- "noINDEL.gen"
+#' outputInfoFile <- "infoScore.txt"
+#' ## computeInfoByQctool(qctool, inputSuffix, outputInfoFile)
+
+
+
+computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
+
+    files <- system(paste0("ls *", inputSuffix), intern=TRUE) 
+    for (i in seq_len(length(files))) {  
+        out <- paste0(files[i], ".txt")
+        system(paste0(qctool, " -g ", files[i], " -snp-stats -osnp ", out))
+        out2 <- paste0("tmpInfo", i, ".txt")
+        arg1 <- paste0("grep -o '^[^#]*' ", out) ## reomve comments
+        arg2 <- paste0("awk '{print $2, $17}' > ", out2)  
+        system(paste0(arg1, " | ", arg2))
+    }  
+
+    ## note, no other file names starting with tmpInfo*
+    a <- "'NR==1 {header=$_} FNR==1 && NR!=1 { $_ ~ $header getline; } {print}'"
+    system(paste0("awk ", a, " tmpInfo* > ", outputInfoFile))
+}
+
+
+
+ 
 ##########################################################################
 ## .imputedByImpute4.R
 ########################################################################## 
@@ -35,8 +84,6 @@
 
 
 
-
-
 .imputedByImpute4 <- function(impute4, chrs, prefixChunk, phaseDIR, 
                              impRefDIR, imputedDIR, prefix4eachChr, 
                              nCore, effectiveSize=20000){ 
@@ -64,7 +111,7 @@
             ## Output file GEN format   
             OUTPUT_FILE <- paste0(imputedDIR, prefix4eachChr, i, 
                                   ".pos", chunkSTART, 
-                                  "-", chunkEND)   
+                                  "-", chunkEND)   ## .gen output  
             ################## impute genotypes from GWAS haplotypes 
             autosomeCode = seq_len(22)
             if (is.element(i, autosomeCode)) { 
@@ -104,7 +151,7 @@
 
 
 ##########################################################################
-## phaseImpute.R
+## phaseImpute4.R
 ########################################################################## 
 #' Phasing and imputation 
 #'
@@ -122,7 +169,7 @@
 #' working directory or somewhere in the command path.
 #' @param shapeit an executable program in either the current 
 #' working directory or somewhere in the command path.
-#' @param impute2 an executable program in either the current 
+#' @param impute4 an executable program in either the current 
 #' working directory or somewhere in the command path.
 #' @param gtool an executable program in either the current 
 #' working directory or somewhere in the command path. 
@@ -142,7 +189,7 @@
 #' The default value is 40. 
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant. The default value is 0.6. 
-#' @param outputInfoFile the output file of impute2 info scores consisting of 
+#' @param outputInfoFile the output file of info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.   
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.  
@@ -191,7 +238,7 @@
 #' inputPrefix <- "alignedData"  
 #' outputPrefix <- "gwasImputedFiltered"
 #' prefix4final <- "gwasImputed"   
-#' outputInfoFile <- "impute2infoUpdated.txt"
+#' outputInfoFile <- "infoScore.txt"
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
@@ -265,12 +312,12 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
                         prefix4eachChr, 
                         impRefDIR, phaseDIR, nThread, 
                         effectiveSize, nCore4phase)
-    ## step 2.4   
+    ## step 2.4  ############################# 
     prefixChunk <- paste0(chunkDIR, chunkPrefix)        
     .imputedByImpute4(impute4, chrs, prefixChunk, phaseDIR, impRefDIR, 
                      imputedDIR, prefix4eachChr, 
                      nCore4impute, effectiveSize)
-    ## step 2.5   
+    ## step 2.5  #############################  
     ## extract only SNPs (without INDELs)
     #######################################################
     setwd(imputedDIR)  
@@ -281,17 +328,19 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     biglists <- as.list(ls)
     mclapply(biglists, function(i){ 
         arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
-        arg2 <- paste0(i, "noINDEL.gen")   
+        arg2 <- paste0(i, "NoINDEL.gen")   
         system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
-    }, mc.cores=length(biglists)) 
+    }, mc.cores=40) ## by default 
+
+    inputSuffix <- ".genNoINDEL.gen" 
+    ## compute info score for each chunk, then combine all info scores
+    computeInfoByQctool(qctool, inputSuffix, outputInfoFile)
+    
     setwd("..") 
-    suffix4imputed <- ".genNoINDEL.gen" 
-
-
+    suffix4imputed <- ".genNoINDEL.gen"  
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
-                          prefix4eachChr, suffix4imputed, 
-                          postImputeDIR, nCore4gtool)
-
+                           prefix4eachChr, suffix4imputed, 
+                           postImputeDIR, nCore4gtool)
     ## step 2.6  
     ####################################################### 
     ## Modify missing genotype format.
@@ -328,14 +377,15 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     #######################################################
     setwd("..")
     system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
-    system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
-    ## step 2.7    
+    system(paste0("mv ", imputedDIR, " ", outputInfoFile,   finalImputeDIR)) 
+
     setwd(finalImputeDIR)
-    suffix4impute2info <- ".impute2_info"
+    ## step 2.7  ## 
     badImputeSNPfile <- "badImputeSNPs.txt" 
-    .filterImputeData(plink, suffix4impute2info, 
-                     outputInfoFile, infoScore, badImputeSNPfile, 
-                     inputPrefix=prefix4final, outputPrefix)
+    .filterImputeData2(plink, outputInfoFile, 
+                       infoScore=0.6, badImputeSNPfile, 
+                       inputPrefix=prefix4final, outputPrefix)
+
     setwd("..")
     setwd("..")
     if (keepTmpDir == FALSE){
