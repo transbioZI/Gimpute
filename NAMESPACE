@@ -2,6 +2,7 @@
 
 export(.convertImpute2ByGtool)
 export(.filterImputeData)
+export(.filterImputeData2)
 export(.imputedByImpute2)
 export(.imputedByImpute4)
 export(.mergePlinkData)
