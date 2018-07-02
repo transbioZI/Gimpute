@@ -1,5 +1,24 @@
 
 
+
+Changes in version 0.99.7
+--------------------------
+
+New Features
+1. Added functions
+- computeInfoByQctool.R
+- filterImputeData2.R 
+- .imputedByImpute4.R
+- phaseImpute4.R 
+ 
+
+
+Improvement/Fixed Bugs
+
+
+
+
+
 Changes in version 0.99.6
 --------------------------
 
