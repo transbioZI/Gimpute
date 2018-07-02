@@ -257,8 +257,8 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
                         plink, shapeit, impute4, qctool, 
                         windowSize=3000000, effectiveSize=20000, 
                         nCore4phase=1, nThread=40, 
-                        nCore4impute=40, nCore4gtool=40, 
-                        infoScore=0.6, outputInfoFile,
+                        nCore4impute=40, threshold=0.9, 
+                        nCore4gtool=40, infoScore=0.6, outputInfoFile,
                         impRefDIR, tmpImputeDir, keepTmpDir=TRUE){
 
     ## One must create directories for storing tmp imputation output files 
@@ -274,18 +274,18 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     system("mkdir 5-postImpute")
     system("mkdir 6-finalResults")  
     # define directories
-    dataDIR <- "./1-dataFiles/"  
-    chunkDIR <- "./2-chunkFile/"
-    phaseDIR <- "./3-phaseResults/"  
-    imputedDIR <- "./4-imputeResults/"  
-    postImputeDIR <- "./5-postImpute/" 
-    finalImputeDIR <- "./6-finalResults/"  
+    dataDIR <- "1-dataFiles/"  
+    chunkDIR <- "2-chunkFile/"
+    phaseDIR <- "3-phaseResults/"  
+    imputedDIR <- "4-imputeResults/"  
+    postImputeDIR <- "5-postImpute/" 
+    finalImputeDIR <- "6-finalResults/"  
     setwd("..")  
     ## step 2.1 
     ## copy plink files without monomorphic SNPs; prepare for the imputation.
     prefix4eachChr <- "gwas_data_chr"  
-    system(paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/1-dataFiles/"))
-    setwd(paste0("./", tmpImputeDir, "/1-dataFiles/"))  
+    system(paste0("scp ", inputPrefix, ".* ./", tmpImputeDir, "/", dataDIR))
+    setwd(paste0("./", tmpImputeDir, "/", dataDIR))  
     renamePlinkBFile(inputPrefix, outputPrefix=prefix4eachChr, action="move")
     bimCurrent <- read.table(file=paste0(prefix4eachChr, ".bim"), 
                              stringsAsFactors=FALSE)  
@@ -302,7 +302,7 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     ## step 2.2
     chunkPrefix <- "chunks_chr" 
     chrs <- c(currentChr, par1, par2)    
-    chunk4eachChr(inputPrefix, 
+    chunk4eachChr(inputPrefix=prefix4eachChr, 
                   outputPrefix=chunkPrefix, chrs, windowSize) 
 
     setwd("..") 
@@ -311,7 +311,8 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     .prePhasingByShapeit(shapeit, chrs, dataDIR, 
                         prefix4eachChr, 
                         impRefDIR, phaseDIR, nThread, 
-                        effectiveSize, nCore4phase)
+                        effectiveSize, nCore=nCore4phase) 
+
     ## step 2.4  ############################# 
     prefixChunk <- paste0(chunkDIR, chunkPrefix)        
     .imputedByImpute4(impute4, chrs, prefixChunk, phaseDIR, impRefDIR, 

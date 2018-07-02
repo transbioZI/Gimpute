@@ -6,8 +6,9 @@
 \usage{
 phaseImpute4(inputPrefix, outputPrefix, prefix4final, plink, shapeit, impute4,
   qctool, windowSize = 3e+06, effectiveSize = 20000, nCore4phase = 1,
-  nThread = 40, nCore4impute = 40, nCore4gtool = 40, infoScore = 0.6,
-  outputInfoFile, impRefDIR, tmpImputeDir, keepTmpDir = TRUE)
+  nThread = 40, nCore4impute = 40, threshold = 0.9, nCore4gtool = 40,
+  infoScore = 0.6, outputInfoFile, impRefDIR, tmpImputeDir,
+  keepTmpDir = TRUE)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
@@ -43,6 +44,9 @@ The default value is 40.}
 \item{nCore4impute}{the number of cores used for imputation. 
 The default value is 40.}
 
+\item{threshold}{threshold for merging genotypes from GEN probability. 
+Default 0.9.}
+
 \item{nCore4gtool}{the number of cores used for computation. 
 The default value is 40.}
 
@@ -63,9 +67,6 @@ storing phasing and imputation results.}
 
 \item{gtool}{an executable program in either the current 
 working directory or somewhere in the command path.}
-
-\item{threshold}{threshold for merging genotypes from GEN probability. 
-Default 0.9.}
 }
 \value{
 1.) The filtered imputed PLINK binary files; 
