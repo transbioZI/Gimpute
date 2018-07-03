@@ -7,7 +7,7 @@
 phaseImpute2(inputPrefix, outputPrefix, prefix4final, plink, shapeit, impute2,
   gtool, windowSize = 3e+06, effectiveSize = 20000, nCore4phase = 1,
   nThread = 40, nCore4impute = 40, threshold = 0.9, nCore4gtool = 40,
-  infoScore = 0.6, outputInfoFile, impRefDIR, tmpImputeDir,
+  infoScore = 0.6, outputInfoFile, referencePanel, impRefDIR, tmpImputeDir,
   keepTmpDir = TRUE)
 }
 \arguments{
@@ -59,6 +59,9 @@ each variant. The default value is 0.6.}
 \item{outputInfoFile}{the output file of impute2 info scores consisting of 
 two columns: all imputed SNPs and their info scores.}
 
+\item{referencePanel}{a string indicating the type of imputation 
+reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").}
+
 \item{impRefDIR}{the directory where the imputation reference files 
 are located.}
 
@@ -109,7 +112,7 @@ tmpImputeDir <- "tmpImpute"
 ##             windowSize=3000000, effectiveSize=20000, 
 ##             nCore4phase=1, nThread=40, 
 ##             nCore4impute=40, nCore4gtool=40, 
-##             infoScore=0.6, outputInfoFile, 
+##             infoScore=0.6, outputInfoFile, referencePanel, 
 ##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 }
 \references{

@@ -5,8 +5,10 @@
 #' Prepare a bim-like file from the imputation reference legend file
 #' (e.g. 1000 genome project).
 
-#' @param inputFile a set of legend file from the imputation reference panel
-#' from 1000 genome projects.
+#' @param inputFile a set of legend file from the imputation reference panel.
+#' For example, 1000 genome projects.
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param outputFile the pure text file that stores the prepared PLINK BIM
 #' file alike format data.
 #' @param nCore the number of cores used for computation.
@@ -23,32 +25,43 @@
 ##' @export
 #' @import doParallel
 
-.prepareLegend2bim <- function(inputFile, outputFile, ncore=20){
+.prepareLegend2bim <- function(inputFile, referencePanel, outputFile, ncore=20){
 
-    tmpFolder <- "tmp4legend"
+    # tmpFolder <- "tmp4legend"
     system(paste0("mkdir ", tmpFolder))
     system(paste0("scp ", inputFile, " ", tmpFolder))
     setwd(tmpFolder)
     system("gunzip *.gz")
-    XnonPAR <- "ALL_1000G_phase1integrated_v3_chrX_nonPAR_impute_macGT1.legend"
-    XnonPARv2 <- "ALL_1000G_phase1integrated_v3_chr23_impute_macGT1.legend"
-    XPAR1 <- "ALL_1000G_phase1integrated_v3_chrX_PAR1_impute_macGT1.legend"
-    XPAR1v2 <- "ALL_1000G_phase1integrated_v3_chr24_impute_macGT1.legend"
-    XPAR2 <- "ALL_1000G_phase1integrated_v3_chrX_PAR2_impute_macGT1.legend"
-    XPAR2v2 <- "ALL_1000G_phase1integrated_v3_chr25_impute_macGT1.legend"
+    if (referencePanel == "1000Gphase1v3_macGT1"){ 
+        prefix <- "ALL_1000G_phase1integrated_v3_chr"
+        suffix <- "_impute_macGT1.legend"
+        XnonPAR <- paste0(prefix, "X_nonPAR", suffix)
+        XnonPARv2 <- paste0(prefix, "23", suffix)
+        XPAR1 <- paste0(prefix, "X_PAR1", suffix)
+        XPAR1v2 <- paste0(prefix, "24", suffix)
+        XPAR2 <- paste0(prefix, "X_PAR2", suffix)
+        XPAR2v2 <- paste0(prefix, "25", suffix)
+    } else if (referencePanel == "1000Gphase3"){
+        prefix <- "1000GP_Phase3_chr"
+        suffix <- ".legend"
+        XnonPAR <- paste0(prefix, "X_NONPAR", suffix)
+        XnonPARv2 <- paste0(prefix, "23", suffix)
+        XPAR1 <- paste0(prefix, "X_PAR1", suffix)
+        XPAR1v2 <- paste0(prefix, "24", suffix)
+        XPAR2 <- paste0(prefix, "X_PAR2", suffix)
+        XPAR2v2 <- paste0(prefix, "25", suffix)
+    } else { print("Wrong reference panel during alignment check!!")}
     ## change chrX.legend files and chr24 is for parallel computing
     system(paste0("mv ", XnonPAR, " ", XnonPARv2))
     system(paste0("mv ", XPAR1, " ", XPAR1v2))
     system(paste0("mv ", XPAR2, " ", XPAR2v2))
     chrslist <- as.list(seq_len(25))
     mclapply(chrslist, function(i){
-        arg1 <- paste0("awk '{print $1, $2, $3, $4}' ")
-        fileName1 <- "ALL_1000G_phase1integrated_v3_chr"
-        fileName2 <- "_impute_macGT1.legend"
+        arg1 <- paste0("awk '{print $1, $2, $3, $4}' ")  
         a2 <- paste0(" | awk '{if(length($3) == 1 && length($4) == 1) print}'")
         a3 <- paste0(" | grep 'rs' | awk '{ if (a[$1]++ == 0) print $0; }' ")
         a4 <- paste0(" | tail -n+2  > chr")
-        system(paste0(arg1, fileName1, i, fileName2, a2, a3, a4, i, ".txt"))
+        system(paste0(arg1, prefix, i, suffix, a2, a3, a4, i, ".txt"))
     }, mc.cores=ncore)
     ## add chr
     mclapply(chrslist, function(i){
@@ -59,12 +72,16 @@
     system(paste0("awk '{print ", 25, ", $0}' chr24.txt > bimChr24.txt"))
     system("cat bimChr*.txt >> chrAl.txt ")
     system("{ printf 'chr\trsID\tpos\ta0\ta1\n'; cat chrAl.txt; } > final.txt ")
+    ## only for the panel "1000Gphase3"
+    if (referencePanel == "1000Gphase3"){
+        system("mv final.txt f4.txt")  
+        system("awk '{print $1, $2}' f4.txt > final.txt") 
+        system("rm f4.txt")
+    }    
     system(paste0("mv final.txt ", outputFile))
     setwd("..")
-    system(paste0("rm -r ", tmpFolder)) ## remove the folder
+    # system(paste0("rm -r ", tmpFolder)) ## remove the folder
 }
-
-
 
 
 #' Check the alignment with the imputation reference panel
@@ -78,6 +95,8 @@
 #' @param plink an executable program in either the current working directory
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK files.
+#' @param referencePanel a string indicating the type of imputation 
+#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param bimReferenceFile the reference file used for the alignment, which is
 #' a PLINK BIM alike format file.
 #' @param out2 the prefix of the output PLINK binary files after removing SNPs
@@ -116,14 +135,25 @@
 #' @import doParallel
 
 
-checkAlign2ref <- function(plink, inputPrefix, bimReferenceFile,
+checkAlign2ref <- function(plink, inputPrefix, referencePanel, bimReferenceFile, 
                            out2, out2.snp, out3, out3.snp, out4, 
                            out4.snp, out4.snpRetained, nCore=25){
 
     bim <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
-    impRef <- read.table(file=bimReferenceFile, header=TRUE,
-                         stringsAsFactors=FALSE)
 
+    if (referencePanel == "1000Gphase3"){
+        impRefRaw <- read.table(file=bimReferenceFile, header=TRUE,
+                             stringsAsFactors=FALSE)  
+        refTmp = strsplit(impRefRaw[,2], ":", fixed = TRUE)
+        mat <- matrix(unlist(refTmp), byrow=TRUE, ncol=length(refTmp[[1]]))
+        subRef <- data.frame(rsID=mat[,1], pos=as.integer(mat[,2]), 
+                         a0=mat[,3], a1=mat[,4], stringsAsFactors=FALSE) 
+        impRef <- cbind(chr=impRefRaw[,1], subRef) 
+
+    } else { 
+        impRef <- read.table(file=bimReferenceFile, header=TRUE,
+                             stringsAsFactors=FALSE)
+    } 
     ## step 1: for the same SNP names, but with different genomic position
     interSNPs <- intersect(bim[,2], impRef[,"rsID"])
     bimSubV1 <- bim[match(interSNPs, bim[,2]), ]

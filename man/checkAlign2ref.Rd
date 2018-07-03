@@ -4,14 +4,17 @@
 \alias{checkAlign2ref}
 \title{Check the alignment with the imputation reference panel}
 \usage{
-checkAlign2ref(plink, inputPrefix, bimReferenceFile, out2, out2.snp, out3,
-  out3.snp, out4, out4.snp, out4.snpRetained, nCore = 25)
+checkAlign2ref(plink, inputPrefix, referencePanel, bimReferenceFile, out2,
+  out2.snp, out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore = 25)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory
 or somewhere in the command path.}
 
 \item{inputPrefix}{the prefix of the input PLINK files.}
+
+\item{referencePanel}{a string indicating the type of imputation 
+reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").}
 
 \item{bimReferenceFile}{the reference file used for the alignment, which is
 a PLINK BIM alike format file.}
