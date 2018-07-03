@@ -18,8 +18,15 @@ system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
 
 ## Define the directory where you place the imputation reference files 
-impRefDIRmain <- "/data/noether/datatmp-nobackup/tb2refDatabase/imputeRef"
-impRefDIR <- paste0(impRefDIRmain, "/1000Gphase1/")
+referencePanel <- "1000Gphase1v3_macGT1" ## indicator
+impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
+impRefDIR <- impRefDIR1kGp1v3
+
+ 
+referencePanel <- "1000Gphase3" ## indicator 
+impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
+impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
+
 
 ## Genotyping chip annotation file 
 chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
@@ -166,9 +173,12 @@ setwd("./3-checkAlign/")
 renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
                  outputPrefix="3_1_QCdata", action="move")
 
+
 inputFile <- paste0(impRefDIR,"*.legend.gz")  
 bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
-.prepareLegend2bim(inputFile, outputFile=bimReferenceFile, ncore=25) 
+
+.prepareLegend2bim(inputFile, referencePanel, 
+                   outputFile=bimReferenceFile, ncore=25) 
 inputPrefix <- "3_1_QCdata" 
 out2.snp <- "3_2_snpSameNameDiffPos"
 out2 <- "3_2_removedSnpSameNameDiffPos"
@@ -177,8 +187,9 @@ out3.snp <- "3_3_snpMissPos"
 out4 <- "3_4_removedSnpDiffAlleles"
 out4.snp <- "3_4_snpDiffAlleles"
 out4.snpRetained <- "3_4_snpImpRefAlleles"
-checkAlign2ref(plink, inputPrefix, bimReferenceFile, out2, out2.snp, 
-               out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore=25)
+checkAlign2ref(plink, inputPrefix, referencePanel, bimReferenceFile, 
+               out2, out2.snp, out3, out3.snp, 
+               out4, out4.snp, out4.snpRetained, nCore=25)
 setwd("..") 
 ############################################################
 ### code chunk number 4: Imputation
@@ -195,8 +206,7 @@ system(paste0("cp ./3-checkAlign/",
 ## remove Monomorphic SNPs
 setwd("4-imputation")
 removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef, 
-               outputPrefix, outputSNPfile=outputMonoSNPfile)
- 
+               outputPrefix, outputSNPfile=outputMonoSNPfile) 
 # step 2 
 #########################################################################
 ######################################################################### 
@@ -206,14 +216,27 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "infoScore.txt"
-tmpImputeDir <- "tmpImpute"
+tmpImputeDir <- "tmpImpute1.4p3Impute2"
 phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             plink, shapeit, impute2, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore4phase=1, nThread=40, 
-            nCore4impute=40, nCore4gtool=40, 
-            infoScore=0.6, outputInfoFile, 
-            impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+            nCore4impute=40, threshold=0.9, 
+            nCore4gtool=40, infoScore=0.6, outputInfoFile, 
+            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+
+
+## alternatively
+tmpImputeDir <- "tmpImpute1.4p3Impute4"
+phaseImpute4(inputPrefix, outputPrefix, prefix4final,
+            plink, shapeit, impute4, qctool, gtool, 
+            windowSize=3000000, effectiveSize=20000, 
+            nCore4phase=1, nThread=40, 
+            nCore4impute=40, threshold=0.9, 
+            nCore4gtool=40, infoScore=0.6, outputInfoFile, 
+            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+ 
+
 ##################################################### After imputation
 ## step 2 
 ## Final imputed results, including bad imputed genotypes.
