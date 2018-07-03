@@ -116,11 +116,12 @@ This annotation file is particularly important for strand checking and genomic i
     + If the snp name of your study genotype data starts with "rs", then the chip type "rsIDstudy" is used; The annotation file should be prepared in advance and must consist of at least the following column names : rsIDstudy, chr, pos, strand. Illumina chip is often specified in this format. The column "strand" must only have two kinds of values "-" and "+". Variants with all other values are excluded.
 
 
-* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from [1000 genome project phase1v3](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz) are used as an example in our package. 
+* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from [1000 genome project phase1v3](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz) are the default panel used in our package. 1000 Genomes Phase 3 is also an alternative reference panel. A string indicating the type of imputation reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3"). This should be defined before running pipeline. 
 
 ```{r} 
 ## Define the directory where you place the imputation reference files 
 impRefDIR <- "/home/imputeRef/1000Gphase1/"
+referencePanel <- "1000Gphase1v3_macGT1" ## indicator
 ```  
 
 # Running pipeline 
