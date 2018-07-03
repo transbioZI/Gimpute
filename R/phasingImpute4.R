@@ -104,23 +104,55 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
             ## Input: haplotypes from SHAPEIT phasing (method B)
             GWAS_HAPS_FILE <- paste0(phaseDIR, "chr", i, ".haps ") 
             GWAS_SAMP_FILE <- paste0(phaseDIR, "chr", i, ".sample ") 
-            ## reference data files 
+
+            ## >>> ref panel  
             GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
-                                  "_combined_b37.txt ")
+                                  "_combined_b37.txt ") 
+            GENMAP.chrXPAR1 <- paste0(impRefDIR, "genetic_map_chr", 
+                                  "X_PAR1_combined_b37.txt ")
+            GENMAP.chrXPAR2 <- paste0(impRefDIR, "genetic_map_chr", 
+                                  "X_PAR2_combined_b37.txt ") 
             if (referencePanel == "1000Gphase1v3_macGT1"){ 
+                ## autosome
                 HAPS_FILE <- paste0(impRefDIR, 
                                     "ALL_1000G_phase1integrated_v3_chr", i, 
                                     "_impute_macGT1.hap.gz ") 
                 LEGEND_FILE <- paste0(impRefDIR, 
                                       "ALL_1000G_phase1integrated_v3_chr", i, 
-                                      "_impute_macGT1.legend.gz ")
+                                      "_impute_macGT1.legend.gz ")  
+                ## .chrXPAR1  
+                HAPS.chrXPAR1 <- paste0(impRefDIR, 
+                                    "ALL_1000G_phase1integrated_v3_chr",
+                                    "X_PAR1_impute_macGT1.hap.gz ") 
+                LEGEND.chrXPAR1  <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", 
+                                      "X_PAR1_impute_macGT1.legend.gz ") 
+                ## .chrXPAR2
+                HAPS.chrXPAR2  <- paste0(impRefDIR, 
+                                    "ALL_1000G_phase1integrated_v3_chr", 
+                                    "X_PAR2_impute_macGT1.hap.gz ") 
+                LEGEND.chrXPAR2  <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", 
+                                      "X_PAR2_impute_macGT1.legend.gz ") 
+
             } else if (referencePanel == "1000Gphase3"){
                 HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
                                     ".hap.gz ") 
+                ## autosome
                 LEGEND_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
                                       ".legend.gz ")
-            } 
-
+                ## .chrXPAR1  
+                HAPS.chrXPAR1 <- paste0(impRefDIR, 
+                                        "1000GP_Phase3_chrX_PAR1.hap.gz ") 
+                LEGEND.chrXPAR1 <- paste0(impRefDIR, 
+                                          "1000GP_Phase3_chrX_PAR1.legend.gz ") 
+                ## .chrXPAR2
+                HAPS.chrXPAR2 <- paste0(impRefDIR, 
+                                        "1000GP_Phase3_chrX_PAR2.hap.gz ") 
+                LEGEND.chrXPAR2 <- paste0(impRefDIR, 
+                                          "1000GP_Phase3_chrX_PAR2.legend.gz ") 
+            } else { print("Wrong reference panel during imputation!!")}
+            ## <<< ref panel  
             ## Output file GEN format   
             OUTPUT_FILE <- paste0(imputedDIR, prefix4eachChr, i, 
                                   ".pos", chunkSTART, 
@@ -139,13 +171,25 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
                 " -int ", chunkSTART, " ", chunkEND, " \ ", 
                 " -buffer 1000  \ ",
                 " -o ", OUTPUT_FILE, " \ " ))
-            } else if (is.element(i, c("X_PAR1", "X_PAR2"))){  
+            } else if (i == "X_PAR1") {  
                 ## impute for chrX PAR >> with an additional flag: --Xpar.
                 system(paste0(impute4,   
                 " -no_maf_align \ ",   
                 " -m ", GENMAP_FILE, " \ ",  
-                " -h ", HAPS_FILE, " \ ", 
-                " -l ", LEGEND_FILE, " \ ", 
+                " -h ", HAPS.chrXPAR1, " \ ", 
+                " -l ", LEGEND.chrXPAR1, " \ ", 
+                " -g ", GWAS_HAPS_FILE, " \ ", 
+                " -Ne ", effectiveSize, " \ ", 
+                " -int ", chunkSTART, " ", chunkEND, " \ ", 
+                " -buffer 1000  \ ",
+                " -o ", OUTPUT_FILE, " \ " ))
+            } else if (i == "X_PAR2") {  
+                ## impute for chrX PAR >> with an additional flag: --Xpar.
+                system(paste0(impute4,   
+                " -no_maf_align \ ",   
+                " -m ", GENMAP_FILE, " \ ",  
+                " -h ", HAPS.chrXPAR2, " \ ", 
+                " -l ", LEGEND.chrXPAR2, " \ ", 
                 " -g ", GWAS_HAPS_FILE, " \ ", 
                 " -Ne ", effectiveSize, " \ ", 
                 " -int ", chunkSTART, " ", chunkEND, " \ ", 
@@ -317,6 +361,11 @@ phaseImpute4 <- function(inputPrefix, outputPrefix, prefix4final,
     ## step 2.2
     chunkPrefix <- "chunks_chr" 
     chrs <- c(currentChr, par1, par2)    
+    if (is.element(23, chrs) == TRUE) {
+        chrs <- setdiff(chrs, 23) ## chrX is not available for impute4.
+    } else {
+        chrs <- chrs
+    }
     chunk4eachChr(inputPrefix=prefix4eachChr, 
                   outputPrefix=chunkPrefix, chrs, windowSize) 
 

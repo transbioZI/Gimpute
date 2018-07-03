@@ -324,30 +324,81 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
         GWASDATA_BED <- paste0(dataDIR, prefix4eachChr, i, ".bed ") 
         GWASDATA_BIM <- paste0(dataDIR, prefix4eachChr, i, ".bim ")
         GWASDATA_FAM <- paste0(dataDIR, prefix4eachChr, i, ".fam ")
-        # reference data files
+        ## >>> ref panel  
         GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
                               "_combined_b37.txt ")
-        if (referencePanel == "1000Gphase1v3_macGT1"){ 
+        GENMAP.chrXnonPAR <- paste0(impRefDIR, "genetic_map_chr",
+                              "X_nonPAR_combined_b37.txt ")
+        GENMAP.chrXPAR1 <- paste0(impRefDIR, "genetic_map_chr", 
+                              "X_PAR1_combined_b37.txt ")
+        GENMAP.chrXPAR2 <- paste0(impRefDIR, "genetic_map_chr", 
+                              "X_PAR2_combined_b37.txt ")
+
+        if (referencePanel == "1000Gphase1v3_macGT1"){  
+            ## autosome
             HAPS_FILE <- paste0(impRefDIR, 
                                 "ALL_1000G_phase1integrated_v3_chr", i, 
                                 "_impute_macGT1.hap.gz ") 
             LEGEND_FILE <- paste0(impRefDIR, 
                                   "ALL_1000G_phase1integrated_v3_chr", i, 
-                                  "_impute_macGT1.legend.gz ")
+                                  "_impute_macGT1.legend.gz ") 
             SAMPLE_FILE <- paste0(impRefDIR, 
                                   "ALL_1000G_phase1integrated_v3.sample ") 
+            ## chrX_nonPAR
+            HAPS.chrXnonPAR <- paste0(impRefDIR, 
+                                      "ALL_1000G_phase1integrated_v3_chr", 
+                                      "X_nonPAR_impute_macGT1.hap.gz ") 
+            LEGEND.chrXnonPAR <- paste0(impRefDIR, 
+                                        "ALL_1000G_phase1integrated_v3_chr", 
+                                        "X_nonPAR_impute_macGT1.legend.gz ") 
+            ## .chrXPAR1  
+            HAPS.chrXPAR1 <- paste0(impRefDIR, 
+                                "ALL_1000G_phase1integrated_v3_chr",
+                                "X_PAR1_impute_macGT1.hap.gz ") 
+            LEGEND.chrXPAR1  <- paste0(impRefDIR, 
+                                  "ALL_1000G_phase1integrated_v3_chr", 
+                                  "X_PAR1_impute_macGT1.legend.gz ") 
+            ## .chrXPAR2
+            HAPS.chrXPAR2  <- paste0(impRefDIR, 
+                                "ALL_1000G_phase1integrated_v3_chr", 
+                                "X_PAR2_impute_macGT1.hap.gz ") 
+            LEGEND.chrXPAR2  <- paste0(impRefDIR, 
+                                  "ALL_1000G_phase1integrated_v3_chr", 
+                                  "X_PAR2_impute_macGT1.legend.gz ") 
+
         } else if (referencePanel == "1000Gphase3"){
-            HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, ".hap.gz ") 
+            HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
+                                ".hap.gz ") 
+            ## autosome
             LEGEND_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
                                   ".legend.gz ")
             SAMPLE_FILE <- paste0(impRefDIR, "1000GP_Phase3.sample ")
-        }    
+
+            ## chrX_nonPAR
+            HAPS.chrXnonPAR <- paste0(impRefDIR, 
+                                      "1000GP_Phase3_chrX_NONPAR.hap.gz ") 
+            LEGEND.chrXnonPAR <- paste0(impRefDIR, 
+                                        "1000GP_Phase3_chr", 
+                                        "X_NONPAR.legend.gz ") 
+            ## .chrXPAR1  
+            HAPS.chrXPAR1 <- paste0(impRefDIR, 
+                                    "1000GP_Phase3_chrX_PAR1.hap.gz ") 
+            LEGEND.chrXPAR1 <- paste0(impRefDIR, 
+                                      "1000GP_Phase3_chrX_PAR1.legend.gz ") 
+            ## .chrXPAR2
+            HAPS.chrXPAR2 <- paste0(impRefDIR, 
+                                    "1000GP_Phase3_chrX_PAR2.hap.gz ") 
+            LEGEND.chrXPAR2 <- paste0(impRefDIR, 
+                                      "1000GP_Phase3_chrX_PAR2.legend.gz ") 
+        } else { print("Wrong reference panel during phasing!!")}
+        ## <<< ref panel 
         # main output file
         OUTPUT_HAPS <- paste0(phaseDIR, "chr", i, ".haps ")     
         OUTPUT_SAMPLE <- paste0(phaseDIR, "chr", i, ".sample ")     
         OUTPUT_LOG <- paste0(phaseDIR, "chr", i, ".log ")    
 
-        if (i != 23){  ## prePhasing for the autosome
+        autosomeCode = seq_len(22)
+        if (is.element(i, autosomeCode)) { ## prePhasing for the autosome
             system(paste0(shapeit, 
             " --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
             " --input-map ", GENMAP_FILE, " \ ",  
@@ -356,12 +407,30 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             "--effective-size ", effectiveSize, " \ ", 
             "--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
             "--output-log ", OUTPUT_LOG) )
+        } else if (i == "X_PAR1"){
+            system(paste0(shapeit, 
+            " --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
+            " --input-map ", GENMAP.chrXPAR1, " \ ",  
+            "--input-ref ", HAPS.chrXPAR1, LEGEND.chrXPAR1, SAMPLE_FILE, " \ ", 
+            "--thread ", nThread, " \ ", 
+            "--effective-size ", effectiveSize, " \ ", 
+            "--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
+            "--output-log ", OUTPUT_LOG) )       
+        } else if (i == "X_PAR2"){
+            system(paste0(shapeit, 
+            " --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
+            " --input-map ", GENMAP.chrXPAR2, " \ ",  
+            "--input-ref ", HAPS.chrXPAR2, LEGEND.chrXPAR2, SAMPLE_FILE, " \ ", 
+            "--thread ", nThread, " \ ", 
+            "--effective-size ", effectiveSize, " \ ", 
+            "--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
+            "--output-log ", OUTPUT_LOG) )       
         } else if (i == 23){
             system(paste0(shapeit, 
             " --input-bed ", GWASDATA_BED, GWASDATA_BIM, GWASDATA_FAM, " \ ", 
-            " --input-map ", GENMAP_FILE, " \ ", 
-            " --chrX \ ", 
-            "--input-ref ", HAPS_FILE, LEGEND_FILE, SAMPLE_FILE, " \ ", 
+            " --input-map ", GENMAP.chrXnonPAR, " \ ", 
+            " --chrX \ ",  ## special case
+            "--input-ref ", HAPS.chrXnonPAR, LEGEND.chrXnonPAR, SAMPLE_FILE, " \ ", 
             "--thread ", nThread, " \ ", 
             "--effective-size ", effectiveSize, " \ ", 
             "--output-max ", OUTPUT_HAPS, OUTPUT_SAMPLE, " \ ", 
@@ -403,7 +472,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' passed for prephasing using SHAPEIT.
 #' --chrX flag, specifically for chrX imputation'
 #' @return The imputed files for all chunks from given chromosomes.  
-##' @export 
+#' @export 
 #' @import doParallel  
 
 #' @author Junfang Chen 
@@ -427,7 +496,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             ## Input: haplotypes from SHAPEIT phasing (method B)
             GWAS_HAPS_FILE <- paste0(phaseDIR, "chr", i, ".haps ") 
             GWAS_SAMP_FILE <- paste0(phaseDIR, "chr", i, ".sample ") 
-            ## reference data files 
+
+            ## >>> ref panel  
             GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
                                   "_combined_b37.txt ")
             GENMAP.chrXnonPAR <- paste0(impRefDIR, "genetic_map_chr",
@@ -437,10 +507,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             GENMAP.chrXPAR2 <- paste0(impRefDIR, "genetic_map_chr", 
                                   "X_PAR2_combined_b37.txt ")
  
-            if (referencePanel == "1000Gphase1v3_macGT1"){ 
-                SAMPLE_FILE <- paste0(impRefDIR, 
-                                      "ALL_1000G_phase1integrated_v3.sample ") 
-
+            if (referencePanel == "1000Gphase1v3_macGT1"){  
+                ## autosome
                 HAPS_FILE <- paste0(impRefDIR, 
                                     "ALL_1000G_phase1integrated_v3_chr", i, 
                                     "_impute_macGT1.hap.gz ") 
@@ -472,10 +540,9 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             } else if (referencePanel == "1000Gphase3"){
                 HAPS_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
                                     ".hap.gz ") 
+                ## autosome
                 LEGEND_FILE <- paste0(impRefDIR, "1000GP_Phase3_chr", i, 
-                                      ".legend.gz ")
-                SAMPLE_FILE <- paste0(impRefDIR, "1000GP_Phase3.sample ")
-
+                                      ".legend.gz ") 
                 ## chrX_nonPAR
                 HAPS.chrXnonPAR <- paste0(impRefDIR, 
                                           "1000GP_Phase3_chrX_NONPAR.hap.gz ") 
@@ -492,8 +559,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                                         "1000GP_Phase3_chrX_PAR2.hap.gz ") 
                 LEGEND.chrXPAR2 <- paste0(impRefDIR, 
                                           "1000GP_Phase3_chrX_PAR2.legend.gz ") 
-            } 
-
+            } else { print("Wrong reference panel during imputation!!")}
+            ## <<< ref panel 
 
             ## main output file    
             OUTPUT_FILE <- paste0(imputedDIR, prefix4eachChr, i, 
