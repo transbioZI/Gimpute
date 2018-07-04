@@ -84,7 +84,7 @@ metaDataFile <- system.file("extdata", "1_01_metaData.txt",
                             package="Gimpute")
 excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
                                     package="Gimpute")
-removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+removedSampIDFile <- system.file("extdata", "excludedSampIDsV1.txt", 
                                  package="Gimpute")
 chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 ancestrySymbol <- "EUR"

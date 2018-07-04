@@ -32,7 +32,7 @@ bimFile <- system.file("extdata", "controlData.bim", package="Gimpute")
 famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 inputPrefix <- "controlData" ## Specify the input PLINK file prefix
-removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+removedSampIDFile <- system.file("extdata", "excludedSampIDsV1.txt", 
                                  package="Gimpute")
 outputPrefix <- "1_02_removedExclInst" 
 ## Not run: Requires an executable program PLINK, e.g.
