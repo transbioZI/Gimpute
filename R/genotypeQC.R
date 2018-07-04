@@ -475,12 +475,13 @@ removedInstFhet <- function(plink, Fhet, inputPrefix, outputPrefix){
 #' @param outputPrefix the prefix of the output PLINK binary files.
 
 #' @return The output PLINK binary files.
-#' @details By default, if parental IDs are provided for a sample, 
+#' @details Do make sure that all your family relationships are correct 
+#' in your input data before applying this function. By default, 
+#' if parental IDs are provided for a sample, 
 #' they are not treated as a founder even if neither parent is 
 #' in the dataset.  With no modifiers, --make-founders clears 
 #' both parental IDs whenever at least one parent is not in the dataset, 
-#' and the affected samples are now considered founders. 
-
+#' and the affected samples are now considered as founders. 
 
 
 #' @export  
@@ -504,8 +505,32 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
     system(paste0(plink, " --bfile ", inputPrefix, 
            " --make-founders require-2-missing --make-bed --out ", 
            outputPrefix)) 
- 
 }
+
+
+
+#' Remove any Mendel inconsistencies
+#'
+#' @description
+#' Remove any Mendel inconsistencies 
+
+#' @param plink an executable program in either the current working directory 
+#' or somewhere in the command path.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param outputPrefix the prefix of the output PLINK binary files.
+
+#' @return The output PLINK binary files.
+#' @details  
+ 
+
+removedMendelErr <- function(plink, inputPrefix, outputPrefix){ 
+
+    # Remove the parent IDs which do not belong to subjects
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --me 1 1 --set-me-missing --make-bed --out ", 
+           outputPrefix)) 
+}
+
 
 ##########################################   
 ##########################################  
