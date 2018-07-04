@@ -175,10 +175,14 @@ renamePlinkBFile(inputPrefix="2_13_removedOutliers",
 
 
 inputFile <- paste0(impRefDIR,"*.legend.gz")  
-bimReferenceFile <- paste0(impRefDIR, "bimImputeRef.txt")
+## To recode the intermediate disk usage >> keep in the same directory.
+bimReferenceFile <- "bimImputeRef.txt"
 
-.prepareLegend2bim(inputFile, referencePanel, 
-                   outputFile=bimReferenceFile, ncore=25) 
+## If not available  >>> 
+# .prepareLegend2bim(inputFile, referencePanel, 
+#                    outputFile=bimReferenceFile, ncore=25) 
+## If not available  <<< 
+
 inputPrefix <- "3_1_QCdata" 
 out2.snp <- "3_2_snpSameNameDiffPos"
 out2 <- "3_2_removedSnpSameNameDiffPos"
@@ -236,6 +240,19 @@ phaseImpute4(inputPrefix, outputPrefix, prefix4final,
             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
  
+  21   23 
+ 270 2660 
+25  rs2857322 0 2688959 G A
+25  rs311149  0 2689534 T A
+25  rs311150  0 2689575 T C
+25  rs311151  0 2689886 C A
+25  rs2259750 0 2692710 G A
+25  rs311158  0 2693175 C 
+
+grep -w rs311149 bimImputeRef.txt
+grep -w rs2259750 bimImputeRef.txt
+grep -w rs311150 bimImputeRef.txt
+grep -w rs311158 bimImputeRef.txt
 
 ##################################################### After imputation
 ## step 2 
