@@ -23,9 +23,9 @@ impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
 impRefDIR <- impRefDIR1kGp1v3
 
  
-referencePanel <- "1000Gphase3" ## indicator 
-impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
-impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
+# referencePanel <- "1000Gphase3" ## indicator 
+# impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
+# impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
 
 
 ## Genotyping chip annotation file 
@@ -70,9 +70,9 @@ library(doParallel)
 ## step 0
 ## Load PLINK binary files and additional files from Gimpute.
 setwd("./1-genoUpdate/") 
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "dataChr21.bed", package="Gimpute")
+bimFile <- system.file("extdata", "dataChr21.bim", package="Gimpute") 
+famFile <- system.file("extdata", "dataChr21.fam", package="Gimpute")
 system(paste0("scp ", bedFile, " ."))   
 system(paste0("scp ", bimFile, " ."))   
 system(paste0("scp ", famFile, " ."))   
@@ -92,7 +92,7 @@ system(paste0("scp ", metadataFile, " ."))
  
 ############################################################ 
 ## pipeline function
-inputPrefix <- "controlData"
+inputPrefix <- "dataChr21"
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
@@ -179,8 +179,8 @@ inputFile <- paste0(impRefDIR,"*.legend.gz")
 bimReferenceFile <- "bimImputeRef.txt"
 
 ## If not available  >>> 
-# .prepareLegend2bim(inputFile, referencePanel, 
-#                    outputFile=bimReferenceFile, ncore=25) 
+.prepareLegend2bim(inputFile, referencePanel, 
+                   outputFile=bimReferenceFile, ncore=25) 
 ## If not available  <<< 
 
 inputPrefix <- "3_1_QCdata" 
@@ -230,29 +230,16 @@ phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
-## alternatively
-tmpImputeDir <- "tmpImpute1.4p3Impute4"
-phaseImpute4(inputPrefix, outputPrefix, prefix4final,
-            plink, shapeit, impute4, qctool, gtool, 
-            windowSize=3000000, effectiveSize=20000, 
-            nCore4phase=1, nThread=40, 
-            nCore4impute=40, threshold=0.9, 
-            nCore4gtool=40, infoScore=0.6, outputInfoFile, 
-            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
- 
-  21   23 
- 270 2660 
-25  rs2857322 0 2688959 G A
-25  rs311149  0 2689534 T A
-25  rs311150  0 2689575 T C
-25  rs311151  0 2689886 C A
-25  rs2259750 0 2692710 G A
-25  rs311158  0 2693175 C 
-
-grep -w rs311149 bimImputeRef.txt
-grep -w rs2259750 bimImputeRef.txt
-grep -w rs311150 bimImputeRef.txt
-grep -w rs311158 bimImputeRef.txt
+# ## alternatively
+# tmpImputeDir <- "tmpImpute1.4p3Impute4"
+# phaseImpute4(inputPrefix, outputPrefix, prefix4final,
+#             plink, shapeit, impute4, qctool, gtool, 
+#             windowSize=3000000, effectiveSize=20000, 
+#             nCore4phase=1, nThread=40, 
+#             nCore4impute=40, threshold=0.9, 
+#             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
+#             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+  
 
 ##################################################### After imputation
 ## step 2 
@@ -332,97 +319,97 @@ setwd("..")
   
 
 
-# ############################################################
-# ### code chunk number 5: Data subset and expansion 
-# ############################################################
-# inputPrefix <- "4_6_removedSnpMissPostImp"
-# inputOriginalQCed <- "3_1_QCdata"
-# reducedToSpecificfn <- "5_1_reducedToSpecific"
-# extSpecificDiffAllelefn <- "5_2_extSpecificDiffAllele"
-# extSpecificMissPosfn <- "5_3_extSpecificMissPos"
-# extSpecificDiffPosfn <- "5_4_extSpecificDiffPos" 
-# dir5 <- "./5-reductAndExpand/"
-# ## imputed dataset
-# system(paste0("scp ./4-imputation/", inputPrefix, ".* ", dir5)) 
-# ## original but QC-ed dataset
-# system(paste0("scp ./3-checkAlign/", inputOriginalQCed, ".* ", dir5))
+############################################################
+### code chunk number 5: Data subset and expansion 
+############################################################
+inputPrefix <- "4_6_removedSnpMissPostImp"
+inputOriginalQCed <- "3_1_QCdata"
+reducedToSpecificfn <- "5_1_reducedToSpecific"
+extSpecificDiffAllelefn <- "5_2_extSpecificDiffAllele"
+extSpecificMissPosfn <- "5_3_extSpecificMissPos"
+extSpecificDiffPosfn <- "5_4_extSpecificDiffPos" 
+dir5 <- "./5-reductAndExpand/"
+## imputed dataset
+system(paste0("scp ./4-imputation/", inputPrefix, ".* ", dir5)) 
+## original but QC-ed dataset
+system(paste0("scp ./3-checkAlign/", inputOriginalQCed, ".* ", dir5))
 
-# system(paste0("scp ./3-checkAlign/3_4_snpImpRefAlleles.txt ", dir5))
-# system(paste0("scp ./3-checkAlign/3_4_snpDiffAlleles.txt ", dir5))
-# system(paste0("scp ./3-checkAlign/3_3_snpMissPos.txt ", dir5))
-# system(paste0("scp ./3-checkAlign/3_2_snpSameNameDiffPos.txt ", dir5))
+system(paste0("scp ./3-checkAlign/3_4_snpImpRefAlleles.txt ", dir5))
+system(paste0("scp ./3-checkAlign/3_4_snpDiffAlleles.txt ", dir5))
+system(paste0("scp ./3-checkAlign/3_3_snpMissPos.txt ", dir5))
+system(paste0("scp ./3-checkAlign/3_2_snpSameNameDiffPos.txt ", dir5))
 
-# setwd("5-reductAndExpand/")
-# # 1. Reduce the imputed dataset to the SNPs before imputation. 
-# system(paste0(plink, " --bfile ", inputPrefix, 
-#        " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", 
-#        reducedToSpecificfn)) 
+setwd("5-reductAndExpand/")
+# 1. Reduce the imputed dataset to the SNPs before imputation. 
+system(paste0(plink, " --bfile ", inputPrefix, 
+       " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", 
+       reducedToSpecificfn)) 
 
-# ## 2. Add the SNPs with different alleles with their values 
-# ## from the dataset before removing SNPs. 
-# if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){ 
-#      renamePlinkBFile(inputPrefix=reducedToSpecificfn, 
-#                       outputPrefix=extSpecificDiffAllelefn, action="copy")   
-# } else { 
-#     system(paste0(plink, " --bfile ", inputOriginalQCed, 
-#            " --extract 3_4_snpDiffAlleles.txt --make-bed --out tmp")) 
-#     system(paste0(plink, " --bfile ", reducedToSpecificfn, 
-#            " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
-#            extSpecificDiffAllelefn)) 
-#     system("rm tmp.*")
-# } 
+## 2. Add the SNPs with different alleles with their values 
+## from the dataset before removing SNPs. 
+if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){ 
+     renamePlinkBFile(inputPrefix=reducedToSpecificfn, 
+                      outputPrefix=extSpecificDiffAllelefn, action="copy")   
+} else { 
+    system(paste0(plink, " --bfile ", inputOriginalQCed, 
+           " --extract 3_4_snpDiffAlleles.txt --make-bed --out tmp")) 
+    system(paste0(plink, " --bfile ", reducedToSpecificfn, 
+           " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
+           extSpecificDiffAllelefn)) 
+    system("rm tmp.*")
+} 
       
 
-# ## 3. Add the SNPs with missing positions with their values 
-# ## from the dataset before removing SNPs. 
-# if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){  
-#     renamePlinkBFile(inputPrefix=extSpecificDiffAllelefn, 
-#                      outputPrefix=extSpecificMissPosfn, action="copy")  
-# } else {
-#     system(paste0(plink, " --bfile ", inputOriginalQCed, 
-#            " --extract 3_3_snpMissPos.txt --make-bed --out tmp")) 
-#     system(paste0(plink, " --bfile ", extSpecificDiffAllelefn, 
-#            " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
-#            extSpecificMissPosfn)) 
-#     system("rm tmp.*")
-# }
+## 3. Add the SNPs with missing positions with their values 
+## from the dataset before removing SNPs. 
+if ( file.size(paste0("3_3_snpMissPos.txt")) == 0 ){  
+    renamePlinkBFile(inputPrefix=extSpecificDiffAllelefn, 
+                     outputPrefix=extSpecificMissPosfn, action="copy")  
+} else {
+    system(paste0(plink, " --bfile ", inputOriginalQCed, 
+           " --extract 3_3_snpMissPos.txt --make-bed --out tmp")) 
+    system(paste0(plink, " --bfile ", extSpecificDiffAllelefn, 
+           " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
+           extSpecificMissPosfn)) 
+    system("rm tmp.*")
+}
       
-# ## 4. Add the SNPs with different positions by their values 
-# ## from the dataset before removing SNPs. 
-# if ( file.size(paste0("3_2_snpSameNameDiffPos.txt")) == 0 ){  
-#     renamePlinkBFile(inputPrefix=extSpecificMissPosfn, 
-#                      outputPrefix=extSpecificDiffPosfn, action="copy") 
-# } else {
-#     system(paste0(plink, " --bfile ", inputOriginalQCed, 
-#            " --extract 3_2_snpSameNameDiffPos.txt --make-bed --out tmp")) 
-#     system(paste0(plink, " --bfile ", extSpecificMissPosfn, 
-#            " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
-#            extSpecificDiffPosfn)) 
-#     system("rm tmp.*")
-# }
+## 4. Add the SNPs with different positions by their values 
+## from the dataset before removing SNPs. 
+if ( file.size(paste0("3_2_snpSameNameDiffPos.txt")) == 0 ){  
+    renamePlinkBFile(inputPrefix=extSpecificMissPosfn, 
+                     outputPrefix=extSpecificDiffPosfn, action="copy") 
+} else {
+    system(paste0(plink, " --bfile ", inputOriginalQCed, 
+           " --extract 3_2_snpSameNameDiffPos.txt --make-bed --out tmp")) 
+    system(paste0(plink, " --bfile ", extSpecificMissPosfn, 
+           " --bmerge  tmp.bed tmp.bim tmp.fam --make-bed --out ", 
+           extSpecificDiffPosfn)) 
+    system("rm tmp.*")
+}
  
 
-# system(paste0("rm ", inputPrefix, "* ", inputOriginalQCed, "*"))  
-# system(paste0("rm  *.txt *.log")) 
-# setwd("..")
+system(paste0("rm ", inputPrefix, "* ", inputOriginalQCed, "*"))  
+system(paste0("rm  *.txt *.log")) 
+setwd("..")
 
-# ############################################################
-# ### code chunk number 6: Final result
-# ############################################################
+############################################################
+### code chunk number 6: Final result
+############################################################
 
-# dir6 <- "./6-finalResults/"
-# system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ", dir6))
-# system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ", dir6))  
-# system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ", dir6))
-# setwd(dir6)
-# renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
-#                  outputPrefix="imputedSnpsDataset", action="move")
-# renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.", 
-#                  outputPrefix="specificSnpsDataset", action="move")
+dir6 <- "./6-finalResults/"
+system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ", dir6))
+system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ", dir6))  
+system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ", dir6))
+setwd(dir6)
+renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
+                 outputPrefix="imputedSnpsDataset", action="move")
+renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.", 
+                 outputPrefix="specificSnpsDataset", action="move")
 
-# ############################################################
-# ### code chunk number 6: Extending pipeline
-# ############################################################
+############################################################
+### code chunk number 6: Extending pipeline
+############################################################
 
 
 ############################################################
@@ -438,8 +425,8 @@ setwd("..")
 # fastaFile <- paste0(mainRefGenipe, "imputeReference/hg19/hg19.fasta")
 
 # ## Impute genotypes using Genipe
-# chrs <- 22
-# inputPrefix <- "controlData"
+# chrs <- 21
+# inputPrefix <- "dataChr21"
 # thread4impute2 <- 20 ## tune by yourself
 # thread4shapeit <- 30
 # segmentSize <- 3000000
@@ -448,7 +435,7 @@ setwd("..")
 
 # ## merge chunked genomic imputed results
 # ## example
-# chr <- 2 
+# chr <- 21 
 # inputImpute2 <- "chr2.33000001_36000000.impute2"
 # probability <- 0.9
 # completionRate <- 0.98
