@@ -318,6 +318,8 @@ outputHetSNPfile <- "2_02_snpHHfreqAll.txt"
 #                 outputRetainSubjectFile, outputHetSNPfile) 
 ```
 
+These two steps are automatically skipped if you are working on the autosomal data.
+
 #### Using pipeline function
 ```{r} 
 inputPrefix <- "2_02_removedInstHetX"
