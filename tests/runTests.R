@@ -162,7 +162,7 @@ plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
 
 
 ## remove outliers 
-cutoff <-  c(-0.2, 0.18)
+cutoff <-  c(-0.4, 0.2)
 cutoffSign <- "greater" ## not used if cutoff == NULL, and with two values 
 inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPC4outlierFile <- "2_13_eigenval4outliers.txt"
