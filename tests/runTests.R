@@ -17,15 +17,15 @@ system("mkdir 4-imputation")
 system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
 
-## Define the directory where you place the imputation reference files 
-referencePanel <- "1000Gphase1v3_macGT1" ## indicator
-impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
-impRefDIR <- impRefDIR1kGp1v3
+# ## Define the directory where you place the imputation reference files 
+# referencePanel <- "1000Gphase1v3_macGT1" ## indicator
+# impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
+# impRefDIR <- impRefDIR1kGp1v3
 
  
-# referencePanel <- "1000Gphase3" ## indicator 
-# impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
-# impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
+referencePanel <- "1000Gphase3" ## indicator 
+impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
+impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
 
 
 ## Genotyping chip annotation file 
@@ -153,9 +153,17 @@ outputPCplotFile <- "2_13_eigenvalAfterQC.png"
 nThread <- 20
 plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
 
+
+############################################################
+
+## Run the following code, only after detecting the potential 
+## PCA outliers. Otherwise, set cutoff as "NULL"
+############################################################
+
+
 ## remove outliers 
-cutoff <-  NULL 
-cutoffSign <- "greater" ## not used if cutoff == NULL 
+cutoff <-  c(-0.2, 0.18)
+cutoffSign <- "greater" ## not used if cutoff == NULL, and with two values 
 inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPC4outlierFile <- "2_13_eigenval4outliers.txt"
 outputPCplotFile <- "2_13_removedOutliers.png"
@@ -220,25 +228,25 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "infoScore.txt"
-tmpImputeDir <- "tmpImpute2"
-phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-            plink, shapeit, impute2, gtool, 
-            windowSize=3000000, effectiveSize=20000, 
-            nCore4phase=1, nThread=40, 
-            nCore4impute=40, threshold=0.9, 
-            nCore4gtool=40, infoScore=0.6, outputInfoFile, 
-            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
-
-
-# ## alternatively
-# tmpImputeDir <- "tmpImpute4"
-# phaseImpute4(inputPrefix, outputPrefix, prefix4final,
-#             plink, shapeit, impute4, qctool, gtool, 
+# tmpImputeDir <- "tmpImpute2"
+# phaseImpute2(inputPrefix, outputPrefix, prefix4final,
+#             plink, shapeit, impute2, gtool, 
 #             windowSize=3000000, effectiveSize=20000, 
 #             nCore4phase=1, nThread=40, 
 #             nCore4impute=40, threshold=0.9, 
 #             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
 #             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+
+
+## alternatively
+tmpImputeDir <- "tmpImpute4"
+phaseImpute4(inputPrefix, outputPrefix, prefix4final,
+            plink, shapeit, impute4, qctool, gtool, 
+            windowSize=3000000, effectiveSize=20000, 
+            nCore4phase=1, nThread=40, 
+            nCore4impute=40, threshold=0.9, 
+            nCore4gtool=40, infoScore=0.6, outputInfoFile, 
+            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
   
 
 ##################################################### After imputation
@@ -310,14 +318,44 @@ if ( file.size(paste0(outputMonoSNPfile))==0 ){
 inputPrefix <- addedMonoSnpAfter  
 missCutoff <- 20
 outputPrefix <- "4_6_removedSnpMissPostImp"
-outputSNPfile <- "4_6_snpRemovedMissPostImp.txt"
+outRemovedSNPfile <- "4_6_snpRemovedMissPostImp.txt"
+outRetainSNPfile <- "4_6_snpRetainMissPostImp.txt"
 removedSnpMissPostImp(plink, inputPrefix, missCutoff, 
-                      outputSNPfile, outputPrefix)
+                      outRemovedSNPfile, outRetainSNPfile, outputPrefix)
+ 
 
+## special case: 
+## 1.) if the input ref panel is from phase3. 
+## (2) Impute4 modified imputed output rsID if the original SNPs are not given.
+## e.g. rs456706:11001104:C:T << rsID  rs456706
+
+if (referencePanel == "1000Gphase3"){
+
+    outRename <- "4_6_renameSNP"
+    renamePlinkBFile(inputPrefix=outputPrefix, 
+                     outputPrefix=outRename, action="move") 
+    snp2renameV0 <- read.table(outRetainSNPfile, stringsAsFactors=FALSE)
+    str(snp2renameV0)
+    whDiff <- grep(":", snp2renameV0[,1])
+    str(whDiff)
+    if (length(whDiff) > 0){         
+        snp2renameV1 <- snp2renameV0[whDiff,]
+        tmp = strsplit(snp2renameV1, ":", fixed = TRUE)
+        snpNew <- unlist(lapply(tmp, function(s){s[[1]]})) 
+        snpNewOld <- cbind(snpNew, snp2renameV0[whDiff,1])
+        str(snpNewOld)
+        ## rename the plink files. 
+        snpRenameFile <- "4_6_snpRename.txt"
+        write.table(snpNewOld, file=snpRenameFile, quote=FALSE, 
+                    row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+        system(paste0(plink, " --bfile ", outRename, " --update-name ", 
+               snpRenameFile, " 1 2 --make-bed --out ", outRename, "tmp"))
+        renamePlinkBFile(inputPrefix=paste0(outRename, "tmp"), 
+                         outputPrefix=outputPrefix, action="move")  
+    }     
+}
    
-setwd("..")
-  
-
+setwd("..") 
 
 ############################################################
 ### code chunk number 5: Data subset and expansion 
