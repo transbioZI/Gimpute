@@ -4,8 +4,8 @@
 \alias{removedSnpMissPostImp}
 \title{Remove SNPs after post imputation}
 \usage{
-removedSnpMissPostImp(plink, inputPrefix, missCutoff, outputSNPfile,
-  outputPrefix)
+removedSnpMissPostImp(plink, inputPrefix, missCutoff, outRemovedSNPfile,
+  outRetainSNPfile, outputPrefix)
 }
 \arguments{
 \item{plink}{an executable program in either the current working 
@@ -16,8 +16,10 @@ directory or somewhere in the command path.}
 \item{missCutoff}{the cutoff of the least number of instances for 
 a SNP that is not missing. The default is 20.}
 
-\item{outputSNPfile}{the output file of SNPs with pre-defined 
-missing values.}
+\item{outRemovedSNPfile}{the output file of SNPs with pre-defined 
+missing values that are removed.}
+
+\item{outRetainSNPfile}{the output file of SNPs that are retained.}
 
 \item{outputPrefix}{the prefix of the PLINK binary files.}
 }
@@ -41,7 +43,9 @@ inputPrefix <- "alignedData"
 outputPrefix <- "removedSnpMissPostImp" 
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
-## removedSnpMissPostImp(plink, inputPrefix, missCutoff=20, outputPrefix)
+## removedSnpMissPostImp(plink, inputPrefix, missCutoff=20, 
+##                       outRemovedSNPfile, outRetainSNPfile, outputPrefix)
+## 
 }
 \author{
 Junfang Chen
