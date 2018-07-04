@@ -220,7 +220,7 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "infoScore.txt"
-tmpImputeDir <- "tmpImpute1.4p3Impute2"
+tmpImputeDir <- "tmpImpute2"
 phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             plink, shapeit, impute2, gtool, 
             windowSize=3000000, effectiveSize=20000, 
@@ -231,7 +231,7 @@ phaseImpute2(inputPrefix, outputPrefix, prefix4final,
 
 
 # ## alternatively
-# tmpImputeDir <- "tmpImpute1.4p3Impute4"
+# tmpImputeDir <- "tmpImpute4"
 # phaseImpute4(inputPrefix, outputPrefix, prefix4final,
 #             plink, shapeit, impute4, qctool, gtool, 
 #             windowSize=3000000, effectiveSize=20000, 
@@ -402,9 +402,9 @@ system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ", dir6))
 system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ", dir6))  
 system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ", dir6))
 setwd(dir6)
-renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp.", 
+renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp", 
                  outputPrefix="imputedSnpsDataset", action="move")
-renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos.", 
+renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos", 
                  outputPrefix="specificSnpsDataset", action="move")
 
 ############################################################
