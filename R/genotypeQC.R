@@ -396,7 +396,7 @@ removedInstMiss <- function(plink, sampleMissCutOff, inputPrefix, outputPrefix){
  
     system(paste0(plink, " --bfile ", inputPrefix, " --mind ", sampleMissCutOff, 
            " --make-bed --out ", outputPrefix)) 
-    system(paste0("rm ", outputPrefix, ".irem"))
+    # system(paste0("rm ", outputPrefix, ".irem"))
 
 }
 
@@ -973,7 +973,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
                 ## detected by PC1
                 outlierID <- subjID_PCs[which(subjID_PCs[,3] >= cutoff), ]
             }
-        }      
+        }       
         ## sorted by first PC.
         outlierIDSorted <- outlierID[order(outlierID[,3]), ] 
         write.table(outlierIDSorted, file=outputPC4outlierFile, quote=FALSE, 
