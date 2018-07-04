@@ -21,13 +21,15 @@
 #' after downloading. Note that extract only biallelic SNPs (only 1 allele
 #' in column3 and 4, and start with 'rs") and remove duplicated snp IDs.
 #' Column names are added in the end.
+
+
 #' @author Junfang Chen
 ##' @export
 #' @import doParallel
 
 .prepareLegend2bim <- function(inputFile, referencePanel, outputFile, ncore=20){
 
-    # tmpFolder <- "tmp4legend"
+    tmpFolder <- "tmp4legend"
     system(paste0("mkdir ", tmpFolder))
     system(paste0("scp ", inputFile, " ", tmpFolder))
     setwd(tmpFolder)
@@ -77,10 +79,11 @@
         system("mv final.txt f4.txt")  
         system("awk '{print $1, $2}' f4.txt > final.txt") 
         system("rm f4.txt")
-    }    
-    system(paste0("mv final.txt ", outputFile))
-    setwd("..")
-    # system(paste0("rm -r ", tmpFolder)) ## remove the folder
+    }  
+    setwd("..")  
+    system(paste0("mv ", tmpFolder, "/final.txt ", outputFile)) 
+    ## Do not remove, for recoding the disk usage
+    # system(paste0("rm -r ", tmpFolder))  
 }
 
 

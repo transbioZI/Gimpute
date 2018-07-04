@@ -810,7 +810,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
         system(paste0(plink, " --bfile gwasImputedOld25 --allow-extra-chr ", 
                " --update-chr gwasImputed_newchr25.txt 2 1",
                " --make-bed --out gwasImputed_chr25"))  
-        system("rm gwasImputedOld25.* gwasImputed_newchr25.txt")
+        # system("rm gwasImputedOld25.* gwasImputed_newchr25.txt")
         # system( paste0("rm ", filesetname))
     }     
     ## combine all bed files
@@ -893,7 +893,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
     ## extract filtered SNPs  
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
            badImputeSNPfile, " --make-bed --out ", outputPrefix)) 
-    system("rm impute2infoAllvariants.txt")
+    # system("rm impute2infoAllvariants.txt")
 
 }
 
