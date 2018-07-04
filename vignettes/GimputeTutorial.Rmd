@@ -49,10 +49,22 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 
 ## Installation 
 Development version from Github:
+
+* Install Gimpute from the command line
 ```{r eval=FALSE}
+git clone https://github.com/transbioZI/Gimpute
+R CMD build Gimpute
+R CMD INSTALL Gimpute_*.tar.gz
+```
+*  Install Gimpute in R
+```{r eval=FALSE}
+install.packages("devtools")
 library("devtools")
 install_github("transbioZI/Gimpute", build_vignettes=TRUE)
 ```
+
+Gimpute runs on any 64-bit x86 Linux distribution. Additional dependencies are described below.
+
 ## Experimental data
 PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. 
 Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown as below. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). 
