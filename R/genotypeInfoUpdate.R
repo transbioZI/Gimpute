@@ -51,7 +51,7 @@
 #' famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' inputPrefix <- "controlData" ## Specify the input PLINK file prefix
-#' removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+#' removedSampIDFile <- system.file("extdata", "excludedSampIDsV1.txt", 
 #'                                  package="Gimpute")
 #' outputPrefix <- "1_02_removedExclInst" 
 #' ## Not run: Requires an executable program PLINK, e.g.
@@ -894,7 +894,7 @@ prepareAnnoFile4affy <- function(inputFile, outputFile, chipType){
 #'                             package="Gimpute")
 #' excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
 #'                                     package="Gimpute")
-#' removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
+#' removedSampIDFile <- system.file("extdata", "excludedSampIDsV1.txt", 
 #'                                  package="Gimpute")
 #' chipAnnoFile <- system.file("extdata", "chipAnno.txt", package="Gimpute")
 #' ancestrySymbol <- "EUR"
