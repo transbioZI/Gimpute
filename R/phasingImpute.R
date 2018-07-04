@@ -22,9 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 
-##########################################################################
-## removedMonoSnp.R
-##########################################################################
+
 
 #' Exclude monomorphic SNPs 
 #'
@@ -69,11 +67,7 @@ removedMonoSnp <- function(plink, inputPrefix, outputPrefix, outputSNPfile){
   
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", outputSNPfile, 
            " --make-bed --out ", outputPrefix)) 
-}
-
-##########################################################################
-## chrWiseSplit.R
-########################################################################## 
+} 
 
 #' Split genome-wide genotyping data into chromosome-wide PLINK binary files.
 #'
@@ -189,13 +183,7 @@ chrWiseSplit <- function(plink, inputPrefix, chrXPAR1suffix,
 
 
 
-
-
-
-
-##########################################################################
-## chunk4eachChr.R
-########################################################################## 
+ 
 #' Chunk each chromosome into multiple segments
 #'
 #' @description
@@ -274,10 +262,6 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 
-
-##########################################################################
-## .prePhasingByShapeit.R
-########################################################################## 
 #' Prephasing genotypes using SHAPEIT
 #'
 #' @description
@@ -443,10 +427,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 
-
-##########################################################################
-## .imputedByImpute2.R
-########################################################################## 
+  
 #' Impute genotypes using IMPUTE2
 #'
 #' @description
@@ -649,12 +630,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 
-
-
-
-##########################################################################
-## .convertImpute2ByGtool.R 
-##########################################################################  
+ 
 #' Convert IMPUTE2 format files into PLINK format
 #'
 #' @description
@@ -684,8 +660,6 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @import doParallel  
 
 #' @author Junfang Chen 
-
- 
 
 
 .convertImpute2ByGtool <- function(gtool, chrs, prefixChunk, 
@@ -726,12 +700,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 } 
 
 
+
  
-
-
-##########################################################################
-## .mergePlinkData.R
-########################################################################## 
 #' Merge chunk-wise PLINK files 
 #'
 #' @description
@@ -757,6 +727,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 ##' @export 
 #' @import doParallel  
 #' @author Junfang Chen 
+
 
 
 .mergePlinkData <- function(plink, chrs, prefix4eachChr, 
@@ -830,9 +801,6 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 }
 
 
-##########################################################################
-## .filterImputeData.R
-########################################################################## 
 #' Filter genetic variants    
 #'
 #' @description
@@ -899,7 +867,6 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 
-
 #' Filter genetic variants    
 #'
 #' @description
@@ -947,11 +914,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 }
 
- 
 
-##########################################################################
-## removedSnpMissPostImp.R
-########################################################################## 
 #' Remove SNPs after post imputation  
 #'
 #' @description
@@ -963,8 +926,10 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param missCutoff  the cutoff of the least number of instances for 
 #' a SNP that is not missing. The default is 20.
-#' @param outputSNPfile the output file of SNPs with pre-defined 
-#' missing values.
+#' @param outRemovedSNPfile the output file of SNPs with pre-defined 
+#' missing values that are removed.
+#' @param outRetainSNPfile the output file of SNPs that are retained. 
+
 #' @param outputPrefix  the prefix of the PLINK binary files. 
 
 #' @return The PLINK binary files after post imputation quality control 
@@ -984,11 +949,14 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' outputPrefix <- "removedSnpMissPostImp" 
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' ## removedSnpMissPostImp(plink, inputPrefix, missCutoff=20, outputPrefix)
+#' ## removedSnpMissPostImp(plink, inputPrefix, missCutoff=20, 
+#' ##                       outRemovedSNPfile, outRetainSNPfile, outputPrefix)
+#' ## 
 
 
 removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff, 
-                                  outputSNPfile, outputPrefix){ 
+                                  outRemovedSNPfile, outRetainSNPfile, 
+                                  outputPrefix){ 
 
     ## get the missing info 
     system(paste0(plink, " --bfile ", inputPrefix, 
@@ -997,19 +965,20 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
     missSNPinfo <- read.table(paste0(inputPrefix, ".lmiss"), 
                               stringsAsFactors=FALSE, header=TRUE)
     missSNPinfo[,6] <- missSNPinfo[,"N_GENO"] - missSNPinfo[,"N_MISS"] 
-    manyMissSNPs <- missSNPinfo[which(missSNPinfo[,6] < missCutoff), "SNP"] 
-    write.table(manyMissSNPs, file=outputSNPfile, quote=FALSE, 
+    manyMissSNPs <- missSNPinfo[which(missSNPinfo[,6] < missCutoff), "SNP"]  
+    write.table(manyMissSNPs, file=outRemovedSNPfile, quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+    snpRetain <- setdiff(missSNPinfo[,"SNP"], manyMissSNPs) 
+    write.table(snpRetain, file=outRetainSNPfile, quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
-           outputSNPfile, " --make-bed --out ", outputPrefix))
+           outRemovedSNPfile, " --make-bed --out ", outputPrefix))
     system( "rm *.imiss *.lmiss *.log") 
 
 }
 
 
-##########################################################################
-## phaseImpute.R
-########################################################################## 
+
 #' Phasing and imputation 
 #'
 #' @description
