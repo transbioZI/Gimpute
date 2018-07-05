@@ -206,9 +206,7 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 
 
 
-##########################################################################
-## phaseImpute4.R
-########################################################################## 
+
 #' Phasing and imputation 
 #'
 #' @description
@@ -227,6 +225,8 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' working directory or somewhere in the command path.
 #' @param impute4 an executable program in either the current 
 #' working directory or somewhere in the command path.
+#' @param qctool an executable program in either the current working 
+#' directory or somewhere in the command path.
 #' @param gtool an executable program in either the current 
 #' working directory or somewhere in the command path. 
 #' @param windowSize  the window size of each chunk. 

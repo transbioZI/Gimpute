@@ -29,6 +29,9 @@ working directory or somewhere in the command path.}
 \item{impute4}{an executable program in either the current 
 working directory or somewhere in the command path.}
 
+\item{qctool}{an executable program in either the current working 
+directory or somewhere in the command path.}
+
 \item{gtool}{an executable program in either the current 
 working directory or somewhere in the command path.}
 

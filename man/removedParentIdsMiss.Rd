@@ -24,11 +24,13 @@ value zero if the paternal ID and the maternal ID do not belong to any
 subject (parent) with the same family ID as the child.
 }
 \details{
-By default, if parental IDs are provided for a sample, 
+Do make sure that all your family relationships are correct 
+in your input data before applying this function. By default, 
+if parental IDs are provided for a sample, 
 they are not treated as a founder even if neither parent is 
 in the dataset.  With no modifiers, --make-founders clears 
 both parental IDs whenever at least one parent is not in the dataset, 
-and the affected samples are now considered founders.
+and the affected samples are now considered as founders.
 }
 \examples{
 ## In the current working directory
