@@ -3,7 +3,7 @@ title: "Gimpute: An efficient genetic data imputation pipeline"
 author:
  - name: Junfang Chen, Dietmar Lippold and Emanuel Schwarz
    affiliation: Central Institute of Mental Health, Heidelberg University, Germany  
-date: "Modified: 27 Jun 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
+date: "Modified: 05 Jul 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
   BiocStyle::html_document:
     toc: true
@@ -38,13 +38,15 @@ pre-phasing, imputation and post-imputation quality control [3], as well as an e
 
 # Getting started  
 ## Prerequisites
-Gimpute runs on any 64-bit x86 Linux distribution and it requires the following tools [4,5,6]:
+Gimpute runs on any 64-bit x86 Linux distribution and it requires the following tools [4,5,6,7]:
 
 * [R](https://www.r-project.org/) 
 * [PLINK](https://www.cog-genomics.org/plink2) 
 * [GCTA64](http://cnsgenomics.com/software/gcta/#Download) 
 * [SHAPEIT](http://www.shapeit.fr/) 
 * [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
+* [IMPUTE4](https://jmarchini.org/impute-4/)
+* [QCTOOLv2](http://www.well.ox.ac.uk/~gav/qctool_v2/)
 * [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
 
 ## Installation 
@@ -128,7 +130,7 @@ This annotation file is particularly important for strand checking and genomic i
     + If the snp name of your study genotype data starts with "rs", then the chip type "rsIDstudy" is used; The annotation file should be prepared in advance and must consist of at least the following column names : rsIDstudy, chr, pos, strand. Illumina chip is often specified in this format. The column "strand" must only have two kinds of values "-" and "+". Variants with all other values are excluded.
 
 
-* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from [1000 genome project phase1v3](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz) are the default panel used in our package. 1000 Genomes Phase 3 is also an alternative reference panel. A string indicating the type of imputation reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3"). This should be defined before running pipeline. 
+* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from [1000 genome project phase1v3](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz) are the default panel used in our package. 1000 Genomes Phase 3 is an alternative reference panel. A string indicating the type of imputation reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3"). This must be defined before running pipeline. 
 
 ```{r} 
 ## Define the directory where you place the imputation reference files 
@@ -595,7 +597,7 @@ Copy and rename the results of interest to the directory ./6-finalResults.
 
 # Extending pipelines
 
-Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation tool [7].
+Gimpute's modular structure allows the integration of other existing imputation workflows, allowing users to choose their preferred imputation strategy. For demonstration, we have embedded Genipe as an external imputation tool [8].
 
 ## Integrate with Genipe
 ### Installation
@@ -667,7 +669,9 @@ extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)
 
 [6] Howie, B. N., et al. (2009). A flexible and accurate genotype imputation method for the next generation of genome-wide association studies. PLoS Genet 5(6): e1000529.
 
-[7] Lemieux Perreault, L. P., et al. (2016). genipe: an automated genome-wide imputation pipeline with automatic reporting and statistical tools. Bioinformatics, 32(23), 3661-3663.
+[7] Bycroft, Clare, Colin Freeman, Desislava Petkova, Gavin Band, Lloyd T. Elliott, Kevin Sharp, Allan Motyer et al. Genome-wide genetic data on~ 500,000 UK Biobank participants. BioRxiv (2017): 166298.
+
+[8] Lemieux Perreault, L. P., et al. (2016). genipe: an automated genome-wide imputation pipeline with automatic reporting and statistical tools. Bioinformatics, 32(23), 3661-3663.
 
 
 # Trouble-shooting 
