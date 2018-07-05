@@ -509,42 +509,6 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 
 
-#' Remove any Mendel inconsistencies
-#'
-#' @description
-#' Remove any Mendel inconsistencies 
-
-#' @param plink an executable program in either the current working directory 
-#' or somewhere in the command path.
-#' @param inputPrefix the prefix of the input PLINK binary files.
-#' @param outputPrefix the prefix of the output PLINK binary files.
-
-#' @return The output PLINK binary files.
-#' @details  
- 
-
-
-removedMendelErr <- function(plink, inputPrefix, outputPrefix){ 
-
-    # Remove the parent IDs which do not belong to subjects
-    system(paste0(plink, " --bfile ", inputPrefix, 
-           " --me 1 1 --set-me-missing --make-bed --out ", 
-           outputPrefix)) 
-}
-
-
-plink <- "/home/junfang.chen/Gimpute/tools/plink"
-
-inputPrefix="2_08_removedSnpMissDiff"
-inputPrefix <- "2_06_removedParentIdsMiss"
-outputPrefix <- "outMendelErr"
-removedMendelErr(plink, inputPrefix, outputPrefix)
-
-/home/junfang.chen/Gimpute/tools/plink --bfile 2_06_removedInstFhet --me 1 1 --set-me-missing --make-bed --out outMendelErr
-/home/junfang.chen/Gimpute/tools/plink --bfile 2_04_removedInstMiss --me 1 1 --set-me-missing --make-bed --out newdata
-
-
-
 
 ##########################################   
 ##########################################  
