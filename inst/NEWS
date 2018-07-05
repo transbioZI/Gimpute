@@ -4,19 +4,20 @@
 Changes in version 0.99.7
 --------------------------
 
-New Features
-1. Added functions
-- computeInfoByQctool.R
-- filterImputeData2.R 
-- .imputedByImpute4.R
-- phaseImpute4.R 
- 
+New Features 
+Added computeInfoByQctool.R
+Added filterImputeData2.R 
+Added.imputedByImpute4.R
+Added phaseImpute4.R 
+Added new reference panel "1000GPphase3"  
+Added a whole chromosome 21 data set and congifuration files for testing  
 
 
 Improvement/Fixed Bugs
 
-
-
+Updated R functions for new reference panel.
+Fixed different rs naming after impute2 and impute4 for 1000GPphase3.
+Updated tutorial.
 
 
 Changes in version 0.99.6
