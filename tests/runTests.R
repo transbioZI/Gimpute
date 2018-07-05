@@ -377,12 +377,35 @@ system(paste0("scp ./3-checkAlign/3_4_snpDiffAlleles.txt ", dir5))
 system(paste0("scp ./3-checkAlign/3_3_snpMissPos.txt ", dir5))
 system(paste0("scp ./3-checkAlign/3_2_snpSameNameDiffPos.txt ", dir5))
 
-setwd("5-reductAndExpand/")
-# 1. Reduce the imputed dataset to the SNPs before imputation. 
-system(paste0(plink, " --bfile ", inputPrefix, 
+setwd("5-reductAndExpand/") 
+
+## 1. Reduce the imputed dataset to the SNPs before imputation. 
+
+if (referencePanel == "1000Gphase3"){ 
+    ## Before doing this, make sure there are no variant with 3+ alleles present.
+    ## Remove if any.
+    bimOriQCed <- read.table(paste0(inputOriginalQCed, ".bim"), 
+                             stringsAsFactors=FALSE)
+    bimPostImp <- read.table(paste0(inputPrefix, ".bim"), stringsAsFactors=FALSE)
+    ## check duplicated.
+    dupPostImp <- bimPostImp[duplicated(bimPostImp[,2]),]
+    str(dupPostImp)
+    allele3 <- intersect(dupPostImp[,2], bimOriQCed[,2])
+    str(allele3)
+    ## remove these duplicated and with 3+alleles 
+    write.table(allele3, file="snpAllele3.txt", quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
+
+    outAllele2 <- paste0(inputPrefix, "Allele2")
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --exclude snpAllele3.txt --make-bed --out ",  outAllele2)) 
+     
+} else { outAllele2 <- inputPrefix }
+
+system(paste0(plink, " --bfile ", outAllele2, 
        " --extract 3_4_snpImpRefAlleles.txt --make-bed --out ", 
        reducedToSpecificfn)) 
-
+ 
 ## 2. Add the SNPs with different alleles with their values 
 ## from the dataset before removing SNPs. 
 if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){ 
@@ -396,7 +419,8 @@ if ( file.size(paste0("3_4_snpDiffAlleles.txt")) == 0 ){
            extSpecificDiffAllelefn)) 
     system("rm tmp.*")
 } 
-      
+
+
 
 ## 3. Add the SNPs with missing positions with their values 
 ## from the dataset before removing SNPs. 
@@ -427,8 +451,8 @@ if ( file.size(paste0("3_2_snpSameNameDiffPos.txt")) == 0 ){
 }
  
 
-system(paste0("rm ", inputPrefix, "* ", inputOriginalQCed, "*"))  
-system(paste0("rm  *.txt *.log")) 
+# system(paste0("rm ", inputPrefix, "* ", inputOriginalQCed, "*"))  
+# system(paste0("rm  *.txt *.log")) 
 setwd("..")
 
 ############################################################
@@ -448,8 +472,7 @@ renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos",
 ############################################################
 ### code chunk number 6: Extending pipeline
 ############################################################
-
-
+ 
 ############################################################
 
 ## Run the following code, only after you have installed genipe

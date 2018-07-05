@@ -523,6 +523,7 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 #' @details  
  
 
+
 removedMendelErr <- function(plink, inputPrefix, outputPrefix){ 
 
     # Remove the parent IDs which do not belong to subjects
@@ -530,6 +531,19 @@ removedMendelErr <- function(plink, inputPrefix, outputPrefix){
            " --me 1 1 --set-me-missing --make-bed --out ", 
            outputPrefix)) 
 }
+
+
+plink <- "/home/junfang.chen/Gimpute/tools/plink"
+
+inputPrefix="2_08_removedSnpMissDiff"
+inputPrefix <- "2_06_removedParentIdsMiss"
+outputPrefix <- "outMendelErr"
+removedMendelErr(plink, inputPrefix, outputPrefix)
+
+/home/junfang.chen/Gimpute/tools/plink --bfile 2_06_removedInstFhet --me 1 1 --set-me-missing --make-bed --out outMendelErr
+/home/junfang.chen/Gimpute/tools/plink --bfile 2_04_removedInstMiss --me 1 1 --set-me-missing --make-bed --out newdata
+
+
 
 
 ##########################################   
