@@ -283,6 +283,8 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #'   \item Howie, B. N., et al. (2009). A flexible and accurate genotype 
 #'         imputation method for the next generation of genome-wide association 
 #'         studies. PLoS Genet 5(6): e1000529.
+#'   \item Bycroft, C., et al. Genome-wide genetic data on~ 500,000 UK Biobank 
+#'         participants. BioRxiv (2017): 166298.
 #' }
 
 #' @examples 
