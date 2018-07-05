@@ -178,7 +178,7 @@ inputPrefix <- "controlData"
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
-chipType <- "affymetrix"
+chipType <- "rsIDstudy"
 ## Not run
 # updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
 #                ancestrySymbol, excludedProbeIdsFile, chipAnnoFile,
@@ -437,8 +437,8 @@ outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPCplotFile <- "2_13_eigenvalAfterQC.png" 
 # plotPCA4plink(gcta, inputPrefix, nThread=20, outputPC4subjFile, outputPCplotFile)  
 
-cutoff <-  NULL ## not outlier detected
-cutoffSign <- "greater" ## not used if cutoff == NULL 
+cutoff <-  c(-0.4, 0.2)
+cutoffSign <- "greater" ## not used if cutoff == NULL, and with two values 
 inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPC4outlierFile <- "2_13_eigenval4outliers.txt"
 outputPCplotFile <- "2_13_removedOutliers.png"
