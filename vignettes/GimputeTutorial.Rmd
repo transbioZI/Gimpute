@@ -71,9 +71,9 @@ Free datasets are available under ./extdata/ in our package. The way for loading
 
 ```{r} 
 library(Gimpute)
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")  
+bedFile <- system.file("extdata", "dataChr21.bed", package="Gimpute")
+bimFile <- system.file("extdata", "dataChr21.bim", package="Gimpute") 
+famFile <- system.file("extdata", "dataChr21.fam", package="Gimpute")  
 ```
 
 ## Get it Setup 
@@ -143,7 +143,7 @@ All files named in this subsection are in the directory 1-genoUpdate/.
 
 ### Input files
 
-* Raw genotype data in PLINK format: controlData.bed.#
+* Raw genotype data in PLINK format: dataChr21.#
 
 * Metadata information file about the instances: 1_01_metaData.txt
 
@@ -159,9 +159,9 @@ All files named in this subsection are in the directory 1-genoUpdate/.
 
 ```{r} 
 ## Not run
-bedFile <- system.file("extdata", "controlData.bed", package="Gimpute")
-bimFile <- system.file("extdata", "controlData.bim", package="Gimpute") 
-famFile <- system.file("extdata", "controlData.fam", package="Gimpute")
+bedFile <- system.file("extdata", "dataChr21.bed", package="Gimpute")
+bimFile <- system.file("extdata", "dataChr21.bim", package="Gimpute") 
+famFile <- system.file("extdata", "dataChr21.fam", package="Gimpute")
 
 metadataFile <- system.file("extdata", "1_01_metaData.txt", package="Gimpute")
 removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
@@ -174,7 +174,7 @@ chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt",
 
 #### Using pipeline function
 ```{r} 
-inputPrefix <- "controlData"
+inputPrefix <- "dataChr21"
 ancestrySymbol <- "EUR"
 outputPrefix <- "1_11_removedYMtSnp" 
 metaDataFile <- "1_01_metaData.txt"
@@ -198,7 +198,7 @@ Note that, the output files of each step are the input of the next step.
 2. Remove all excluded instances (subjects, samples) from the raw chip data. Duplicated, related or useless instances are suggested to be removed.  
 + Output files: 1_02_removedExclInst.#
 ```{r} 
-inputPrefix <- "controlData"
+inputPrefix <- "dataChr21"
 outputPrefix2 <- "1_02_removedExclInst" 
 removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
                                  package="Gimpute")
