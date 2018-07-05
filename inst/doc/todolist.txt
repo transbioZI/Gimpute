@@ -1,0 +1,65 @@
+
+
+
+After installing Gimpute R package, 15 things to do before running the pipeline!
+
+ 
+
+########################################
+########################################
+
+Tools (7)
+ 
+
+Note that the version of these tools can be updated, and the link can also be 
+changed. Do make sure to find the correct version (consistent with the version 
+used in Gimpute).
+
+* [PLINK](https://www.cog-genomics.org/plink2) 
+* [GCTA64](http://cnsgenomics.com/software/gcta/#Download) 
+* [SHAPEIT](http://www.shapeit.fr/) 
+* [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
+* [IMPUTE4](https://jmarchini.org/impute-4/) 
+* [QCTOOLv2](http://www.well.ox.ac.uk/~gav/qctool_v2/)  
+* [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
+ 
+
+########################################
+########################################
+
+Configuration Files (4)
+
++ metaDataFile: See the tutorial for details.
++ removedSampIDFile: A text file that stores sample IDs, each ID per line.
++ excludedProbeIdsFile: A text file that stores probe IDs, each ID per line.
++ chipAnnoFile: See the tutorial for details.
+
+
+
+########################################
+########################################
+
+Configuration Value (4)
+
++ ancestrySymbol: A string symbol for self-identified ancestry:
+  AFR: African
+  AMR: Ad Mixed American
+  EAS: East Asian 
+  EUR: European 
+  SAS: South Asian 
+
++ chipType: A string symbol "SNPIDstudy" or "rsIDstudy".
++ referencePanel: A string symbol "1000Gphase1v3_macGT1" or "1000Gphase3".
+
++ cutoff: The cutoff for detecting population outliers from PCA plot.
+
+
+########################################
+######################################## 
+
+Best Example 
+
+see ./tests/runTests.R
+The paths for all tools, the usage of configuration files, 
+and pre-defined values are demonstrated in runTest.R
+ 
