@@ -590,7 +590,7 @@ updatedSnpInfo <- function(plink, inputPrefix,
         }  
 
         bimV1 <- bim[match(interSNPs, bim[,2]), ]
-        comV2 <- cbind(bimV1[,], chipAnnoV1)     
+        comV2 <- cbind(bimV1, chipAnnoV1)     
         ## Update geno info  
         if (chipType == "SNPIDstudy") {      
             updateSNP2rs <- subset(comV2, select=c(V2, rs))
