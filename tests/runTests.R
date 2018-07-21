@@ -17,15 +17,15 @@ system("mkdir 4-imputation")
 system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
 
-# ## Define the directory where you place the imputation reference files 
-# referencePanel <- "1000Gphase1v3_macGT1" ## indicator
-# impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
-# impRefDIR <- impRefDIR1kGp1v3
+## Define the directory where you place the imputation reference files 
+referencePanel <- "1000Gphase1v3_macGT1" ## indicator
+impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
+impRefDIR <- impRefDIR1kGp1v3
 
  
-referencePanel <- "1000Gphase3" ## indicator 
-impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
-impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
+# referencePanel <- "1000Gphase3" ## indicator 
+# impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
+# impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
 
 
 ## Genotyping chip annotation file 
@@ -66,7 +66,8 @@ library(doParallel)
 ############################################################
 ## code chunk number 1: SNP information update  
 ############################################################
-
+runTimeList <- list()
+t4genoUpdateTmp <- proc.time()   
 ## step 0
 ## Load PLINK binary files and additional files from Gimpute.
 setwd("./1-genoUpdate/") 
@@ -102,7 +103,13 @@ updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
                chipType, outputPrefix, keepInterFile=TRUE)
 setwd("..")   
 
-  
+## runtime
+t4genoUpdate <- proc.time() - t4genoUpdateTmp
+print(t4genoUpdate)
+runTimeList$t4genoUpdate <- t4genoUpdate
+
+t4genoQCTmp <- proc.time() 
+
 ############################################################
 ### code chunk number 2: Quality Control
 ############################################################
@@ -173,6 +180,14 @@ removeOutlierByPCs(plink, gcta, inputPrefix, nThread=20,
                    outputPC4outlierFile, outputPCplotFile, outputPrefix) 
 
 setwd("..")
+
+## runtime
+t4genoQC <- proc.time() - t4genoQCTmp
+print(t4genoQC)
+runTimeList$t4genoQC <- t4genoQC
+
+t4checkAlignTmp <- proc.time()   
+
 ############################################################
 ### code chunk number 3: check the alignment
 ############################################################   
@@ -203,6 +218,14 @@ checkAlign2ref(plink, inputPrefix, referencePanel, bimReferenceFile,
                out2, out2.snp, out3, out3.snp, 
                out4, out4.snp, out4.snpRetained, nCore=25)
 setwd("..") 
+
+## runtime
+t4checkAlign <- proc.time() - t4checkAlignTmp
+print(t4checkAlign)
+runTimeList$t4checkAlign <- t4checkAlign
+
+t4imputeTmp <- proc.time()   
+
 ############################################################
 ### code chunk number 4: Imputation
 ############################################################
@@ -228,28 +251,43 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "infoScore.txt"
-# tmpImputeDir <- "tmpImpute2"
-# phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-#             plink, shapeit, impute2, gtool, 
-#             windowSize=3000000, effectiveSize=20000, 
-#             nCore4phase=1, nThread=40, 
-#             nCore4impute=40, threshold=0.9, 
-#             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
-#             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
-
-
-## alternatively
-tmpImputeDir <- "tmpImpute4"
-phaseImpute4(inputPrefix, outputPrefix, prefix4final,
-            plink, shapeit, impute4, qctool, gtool, 
+tmpImputeDir <- "tmpImpute2Phase1"
+phaseImpute2(inputPrefix, outputPrefix, prefix4final,
+            plink, shapeit, impute2, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore4phase=1, nThread=40, 
             nCore4impute=40, threshold=0.9, 
             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+
+# effectiveSize=20000
+# nCore4phase=1
+# nThread=40 
+# nCore4impute=40
+# threshold=0.9
+# nCore4gtool=40
+# infoScore=0.6
+
+# ## alternatively
+# tmpImputeDir <- "tmpImpute4"
+# phaseImpute4(inputPrefix, outputPrefix, prefix4final,
+#             plink, shapeit, impute4, qctool, gtool, 
+#             windowSize=3000000, effectiveSize=20000, 
+#             nCore4phase=1, nThread=40, 
+#             nCore4impute=40, threshold=0.9, 
+#             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
+#             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
   
 
 ##################################################### After imputation
+
+## runtime
+t4impute <- proc.time() - t4imputeTmp
+print(t4impute)
+runTimeList$t4impute <- t4impute
+
+t4postImputeTmp <- proc.time()   
+
 ## step 2 
 ## Final imputed results, including bad imputed genotypes.
 imputedDatasetfn <- "4_2_imputedDataset"
@@ -468,6 +506,21 @@ renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp",
                  outputPrefix="imputedSnpsDataset", action="move")
 renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos", 
                  outputPrefix="specificSnpsDataset", action="move")
+
+
+
+## runtime
+t4postImpute <- proc.time() - t4postImputeTmp
+print(t4postImpute)
+runTimeList$t4postImpute <- t4postImpute 
+
+totallist <- lapply(runTimeList, function(time){time[[3]]})
+print(totallist)  
+
+runTimeList$totalMin <- sum(unlist(totallist))/60
+runTimeList$totalSec <- sum(unlist(totallist))
+
+print(runTimeList)
 
 ############################################################
 ### code chunk number 6: Extending pipeline
