@@ -114,25 +114,21 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
                                   "X_PAR2_combined_b37.txt ") 
             if (referencePanel == "1000Gphase1v3_macGT1"){ 
                 ## autosome
-                HAPS_FILE <- paste0(impRefDIR, 
-                                    "ALL_1000G_phase1integrated_v3_chr", i, 
+                impPrefix <- "ALL_1000G_phase1integrated_v3_chr"
+
+                HAPS_FILE <- paste0(impRefDIR, impPrefix, i, 
                                     "_impute_macGT1.hap.gz ") 
-                LEGEND_FILE <- paste0(impRefDIR, 
-                                      "ALL_1000G_phase1integrated_v3_chr", i, 
+                LEGEND_FILE <- paste0(impRefDIR, impPrefix, i, 
                                       "_impute_macGT1.legend.gz ")  
                 ## .chrXPAR1  
-                HAPS.chrXPAR1 <- paste0(impRefDIR, 
-                                    "ALL_1000G_phase1integrated_v3_chr",
+                HAPS.chrXPAR1 <- paste0(impRefDIR, impPrefix,
                                     "X_PAR1_impute_macGT1.hap.gz ") 
-                LEGEND.chrXPAR1  <- paste0(impRefDIR, 
-                                      "ALL_1000G_phase1integrated_v3_chr", 
+                LEGEND.chrXPAR1  <- paste0(impRefDIR, impPrefix, 
                                       "X_PAR1_impute_macGT1.legend.gz ") 
                 ## .chrXPAR2
-                HAPS.chrXPAR2  <- paste0(impRefDIR, 
-                                    "ALL_1000G_phase1integrated_v3_chr", 
+                HAPS.chrXPAR2  <- paste0(impRefDIR, impPrefix, 
                                     "X_PAR2_impute_macGT1.hap.gz ") 
-                LEGEND.chrXPAR2  <- paste0(impRefDIR, 
-                                      "ALL_1000G_phase1integrated_v3_chr", 
+                LEGEND.chrXPAR2  <- paste0(impRefDIR, impPrefix, 
                                       "X_PAR2_impute_macGT1.legend.gz ") 
 
             } else if (referencePanel == "1000Gphase3"){
