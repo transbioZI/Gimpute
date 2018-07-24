@@ -740,7 +740,6 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                     row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
         system(paste0(plink, " --file ", fA, " --merge-list ", filesetname, 
                " --make-bed --out gwasImputed_chr", i)) 
-
     }, mc.cores=nCore)
 
     ## combine chrX_PAR and convert into chr25 
@@ -993,16 +992,11 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' The default value is 3000000. 
 #' @param effectiveSize this parameter controls the effective population size. 
 #' Commonly denoted as Ne. A universal -Ne value of 20000 is suggested.
-#' @param nCore4phase the number of cores used for phasing. This can be tuned 
-#' along with nThread. The default value is 1 
-#' @param nThread the number of threads used for computation.
-#' The default value is 40. 
-#' @param nCore4impute the number of cores used for imputation. 
-#' The default value is 40. 
+#' @param nCore the number of cores used for splitting chromosome by PLINK, 
+#' phasing, imputation, genotype format modification, genotype conversion, and 
+#' merging genotypes. The default value is 40. 
 #' @param threshold threshold for merging genotypes from GEN probability. 
 #' Default 0.9. 
-#' @param nCore4gtool the number of cores used for computation. 
-#' The default value is 40. 
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant. The default value is 0.6. 
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
@@ -1060,24 +1054,20 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
 #' ## phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-#' ##             plink, shapeit, impute2, gtool, 
+#' ##             plink, shapeit, impute2, gtool,  
 #' ##             windowSize=3000000, effectiveSize=20000, 
-#' ##             nCore4phase=1, nThread=40, 
-#' ##             nCore4impute=40, nCore4gtool=40, 
-#' ##             infoScore=0.6, outputInfoFile, referencePanel, 
-#' ##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+#' ##             nCore=40, threshold=0.9, infoScore=0.6, outputInfoFile,
+#' ##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
 phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
                         plink, shapeit, impute2, gtool, 
                         windowSize=3000000, effectiveSize=20000, 
-                        nCore4phase=1, nThread=40, 
-                        nCore4impute=40, threshold=0.9, 
-                        nCore4gtool=40, infoScore=0.6, outputInfoFile,
+                        nCore=40,  threshold=0.9, infoScore=0.6, outputInfoFile,
                         referencePanel, impRefDIR, 
                         tmpImputeDir, keepTmpDir=TRUE){
 
-    ## One must create directories for storing tmp imputation output files 
+    ## create directories for storing tmp imputation output files 
     ## The name of these directories must be fixed for the sake of 
     ## the subsequent steps.
     system(paste0("mkdir ", tmpImputeDir))
@@ -1111,7 +1101,7 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
     chrXPAR2suffix <- "X_PAR2"
     ## nCore is chosen as the number of chromosomes available 
     PAR <- chrWiseSplit(plink, inputPrefix=prefix4eachChr, chrXPAR1suffix, 
-                        chrXPAR2suffix, nCore=length(currentChr))
+                        chrXPAR2suffix, nCore)
     print(PAR)  
     if (PAR[[1]]) {par1 <- "X_PAR1"} else {par1 <- NULL}
     if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
@@ -1126,13 +1116,13 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
     ## step 2.3     
     .prePhasingByShapeit(shapeit, chrs, dataDIR, 
                          prefix4eachChr, referencePanel, 
-                         impRefDIR, phaseDIR, nThread, 
-                         effectiveSize, nCore=nCore4phase)
+                         impRefDIR, phaseDIR, nThread=nCore, 
+                         effectiveSize, nCore=1)
     ## step 2.4   
     prefixChunk <- paste0(chunkDIR, chunkPrefix)        
     .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, referencePanel, 
                       impRefDIR, imputedDIR, prefix4eachChr, 
-                      nCore4impute, effectiveSize)
+                      nCore, effectiveSize)
     ## step 2.5   
     ## extract only SNPs (without INDELs)
     #######################################################
@@ -1145,12 +1135,12 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
         arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
         arg2 <- paste0(i, "noINDEL.impute2")   
         system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
-    }, mc.cores=40) ## by default  
+    }, mc.cores=nCore) ## by default  
     setwd("..") 
     suffix4imputed <- ".impute2noINDEL.impute2"   
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                           prefix4eachChr, suffix4imputed, 
-                          postImputeDIR, threshold, nCore4gtool)
+                          postImputeDIR, threshold, nCore)
 
     ## step 2.6  
     ####################################################### 
@@ -1160,10 +1150,10 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
     chrslist <- as.list(chrs) 
     fn <- mclapply(chrslist, function(i){
         system(paste0("sed -i 's/N/0/g' ", prefix4eachChr, i, ".*ped "))
-    }, mc.cores=length(chrslist)) 
+    }, mc.cores=nCore) ## by default 
     prefixMerge <- "gwasMerged" 
     .mergePlinkData(plink, chrs, prefix4eachChr, 
-                    prefixMerge, nCore=length(chrslist))
+                    prefixMerge, nCore)
     ## fam IDs may be changed: a.) if IDs have 'N'; 
     ## b.) IID, FID may be switched.
     ## >> update this as below 
