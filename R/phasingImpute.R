@@ -975,10 +975,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' binary files. 
 
 #' @param inputPrefix the prefix of the input PLINK binary files for 
-#' the imputation.
+#' the imputation. 
 #' @param outputPrefix the prefix of the output PLINK binary files  
-#' after imputation and filtering out bad imputed variants.
-#' @param prefix4final the prefix of the output PLINK binary files  
 #' after imputation.
 #' @param plink an executable program in either the current 
 #' working directory or somewhere in the command path.
@@ -996,9 +994,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' phasing, imputation, genotype format modification, genotype conversion, and 
 #' merging genotypes. The default value is 40. 
 #' @param threshold threshold for merging genotypes from GEN probability. 
-#' Default 0.9. 
-#' @param infoScore the cutoff of filtering imputation quality score for 
-#' each variant. The default value is 0.6. 
+#' Default 0.9.  
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.   
 #' @param referencePanel a string indicating the type of imputation 
@@ -1046,26 +1042,25 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' system(paste0("scp ", bedFile, " ."))   
 #' system(paste0("scp ", bimFile, " ."))   
 #' system(paste0("scp ", famFile, " ."))   
-#' inputPrefix <- "alignedData"  
-#' outputPrefix <- "gwasImputedFiltered"
-#' prefix4final <- "gwasImputed"   
+#' inputPrefix <- "alignedData"   
+#' outputPrefix <- "gwasImputed"   
 #' outputInfoFile <- "infoScore.txt"
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' ## phaseImpute2(inputPrefix, outputPrefix, prefix4final,
+#' ## phaseImpute2(inputPrefix, outputPrefix,
 #' ##             plink, shapeit, impute2, gtool,  
 #' ##             windowSize=3000000, effectiveSize=20000, 
-#' ##             nCore=40, threshold=0.9, infoScore=0.6, outputInfoFile,
+#' ##             nCore=40, threshold=0.9, outputInfoFile,
 #' ##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
-phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
-                        plink, shapeit, impute2, gtool, 
-                        windowSize=3000000, effectiveSize=20000, 
-                        nCore=40,  threshold=0.9, infoScore=0.6, outputInfoFile,
-                        referencePanel, impRefDIR, 
-                        tmpImputeDir, keepTmpDir=TRUE){
+phaseImpute2 <- function(inputPrefix, outputPrefix,
+                         plink, shapeit, impute2, gtool, 
+                         windowSize=3000000, effectiveSize=20000, 
+                         nCore=40,  threshold=0.9, outputInfoFile,
+                         referencePanel, impRefDIR, 
+                         tmpImputeDir, keepTmpDir=TRUE){
 
     ## create directories for storing tmp imputation output files 
     ## The name of these directories must be fixed for the sake of 
@@ -1174,28 +1169,20 @@ phaseImpute2 <- function(inputPrefix, outputPrefix, prefix4final,
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
 
     system(paste0(plink, " --bfile ", prefixMerge, 
-           " --update-ids recoded.txt --make-bed --out ", prefix4final)) 
+           " --update-ids recoded.txt --make-bed --out ", outputPrefix)) 
     #######################################################
     setwd("..")
-    system(paste0("mv ", postImputeDIR, prefix4final, "* ", finalImputeDIR)) 
-    system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
-    ## step 2.7    
-    setwd(finalImputeDIR)
-    suffix4impute2info <- ".impute2_info"
-    badImputeSNPfile <- "badImputeSNPs.txt" 
-    .filterImputeData(plink, suffix4impute2info, 
-                     outputInfoFile, infoScore, badImputeSNPfile, 
-                     inputPrefix=prefix4final, outputPrefix)
     setwd("..")
-    setwd("..")
+    system(paste0("mv ", tmpImputeDir, "/", postImputeDIR, outputPrefix, ".* .")) 
+    system(paste0("mv ", tmpImputeDir, "/", imputedDIR, outputInfoFile,  " .")) 
+
     if (keepTmpDir == FALSE){
         system(paste0("rm -r ", tmpImputeDir))
     } else if (keepTmpDir == TRUE){
-        print("Keep the temporary imputation folder.")
+        print("Keep the intermediate imputation folder.")
     }
 
 }
-
 
 
 
