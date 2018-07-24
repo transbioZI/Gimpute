@@ -2,9 +2,8 @@
 # File   : runTests.R
 # Author : Junfang Chen
 # Version0: 28 Jun 2016
-# VersionX: 27 Jun 2018
+# VersionX: 24 Jul 2018
    
- 
 
 
 library(Gimpute)
@@ -18,14 +17,15 @@ system("mkdir 5-reductAndExpand")
 system("mkdir 6-finalResults")
 
 ## Define the directory where you place the imputation reference files 
+## Reference panel 1
 referencePanel <- "1000Gphase1v3_macGT1" ## indicator
 impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
 impRefDIR <- impRefDIR1kGp1v3
 
- 
-# referencePanel <- "1000Gphase3" ## indicator 
-# impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
-# impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
+ # Reference panel 2
+referencePanel <- "1000Gphase3" ## indicator 
+impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
+impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
 
 
 ## Genotyping chip annotation file 
@@ -53,8 +53,8 @@ library(doParallel)
 
 ############################################################
 
-## Run the following code, only after you have the above tools 
-## and the imputation reference files.
+## Run the following code, only if you have the above tools 
+## and the imputation reference files, configuration files.
 
 ############################################################
 
@@ -251,14 +251,13 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputedFiltered"
 prefix4final <- "gwasImputed"   
 outputInfoFile <- "infoScore.txt"
-tmpImputeDir <- "tmpImpute2Phase1"
+tmpImputeDir <- paste0("tmp", referencePanel)
 phaseImpute2(inputPrefix, outputPrefix, prefix4final,
             plink, shapeit, impute2, gtool, 
             windowSize=3000000, effectiveSize=20000, 
-            nCore4phase=1, nThread=40, 
-            nCore4impute=40, threshold=0.9, 
-            nCore4gtool=40, infoScore=0.6, outputInfoFile, 
+            nCore=40, threshold=0.9, infoScore=0.6, outputInfoFile, 
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+
 
 # effectiveSize=20000
 # nCore4phase=1
@@ -269,16 +268,13 @@ phaseImpute2(inputPrefix, outputPrefix, prefix4final,
 # infoScore=0.6
 
 # ## alternatively
-# tmpImputeDir <- "tmpImpute4"
-# phaseImpute4(inputPrefix, outputPrefix, prefix4final,
-#             plink, shapeit, impute4, qctool, gtool, 
-#             windowSize=3000000, effectiveSize=20000, 
-#             nCore4phase=1, nThread=40, 
-#             nCore4impute=40, threshold=0.9, 
-#             nCore4gtool=40, infoScore=0.6, outputInfoFile, 
-#             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+tmpImputeDir <- paste0("imp4tmp", referencePanel)
+phaseImpute4(inputPrefix, outputPrefix, prefix4final,
+            plink, shapeit, impute4, qctool, gtool, 
+            windowSize=3000000, effectiveSize=20000, 
+            nCore=40, threshold=0.9, infoScore=0.6, outputInfoFile, 
+            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
   
-
 ##################################################### After imputation
 
 ## runtime
@@ -394,6 +390,7 @@ if (referencePanel == "1000Gphase3"){
 }
    
 setwd("..") 
+
 
 ############################################################
 ### code chunk number 5: Data subset and expansion 
