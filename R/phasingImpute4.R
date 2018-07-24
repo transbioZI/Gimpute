@@ -319,8 +319,7 @@ phaseImpute4 <- function(inputPrefix, outputPrefix,
     chunkDIR <- "2-chunkFile/"
     phaseDIR <- "3-phaseResults/"  
     imputedDIR <- "4-imputeResults/"  
-    postImputeDIR <- "5-postImpute/" 
-    finalImputeDIR <- "6-finalResults/"  
+    postImputeDIR <- "5-postImpute/"    
     setwd("..")  
     ## step 2.1 
     ## copy plink files without monomorphic SNPs; prepare for the imputation.

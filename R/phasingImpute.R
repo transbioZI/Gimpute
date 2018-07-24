@@ -801,8 +801,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.  
 #' @param infoScore the cutoff of filtering imputation quality score for 
-#' each variant. The default value is 0.6. 
-#' @param badImputeSNPfile the output file of SNPs with bad info scores.  
+#' each variant. The default value is 0.6.  
 #' @param inputPrefix the prefix of the input imputed PLINK binary files. 
 #' @param outputPrefix the prefix of the output filtered PLINK binary files. 
 
@@ -821,8 +820,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 .filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
-                             infoScore=0.6, badImputeSNPfile, inputPrefix, 
-                             outputPrefix){ 
+                              infoScore=0.6, inputPrefix, outputPrefix){ 
 
     ## read each .impute2_info file, remove 1st line, add to another file 
     ## and repeat get all impute2_info files for each chunk
@@ -845,12 +843,14 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
     ## filtering   
     snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
+    badImputeSNPfile <- "badImputeSNPs.txt"
     write.table(snpWithBadInfo, file=badImputeSNPfile, quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
     ## extract filtered SNPs  
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
            badImputeSNPfile, " --make-bed --out ", outputPrefix)) 
     # system("rm impute2infoAllvariants.txt")
+    system(paste0("rm ", badImputeSNPfile))
 
 }
 
@@ -867,7 +867,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' two columns: SNP names and their info scores.  
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant. The default value is 0.6. 
-#' @param badImputeSNPfile the output file of SNPs with bad info scores.  
+## #' @param badImputeSNPfile the output file of SNPs with bad info scores.  
 #' @param inputPrefix the prefix of the input imputed PLINK binary files. 
 #' @param outputPrefix the prefix of the output filtered PLINK binary files. 
 
@@ -885,8 +885,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 
 .filterImputeData2 <- function(plink, outputInfoFile, infoScore=0.6, 
-                               badImputeSNPfile, inputPrefix, 
-                               outputPrefix){ 
+                               inputPrefix, outputPrefix){ 
  
     ## with colnames: rsid, info
     impute2info <- read.table(file=outputInfoFile, 
@@ -894,12 +893,14 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
     impute2info[,2] <- round(impute2info[,2], 3)
  
     ## filtering   
-    snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
+    snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]
+    badImputeSNPfile <- "badImputeSNPs.txt"   
     write.table(snpWithBadInfo, file=badImputeSNPfile, quote=FALSE, 
                 row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")
     ## extract filtered SNPs  
     system(paste0(plink, " --bfile ", inputPrefix, " --exclude ", 
            badImputeSNPfile, " --make-bed --out ", outputPrefix))  
+    system(paste0("rm ", badImputeSNPfile))
 
 }
 
@@ -1079,8 +1080,7 @@ phaseImpute2 <- function(inputPrefix, outputPrefix,
     chunkDIR <- "2-chunkFile/"
     phaseDIR <- "3-phaseResults/"  
     imputedDIR <- "4-imputeResults/"  
-    postImputeDIR <- "5-postImpute/" 
-    finalImputeDIR <- "6-finalResults/"  
+    postImputeDIR <- "5-postImpute/"   
     setwd("..")  
     ## step 2.1 
     ## copy plink files without monomorphic SNPs; prepare for the imputation.
