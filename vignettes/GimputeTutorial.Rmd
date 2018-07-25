@@ -7,6 +7,7 @@ date: "Modified: 05 Jul 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
   BiocStyle::html_document:
     toc: true
+    toc_float: true
     number_sections: true 
     href: GimputeTutorial2.html 
 
@@ -48,6 +49,8 @@ Gimpute runs on any 64-bit x86 Linux distribution and it requires the following 
 * [IMPUTE4](https://jmarchini.org/impute-4/)
 * [QCTOOLv2](http://www.well.ox.ac.uk/~gav/qctool_v2/)
 * [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
+
+Note that, IMPUTE4 and QCTOOLv2 are not required if you are using IMPUTE2 for the imputation.
 
 ## Installation 
 Development version from Github:
@@ -281,7 +284,7 @@ All files named in this subsection are in the directory 2-genoQC/.
 
 ### Input files
 
-* Genotype data after updating the genotype information:../1-genoUpdate/1_11_removedYMtSnp.#
+* Genotype data with updated genotype information:../1-genoUpdate/1_11_removedYMtSnp.#
 
 ### Processing example
 
@@ -577,19 +580,52 @@ All files named in this subsection are in the directory 5-reductAndExpand/.
 * The SNPs with different positions: ../3-checkAlign/3_2_snpSameNameDiffPos.txt
 * The dataset before removing SNPs for the alignment with the imputation reference: ../3-checkAlign/3_1_QCdata.#
 
-### Processing steps
+### Detailed steps
 
 1. Firt of all, copy all the input files into the directory ./5-reductAndExpand/. Then do the reduction of the imputed dataset to the SNPs before imputation.
 + Output files: 5_1_reducedToSpecific.#
 
 2. Add the SNPs (if any) with different alleles from the dataset before removing SNPs.
-+ Output files: 5_2_extSpecificDiffAllele.#
++ Output files: 5_2_specificDiffAllele.#
 
 3. Add the SNPs (if any) with missing positions from the dataset before removing SNPs.
-+ Output files: 5_3_extSpecificMissPos.#
++ Output files: 5_3_specificMissPos.#
 
 4. Add the SNPs (if any) with different positions from the dataset before removing SNPs.
-+ Output files: 5_4_extSpecificDiffPos.#
++ Output files: 5_4_specificDiffPos.#
+
+### Processing example
+
+```{r eval=FALSE} 
+inputPrefix <- "4_6_removedSnpMissPostImp"
+inputQCprefix <- "3_1_QCdata"
+snpRefAlleleFile <- "3_4_snpImpRefAlleles.txt"
+snpDiffAlleleFile <- "3_4_snpDiffAlleles.txt"
+snpMissPosFile <- "3_3_snpMissPos.txt"
+snpSameNameDifPosFile <- "3_2_snpSameNameDiffPos.txt" 
+
+dir5 <- "./5-reductAndExpand/"
+## imputed dataset
+system(paste0("scp ./4-imputation/", inputPrefix, ".* ", dir5)) 
+system(paste0("scp ./3-checkAlign/", inputQCprefix, ".* ", dir5))
+system(paste0("scp ./3-checkAlign/", snpRefAlleleFile, " ", dir5))
+system(paste0("scp ./3-checkAlign/", snpDiffAlleleFile, " ", dir5))
+system(paste0("scp ./3-checkAlign/", snpMissPosFile, " ", dir5))
+system(paste0("scp ./3-checkAlign/", snpSameNameDifPosFile, " ", dir5))
+
+setwd(dir5)
+reducedToSpecificfn <- "5_1_reducedToSpecific"
+specificDiffAllelefn <- "5_2_specificDiffAllele"
+specificMissPosfn <- "5_3_specificMissPos"
+specificDiffPosfn <- "5_4_specificDiffPos" 
+
+reductExpand(referencePanel, inputPrefix, inputQCprefix, 
+             snpRefAlleleFile, snpDiffAlleleFile, 
+             snpMissPosFile, snpSameNameDifPosFile, 
+             reducedToSpecificfn, specificDiffAllelefn, 
+             specificMissPosfn, specificDiffPosfn)
+```         
+
 
 ## Final results
 

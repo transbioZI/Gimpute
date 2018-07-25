@@ -257,8 +257,7 @@ phaseImpute2(inputPrefix, outputPrefix,
              nCore=40, threshold=0.9, outputInfoFile, 
              referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
-
-
+ 
 # ## alternatively
 tmpImputeDir <- paste0("imp4tmp2v", referencePanel)
 phaseImpute4(inputPrefix, outputPrefix,
