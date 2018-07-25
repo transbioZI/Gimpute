@@ -4,10 +4,9 @@
 \alias{phaseImpute2}
 \title{Phasing and imputation}
 \usage{
-phaseImpute2(inputPrefix, outputPrefix, prefix4final, plink, shapeit, impute2,
-  gtool, windowSize = 3e+06, effectiveSize = 20000, nCore4phase = 1,
-  nThread = 40, nCore4impute = 40, threshold = 0.9, nCore4gtool = 40,
-  infoScore = 0.6, outputInfoFile, referencePanel, impRefDIR, tmpImputeDir,
+phaseImpute2(inputPrefix, outputPrefix, plink, shapeit, impute2, gtool,
+  windowSize = 3e+06, effectiveSize = 20000, nCore = 40,
+  threshold = 0.9, outputInfoFile, referencePanel, impRefDIR, tmpImputeDir,
   keepTmpDir = TRUE)
 }
 \arguments{
@@ -15,9 +14,6 @@ phaseImpute2(inputPrefix, outputPrefix, prefix4final, plink, shapeit, impute2,
 the imputation.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files
-after imputation and filtering out bad imputed variants.}
-
-\item{prefix4final}{the prefix of the output PLINK binary files
 after imputation.}
 
 \item{plink}{an executable program in either the current 
@@ -38,23 +34,12 @@ The default value is 3000000.}
 \item{effectiveSize}{this parameter controls the effective population size. 
 Commonly denoted as Ne. A universal -Ne value of 20000 is suggested.}
 
-\item{nCore4phase}{the number of cores used for phasing. This can be tuned 
-along with nThread. The default value is 1}
-
-\item{nThread}{the number of threads used for computation.
-The default value is 40.}
-
-\item{nCore4impute}{the number of cores used for imputation. 
-The default value is 40.}
+\item{nCore}{the number of cores used for splitting chromosome by PLINK, 
+phasing, imputation, genotype format modification, genotype conversion, and 
+merging genotypes. The default value is 40.}
 
 \item{threshold}{threshold for merging genotypes from GEN probability. 
 Default 0.9.}
-
-\item{nCore4gtool}{the number of cores used for computation. 
-The default value is 40.}
-
-\item{infoScore}{the cutoff of filtering imputation quality score for 
-each variant. The default value is 0.6.}
 
 \item{outputInfoFile}{the output file of impute2 info scores consisting of 
 two columns: all imputed SNPs and their info scores.}
@@ -100,20 +85,17 @@ famFile <- system.file("extdata", "alignedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, " ."))   
 system(paste0("scp ", bimFile, " ."))   
 system(paste0("scp ", famFile, " ."))   
-inputPrefix <- "alignedData"  
-outputPrefix <- "gwasImputedFiltered"
-prefix4final <- "gwasImputed"   
+inputPrefix <- "alignedData"   
+outputPrefix <- "gwasImputed"   
 outputInfoFile <- "infoScore.txt"
 tmpImputeDir <- "tmpImpute"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
-## phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-##             plink, shapeit, impute2, gtool, 
+## phaseImpute2(inputPrefix, outputPrefix,
+##             plink, shapeit, impute2, gtool,  
 ##             windowSize=3000000, effectiveSize=20000, 
-##             nCore4phase=1, nThread=40, 
-##             nCore4impute=40, nCore4gtool=40, 
-##             infoScore=0.6, outputInfoFile, referencePanel, 
-##             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+##             nCore=40, threshold=0.9, outputInfoFile,
+##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 }
 \references{
 \enumerate{
