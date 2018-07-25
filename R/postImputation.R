@@ -64,7 +64,7 @@ postImpQC <- function(inputPrefix, out1, out2, out3, out4, out5, out6,
                " --extract ", outputMonoSNPfile, " --make-bed --out ", 
                inputPrefix4aligned2impRef, "Tmp")) 
         bim1 <- read.table(paste0(inputPrefix4aligned2impRef, "Tmp.bim"), 
-                           stringsAsFactors=F)
+                           stringsAsFactors=FALSE)
         system(paste0("awk '{print $1, $2, $4}' ", 
                out3, ".bim > tmpFilterImp.txt"))
         bim2 <- read.table("tmpFilterImp.txt", stringsAsFactors=F) 
