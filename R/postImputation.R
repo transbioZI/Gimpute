@@ -133,13 +133,7 @@ postImpQC <- function(inputPrefix, out1, out2, out3, out4, out5, out6,
 #' @description
 #' Reduce well imputed dataset to have SNPs before imputation and then added 
 #' genotype data that are different from the imputation reference panel.
-
-reductExpand(referencePanel, inputPrefix, inputQCprefix, 
-             snpRefAlleleFile, snpDiffAlleleFile, 
-             snpMissPosFile, snpSameNameDifPosFile, 
-             reducedToSpecificfn, specificDiffAllelefn, 
-             specificMissPosfn, specificDiffPosfn)
-
+ 
 #' @param referencePanel a string indicating the type of imputation 
 #' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param inputPrefix the prefix of final well imputed PLINK files. 
