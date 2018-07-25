@@ -3,10 +3,9 @@ title: "Gimpute: An efficient genetic data imputation pipeline"
 author:
  - name: Junfang Chen, Dietmar Lippold and Emanuel Schwarz
    affiliation: Central Institute of Mental Health, Heidelberg University, Germany  
-date: "Modified: 05 Jul 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
+date: "Modified: 21 Jul 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
-  BiocStyle::html_document:
-    toc: true
+  BiocStyle::html_document: 
     toc_float: true
     number_sections: true 
     href: GimputeTutorial2.html 
@@ -458,12 +457,16 @@ outputPrefix <- "2_13_removedOutliers"
 
 All files named in this subsection are in the directory 3-checkAlign/.  
 
+The function `checkAlign2ref()` performs the alignment against a given reference  
+panel by considering the following parameters: variant name, genomic position and  
+the allele presentation. Output files are generated in order. 
+
 ### Input files
 
 * PLINK files after quality control and population outlier detection: 2_13_removedOutliers.#
 * Imputation reference files (see section 2.4.2).
 
-### Processing steps
+### Detailed steps
 
 1. If the genome build of already QC-ed is different from the genome build of the imputation reference files, then lift the data from the first genome build to the second. If the genome build is the same, then just copy the input files.
  
@@ -485,6 +488,7 @@ imputation reference files for that combination of base pair position and chromo
 + Output file with the removed SNP names: 3_4_snpDiffAlleles.txt
 + Output file with the retained SNPs: 3_4_snpImpRefAlleles.txt
  
+### Processing example
 
 ```{r} 
 # renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
@@ -509,12 +513,17 @@ out4.snpRetained <- "3_4_snpImpRefAlleles"
 ## Imputation
 All files named in this subsection are in the directory 4-imputation/.
 
+In this subsection, three major functions `removedMonoSnp()`, `phaseImpute2()`
+(alternatively, `phaseImpute4()` and `postImpQC()` are used for the purpose of 
+excluding monomorphic SNPs, phasing, imputation and post imputation QC.
+
 ### Input files
 
-* PLINK genotyping data after QC and the alignment with the imputation reference files: ../3-checkAlign/3_4_removedSnpDiffAlleles.#
+* PLINK genotyping data after QC and the alignment with the imputation reference 
+  files: ../3-checkAlign/3_4_removedSnpDiffAlleles.#
 * Imputation reference files (see section 2.4.2).
 
-### Processing example
+### Detailed steps and processing examples
  
 1. Remove monomorphic SNPs from the well aligned genotyping data.
 + Primary output files: 4_1_removedMonoSnp.#
@@ -526,36 +535,37 @@ outputMonoSNPfile <- "4_1_snpMonoRemoved.txt"
 #                outputPrefix, outputSNPfile=outputMonoSNPfile)
 ```
 
-2. Use the imputation reference files to generate pre-phase haplotypes by SHAPEIT and then do the imputation by using IMPUTE2. GTOOL is used for the file format conversion.
+2. Use the imputation reference files to generate pre-phase haplotypes by SHAPEIT 
+and then do the imputation by using IMPUTE2. GTOOL is used for format conversion.
+In the case of using IMPUTE4, QCTOOL is used instead of GTOOL.
 + Output files: 4_2_imputedDataset.#
++ Output file with the info scores of all SNPs, which consists of two columns, separated by whitespaces, the first the SNPs and the second the info scores: 4_2_snpImputedInfoScore.txt. This is also the output from last step: impute2infoUpdated.txt.  
 
-```{r}  
+```{r eval=FALSE}  
 inputPrefix <- "4_1_removedMonoSnp"  
-outputPrefix <- "gwasImputedFiltered"
-prefix4final <- "gwasImputed"   
-outputInfoFile <- "impute2infoUpdated.txt"
-tmpImputeDir <- "tmpImpute"
-# phaseImpute2(inputPrefix, outputPrefix, prefix4final,
-#             plink, shapeit, impute2, gtool, 
-#             windowSize=3000000, effectiveSize=20000, 
-#             nCore4phase=1, nThread=40, 
-#             nCore4impute=40, nCore4gtool=40, 
-#             infoScore=0.6, outputInfoFile, 
-#             impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+outputPrefix <- "gwasImputed"   
+outputInfoFile <- "4_2_snpImputedInfoScore.txt"
+tmpImputeDir <- paste0("tmp", referencePanel)
+phaseImpute2(inputPrefix, outputPrefix,
+             plink, shapeit, impute2, gtool, 
+             windowSize=3000000, effectiveSize=20000, 
+             nCore=40, threshold=0.9, outputInfoFile, 
+             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
-# renamePlinkBFile(inputPrefix="gwasImputed", 
-#                  outputPrefix="4_2_imputedDataset", action="move")
+ 
+## alternatively
+tmpImputeDir <- paste0("imp4tmp", referencePanel)
+phaseImpute4(inputPrefix, outputPrefix,
+             plink, shapeit, impute4, qctool, gtool, 
+             windowSize=3000000, effectiveSize=20000, 
+             nCore=40, threshold=0.9, outputInfoFile, 
+             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 ```
 
-3. Remove imputed SNPs with (info < 0.6) where the value info comes from the files *.impute2_info from the imputation.
-+ Primary output files: 4_3_removedSnpInfoPostImp.#. The output files "gwasImputedFiltered.#" from last step are renamed for this purpose.
-+ Output file with the info scores of all SNPs, which consists of two columns, separated by whitespaces, the first the SNPs and the second the info scores: 4_3_snpImputedInfoScore.txt. This is also the output from last step: impute2infoUpdated.txt.  
 
-```{r} 
-prefix4filteredPlink <- "gwasImputedFiltered"
-# renamePlinkBFile(inputPrefix="gwasImputedFiltered", 
-#                  outputPrefix="4_3_removedSnpInfoPostImp", action="move")  
-```
+3. Remove imputed SNPs with (info < 0.6) where the value info comes from the 
+files *.impute2_info from the imputation.
++ Output files: 4_3_wellImputeData.#
 
 4. Remove all SNPs (if any) which have the same position as a SNP in 4_1_snpMonoRemoved.txt has in aligned instance data.
 + Output files: 4_4_removedMonoSnpAfter.#
@@ -566,10 +576,36 @@ prefix4filteredPlink <- "gwasImputedFiltered"
 6. Remove SNPs which have a non missing value for less then 20 instances.
 + Primary output files: 4_6_removedSnpMissPostImp.#
 + Output file with the removed SNP names: 4_6_snpRemovedMissPostImp.txt
++ Output file with the remaining SNP names: 4_6_snpRetainMissPostImp.txt
+
+
+```{r eval=FALSE} 
+inputPrefix4aligned2impRef <- "3_4_removedSnpDiffAlleles" 
+inputPrefix <- "gwasImputed"
+out2 <- "4_2_imputedDataset"
+out3 <- "4_3_wellImputeData"
+out4 <- "4_4_removedMonoSnpAfter"
+out5 <- "4_5_addedMonoSnpAfter"
+out6 <- "4_6_removedSnpMissPostImp" 
+outRemovedSNPfile <- "4_6_snpRemovedMissPostImp.txt"
+outRetainSNPfile <- "4_6_snpRetainMissPostImp.txt"
+
+postImpQC(inputPrefix, out1, out2, out3, out4, out5, out6,
+          outputInfoFile, infoScore=0.6, inputPrefix4aligned2impRef, 
+          missCutoff=20, outRemovedSNPfile, 
+          outRetainSNPfile, referencePanel) 
+```
+
 
 ## Reduction and expansion
 
-All files named in this subsection are in the directory 5-reductAndExpand/.
+All files named in this subsection are in the directory 5-reductAndExpand/. 
+
+`reductExpand()` function extracts the genotypes from well imputed data so that 
+PLINK data with only SNPs before imputation are remained. On the basis of 
+extracted genotypes, a subset of non-imputed genotypes that are different from 
+the imputation reference panel are then added, including SNPs with different alleles, 
+missing positions, and different positions.
 
 ### Input files
 
@@ -632,7 +668,7 @@ setwd("..")
 
 Copy and rename the results of interest to the directory ./6-finalResults. 
 
-The metadata information file, the final well imputed and a subset of well imputed dataset (dataset-specific) are essential for the subsequent analysis.
+The metadata information file, the final well imputed and a subset of imputed dataset (dataset-specific) are essential for the subsequent analysis.
 
 ```{r eval=FALSE} 
 dir6 <- "./6-finalResults/"
