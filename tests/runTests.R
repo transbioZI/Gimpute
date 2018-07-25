@@ -249,8 +249,8 @@ removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef,
  
 inputPrefix <- "4_1_removedMonoSnp"  
 outputPrefix <- "gwasImputed"   
-outputInfoFile <- "infoScore.txt"
-tmpImputeDir <- paste0("tmp2v", referencePanel)
+outputInfoFile <- "4_2_snpImputedInfoScore.txt"
+tmpImputeDir <- paste0("tmp", referencePanel)
 phaseImpute2(inputPrefix, outputPrefix,
              plink, shapeit, impute2, gtool, 
              windowSize=3000000, effectiveSize=20000, 
@@ -259,7 +259,7 @@ phaseImpute2(inputPrefix, outputPrefix,
 
  
 # ## alternatively
-tmpImputeDir <- paste0("imp4tmp2v", referencePanel)
+tmpImputeDir <- paste0("imp4tmp", referencePanel)
 phaseImpute4(inputPrefix, outputPrefix,
              plink, shapeit, impute4, qctool, gtool, 
              windowSize=3000000, effectiveSize=20000, 
