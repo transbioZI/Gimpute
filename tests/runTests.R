@@ -334,11 +334,11 @@ setwd("..")
 dir6 <- "./6-finalResults/"
 system(paste0("scp ./1-genoUpdate/1_01_metaData.txt ", dir6))
 system(paste0("scp ./4-imputation/4_6_removedSnpMissPostImp.* ", dir6))  
-system(paste0("scp ./5-reductAndExpand/5_4_extSpecificDiffPos.* ", dir6))
+system(paste0("scp ./5-reductAndExpand/5_4_specificDiffPos.* ", dir6))
 setwd(dir6)
 renamePlinkBFile(inputPrefix="4_6_removedSnpMissPostImp", 
                  outputPrefix="imputedSnpsDataset", action="move")
-renamePlinkBFile(inputPrefix="5_4_extSpecificDiffPos", 
+renamePlinkBFile(inputPrefix="5_4_specificDiffPos", 
                  outputPrefix="specificSnpsDataset", action="move")
 
 
