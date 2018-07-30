@@ -41,26 +41,45 @@ pre-phasing, imputation and post-imputation quality control [3], as well as an e
 Gimpute runs on any 64-bit x86 Linux distribution and it requires the following tools [4,5,6,7]:
 
 * [R](https://www.r-project.org/) (>=3.5.0)
-* [PLINK](https://www.cog-genomics.org/plink2) (1.90)
-* [GCTA64](http://cnsgenomics.com/software/gcta/#Download) (1.91.5beta) 
+* [PLINK](https://www.cog-genomics.org/plink2)
+* [GCTA64](http://cnsgenomics.com/software/gcta/#Download)   
 * [SHAPEIT](http://www.shapeit.fr/) 
 * [IMPUTE2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html) 
 * [IMPUTE4](https://jmarchini.org/impute-4/)
-* [QCTOOLv2](http://www.well.ox.ac.uk/~gav/qctool_v2/)
+* [QCTOOLv2](http://www.well.ox.ac.uk/~gav/qctool_v2/documentation/download.html)
 * [GTOOL](http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html) 
 
-Note that, IMPUTE4 and QCTOOLv2 are not required if you are using IMPUTE2 for the imputation.
+You can install the tools from the command line as the following examples:
+```{r eval=FALSE}
+## PLINK
+wget https://www.cog-genomics.org/static/bin/plink180717/plink_linux_x86_64.zip
+unzip plink_linux_x86_64.zip
 
+## GCTA64
+wget http://cnsgenomics.com/software/gcta/gcta_1.91.5beta.zip
+unzip gcta_1.91.5beta.zip
+
+## SHAPEIT
+wget https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.v2.r904.glibcv2.17.linux.tar.gz
+tar -zxvf shapeit.v2.r904.glibcv2.17.linux.tar.gz
+
+## IMPUTE2
+wget https://mathgen.stats.ox.ac.uk/impute/impute_v2.3.2_x86_64_static.tgz
+tar -zxvf impute_v2.3.2_x86_64_static.tgz
+
+## GTOOL
+wget http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool_v0.7.5_x86_64.tgz
+tar -zxvf gtool_v0.7.5_x86_64.tgz
+
+## QCTOOLv2 
+wget http://www.well.ox.ac.uk/~gav/resources/qctool_v2.0-CentOS6.8-x86_64.tgz
+tar -zxvf qctool_v2.0-CentOS6.8-x86_64.tgz
+```
+Note that, IMPUTE4 can be downloaded only after applying for access. IMPUTE4 and QCTOOLv2 are not required if you are using IMPUTE2 for the imputation.
 
 ## Installation 
 Development version from Github:
 
-* Install Gimpute from the command line
-```{r eval=FALSE}
-git clone https://github.com/transbioZI/Gimpute
-R CMD build Gimpute
-R CMD INSTALL Gimpute_*.tar.gz
-```
 *  Install Gimpute in R
 ```{r eval=FALSE}
 install.packages("devtools")
@@ -68,6 +87,12 @@ library("devtools")
 install_github("transbioZI/Gimpute", build_vignettes=TRUE)
 ```
 
+* Install Gimpute from the command line
+```{r eval=FALSE}
+git clone https://github.com/transbioZI/Gimpute
+R CMD build Gimpute
+R CMD INSTALL Gimpute_*.tar.gz
+```
 Gimpute runs on any 64-bit x86 Linux distribution. Additional dependencies are described below.
 
 ## Experimental data
