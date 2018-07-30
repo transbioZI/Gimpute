@@ -22,20 +22,10 @@ referencePanel <- "1000Gphase1v3_macGT1" ## indicator
 impRefDIR1kGp1v3 <- "/data/noether/dataRawReadOnly/reference/1000GP_phase1v3/"
 impRefDIR <- impRefDIR1kGp1v3
 
- # Reference panel 2
-referencePanel <- "1000Gphase3" ## indicator 
-impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
-impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
-
-
-## Genotyping chip annotation file 
-chipAnnoFile <- system.file("extdata", "coriellAffyChip.txt", 
-                                 package="Gimpute")
-## Self-defined configuration files
-removedSampIDFile <- system.file("extdata", "excludedSampIDs.txt", 
-                                 package="Gimpute")
-excludedProbeIdsFile <- system.file("extdata", "excludedProbeIDs.txt", 
-                                    package="Gimpute")
+#  # Alternative Reference panel 2
+# referencePanel <- "1000Gphase3" ## indicator 
+# impRefDIR1kGp3 <- "/data/noether/dataRawReadOnly/reference/1000GP_Phase3/"
+# impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
 
 ## Define required tools
 plink <- "/home/junfang.chen/Gimpute/tools/plink"
