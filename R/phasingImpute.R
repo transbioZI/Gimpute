@@ -1183,10 +1183,11 @@ phaseImpute <- function(inputPrefix, outputPrefix,
             arg2 <- paste0(i, "noINDEL.impute2")   
             system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
         }, mc.cores=nCore) ## by default  
-        setwd("..") 
+
         suffix4imputed <- ".impute2noINDEL.impute2"   
         suffix4impute2info <- ".impute2_info" 
         .getInfoScoreImpute2(suffix4impute2info, outputInfoFile)
+        setwd("..")     
  
     } else if (imputeTool == "impute4"){ 
         ## chrX is not available for impute4.    
@@ -1210,7 +1211,6 @@ phaseImpute <- function(inputPrefix, outputPrefix,
         suffix4imputed <- ".genNoINDEL.gen"
         ## compute info score for each chunk, then combine all info scores
         computeInfoByQctool(qctool, inputSuffix=suffix4imputed, outputInfoFile)
-        
         setwd("..") 
           
     } else { 
