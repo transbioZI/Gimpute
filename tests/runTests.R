@@ -30,12 +30,20 @@ impRefDIR <- impRefDIR1kGp1v3
 ## Define required tools
 plink <- "/home/junfang.chen/Gimpute/tools/plink"
 gcta <- "/home/junfang.chen/Gimpute/tools/gcta64" 
-shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit"
-impute2 <- "/home/junfang.chen/Gimpute/tools/impute2"
+shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit" 
 gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
-## Gimpute has the following dependencies: 
-impute4 <- "/home/junfang.chen/Gimpute/tools/impute4.1_r291.2"
+## Gimpute has the following dependencies:  
 qctool <- "/home/junfang.chen/Gimpute/tools/qctool"
+
+imputeTool <- "impute2"
+if (imputeTool == "impute2"){
+    impute <- "/home/junfang.chen/Gimpute/tools/impute2"
+} else if (imputeTool == "impute4"){
+    impute <- "/home/junfang.chen/Gimpute/tools/impute4.1_r291.2"
+} else {
+    print("Wrong imputeTool or no imputation tool is provided!")
+}
+
 
 library(lattice)
 library(doParallel)
@@ -241,20 +249,20 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "gwasImputed"   
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
 tmpImputeDir <- paste0("tmp", referencePanel)
-phaseImpute2(inputPrefix, outputPrefix,
-             plink, shapeit, impute2, gtool, 
+phaseImpute(inputPrefix, outputPrefix,
+             plink, shapeit, imputeTool, impute, qctool, gtool, 
              windowSize=3000000, effectiveSize=20000, 
              nCore=40, threshold=0.9, outputInfoFile, 
              referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
  
-# ## alternatively
-tmpImputeDir <- paste0("imp4tmp", referencePanel)
-phaseImpute4(inputPrefix, outputPrefix,
-             plink, shapeit, impute4, qctool, gtool, 
-             windowSize=3000000, effectiveSize=20000, 
-             nCore=40, threshold=0.9, outputInfoFile, 
-             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+# # ## alternatively
+# tmpImputeDir <- paste0("imp4tmp", referencePanel)
+# phaseImpute4(inputPrefix, outputPrefix,
+#              plink, shapeit, impute4, qctool, gtool, 
+#              windowSize=3000000, effectiveSize=20000, 
+#              nCore=40, threshold=0.9, outputInfoFile, 
+#              referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
   
 ##################################################### After imputation
 ## runtime
@@ -345,6 +353,8 @@ runTimeList$totalMin <- sum(unlist(totallist))/60
 runTimeList$totalSec <- sum(unlist(totallist))
 
 print(runTimeList)
+
+
 
 ############################################################
 ### code chunk number 6: Extending pipeline
