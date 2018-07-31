@@ -636,7 +636,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @param prefix4eachChr the prefix of the input IMPUTE2 files and 
 #' also the output PLINK binary files for each chunk.
 #' @param suffix4imputed the suffix of the IMPUTE2 format file that stores 
-#' the imputed value.
+#' the imputed value. Both ".impute2" and ".gen" are accepted.
 #' @param postImputeDIR the directory where converted PLINK binary files 
 #' will be located.  
 #' @param threshold threshold for merging genotypes from GEN probability. 
