@@ -28,18 +28,19 @@ impRefDIR <- impRefDIR1kGp1v3
 # impRefDIR <- paste0(impRefDIR1kGp3, "1000GP_Phase3/")
 
 ## Define required tools
-plink <- "/home/junfang.chen/Gimpute/tools/plink"
-gcta <- "/home/junfang.chen/Gimpute/tools/gcta64" 
-shapeit <- "/home/junfang.chen/Gimpute/tools/shapeit" 
-gtool <- "/home/junfang.chen/Gimpute/tools/gtool"
+toolDIR <- "/home/junfang.chen/Gimpute/tools/"
+plink <- paste0(toolDIR, "plink")
+gcta <- paste0(toolDIR, "gcta64") 
+shapeit <- paste0(toolDIR, "shapeit") 
+gtool <- paste0(toolDIR, "gtool")
 ## Gimpute has the following dependencies:  
-qctool <- "/home/junfang.chen/Gimpute/tools/qctool"
+qctool <- paste0(toolDIR, "qctool")
 
 imputeTool <- "impute2"
 if (imputeTool == "impute2"){
-    impute <- "/home/junfang.chen/Gimpute/tools/impute2"
+    impute <- paste0(toolDIR, "impute2")
 } else if (imputeTool == "impute4"){
-    impute <- "/home/junfang.chen/Gimpute/tools/impute4.1_r291.2"
+    impute <- paste0(toolDIR, "impute4.1_r291.2")
 } else {
     print("Wrong imputeTool or no imputation tool is provided!")
 }
