@@ -236,5 +236,5 @@ reductExpand <- function(referencePanel, inputPrefix, inputQCprefix,
         system("rm tmp.*")
     }
 
-
+    system("rm *.log")
 }
