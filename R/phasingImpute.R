@@ -817,37 +817,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 
 ##' @export 
 #' @author Junfang Chen 
-
-
-
-    system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
-    ## step 2.7    
-    setwd(finalImputeDIR)
-    suffix4impute2info <- ".impute2_info" 
-
-getInfoScoreImpute2 <- function(suffix4impute2info, outputInfoFile){
-
-    ## read each .impute2_info file, remove 1st line, add to another file 
-    ## and repeat get all impute2_info files for each chunk
-    files <- system(paste0("ls *", suffix4impute2info), intern=TRUE) 
-    for (i in seq_len(length(files))) { 
-        ## impute2infoAllvariants.txt is the temporal file
-         system(paste0("sed 1d ", files[i], "  >> impute2infoAllvariants.txt")) 
-    }  
-     
-    ## only keep SNPs and SNPs with two alleles   
-    arg1 = paste0("grep 'rs' impute2infoAllvariants.txt ")
-    arg2 = paste0("awk '{if(length($4) == 1 && length($5) == 1) print}' ")
-    arg3 = paste0("awk '{print $2, $7}' > impute2infoUpdateTmp.txt")
-    system(paste0(arg1, " | ", arg2, " | ", arg3))
-    system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
-
-}
-
-
-   impute2info <- read.table(file=outputInfoFile, stringsAsFactors=FALSE)  
-    colnames(impute2info) <- c("rs_id", "info") 
-
+ 
 
 .filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
                               infoScore=0.6, inputPrefix, outputPrefix){ 
@@ -869,7 +839,7 @@ getInfoScoreImpute2 <- function(suffix4impute2info, outputInfoFile){
     system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
     ## added colnames 
     impute2info <- read.table(file=outputInfoFile, stringsAsFactors=FALSE)  
-    colnames(impute2info) <- c("rs_id", "info") 
+    colnames(impute2info) <- c("rsid", "info") 
 
     ## filtering   
     snpWithBadInfo <- impute2info[which(impute2info[, "info"] < infoScore), 1]  
@@ -886,6 +856,47 @@ getInfoScoreImpute2 <- function(suffix4impute2info, outputInfoFile){
 
 
 
+
+#' Extract info score   
+#'
+#' @description
+#' Extract info score file summarized from the output of IMPUTE2.
+#' 
+#' @param suffix4impute2info the suffix of input IMPUTE2 generated files that 
+#' store the imputation quality score for each variant from .impute2_info files.
+#' @param outputInfoFile the output file of impute2 info scores consisting of 
+#' two columns: all imputed SNPs and their info scores.  
+
+#' @return A pure text file contains the info scores of all imputed SNPs with 
+#' two columns: SNP names and the corresponding info scores. The header names 
+#' are "rsid" and "info". 
+ 
+##' @export 
+#' @author Junfang Chen 
+  
+
+.getInfoScoreImpute2 <- function(suffix4impute2info, outputInfoFile){
+
+    ## read each .impute2_info file, remove 1st line, add to another file 
+    ## and repeat get all impute2_info files for each chunk
+    files <- system(paste0("ls *", suffix4impute2info), intern=TRUE) 
+    for (i in seq_len(length(files))) { 
+        ## impute2infoAllvariants.txt is the temporal file
+         system(paste0("sed 1d ", files[i], "  >> impute2infoAllvariants.txt")) 
+    }  
+     
+    ## only keep SNPs and SNPs with two alleles   
+    arg1 = paste0("grep 'rs' impute2infoAllvariants.txt ")
+    arg2 = paste0("awk '{if(length($4) == 1 && length($5) == 1) print}' ")
+    arg3 = paste0("awk '{print $2, $7}' > impute2infoUpdateTmp.txt")
+    system(paste0(arg1, " | ", arg2, " | ", arg3))
+    ## add header
+    system("sed -i '1i rsid info'  impute2infoUpdateTmp.txt")
+    system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
+}
+ 
+
+
 #' Filter genetic variants    
 #'
 #' @description
@@ -894,7 +905,8 @@ getInfoScoreImpute2 <- function(suffix4impute2info, outputInfoFile){
 #' @param plink an executable program in either the current working 
 #' directory or somewhere in the command path. 
 #' @param outputInfoFile the output file of info scores consisting of 
-#' two columns: SNP names and their info scores.  
+#' two columns: SNP names and their info scores. The headers are 
+#' c("rsid", "info").
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant. The default value is 0.6. 
 ## #' @param badImputeSNPfile the output file of SNPs with bad info scores.  
@@ -1172,8 +1184,10 @@ phaseImpute <- function(inputPrefix, outputPrefix,
             system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
         }, mc.cores=nCore) ## by default  
         setwd("..") 
-        suffix4imputed <- ".impute2noINDEL.impute2"  
-
+        suffix4imputed <- ".impute2noINDEL.impute2"   
+        suffix4impute2info <- ".impute2_info" 
+        .getInfoScoreImpute2(suffix4impute2info, outputInfoFile)
+ 
     } else if (imputeTool == "impute4"){ 
         ## chrX is not available for impute4.    
         if (is.element(23, chrs) == TRUE) { chrs <- setdiff(chrs, 23) }   
