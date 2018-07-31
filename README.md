@@ -13,7 +13,7 @@ git clone https://github.com/transbioZI/Gimpute
 R CMD build Gimpute
 R CMD INSTALL Gimpute_*.tar.gz
 ```
-2.) Install Gimpute in R
+2.) Install Gimpute in R (Recommended)
 ```{r eval=FALSE}
 install.packages("devtools")
 library("devtools")
