@@ -155,8 +155,9 @@ genoQC(plink, inputPrefix,
 inputPrefix <- "2_12_removedSnpHweFemaleX" 
 outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPCplotFile <- "2_13_eigenvalAfterQC.png"
-nThread <- 20
-plotPCA4plink(gcta, inputPrefix, nThread, outputPC4subjFile, outputPCplotFile)
+nCores <- detectCores() 
+plotPCA4plink(gcta, inputPrefix, nThread=nCores, 
+              outputPC4subjFile, outputPCplotFile)
 
 
 ############################################################
@@ -173,7 +174,7 @@ inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
 outputPC4outlierFile <- "2_13_eigenval4outliers.txt"
 outputPCplotFile <- "2_13_removedOutliers.png"
 outputPrefix <- "2_13_removedOutliers" 
-removeOutlierByPCs(plink, gcta, inputPrefix, nThread=20, 
+removeOutlierByPCs(plink, gcta, inputPrefix, nThread=nCores, 
                    cutoff, cutoffSign, inputPC4subjFile, 
                    outputPC4outlierFile, outputPCplotFile, outputPrefix) 
 
@@ -201,7 +202,7 @@ bimReferenceFile <- "bimImputeRef.txt"
 
 ## If not available  >>> 
 .prepareLegend2bim(inputFile, referencePanel, 
-                   outputFile=bimReferenceFile, ncore=25) 
+                   outputFile=bimReferenceFile, ncore=nCores) 
 ## If not available  <<< 
 
 inputPrefix <- "3_1_QCdata" 
@@ -214,7 +215,7 @@ out4.snp <- "3_4_snpDiffAlleles"
 out4.snpRetained <- "3_4_snpImpRefAlleles"
 checkAlign2ref(plink, inputPrefix, referencePanel, bimReferenceFile, 
                out2, out2.snp, out3, out3.snp, 
-               out4, out4.snp, out4.snpRetained, nCore=25)
+               out4, out4.snp, out4.snpRetained, nCore=nCores)
 setwd("..") 
 
 ## runtime
@@ -252,7 +253,7 @@ tmpImputeDir <- paste0("tmp", referencePanel)
 phaseImpute(inputPrefix, outputPrefix,
              plink, shapeit, imputeTool, impute, qctool, gtool, 
              windowSize=3000000, effectiveSize=20000, 
-             nCore=40, threshold=0.9, outputInfoFile, 
+             nCore=nCores, threshold=0.9, outputInfoFile, 
              referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
  
@@ -261,7 +262,7 @@ phaseImpute(inputPrefix, outputPrefix,
 # phaseImpute4(inputPrefix, outputPrefix,
 #              plink, shapeit, impute4, qctool, gtool, 
 #              windowSize=3000000, effectiveSize=20000, 
-#              nCore=40, threshold=0.9, outputInfoFile, 
+#              nCore=nCores, threshold=0.9, outputInfoFile, 
 #              referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
   
 ##################################################### After imputation

@@ -819,6 +819,36 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' @author Junfang Chen 
 
 
+
+    system(paste0("mv ", imputedDIR, "*.impute2_info ", finalImputeDIR)) 
+    ## step 2.7    
+    setwd(finalImputeDIR)
+    suffix4impute2info <- ".impute2_info" 
+
+getInfoScoreImpute2 <- function(suffix4impute2info, outputInfoFile){
+
+    ## read each .impute2_info file, remove 1st line, add to another file 
+    ## and repeat get all impute2_info files for each chunk
+    files <- system(paste0("ls *", suffix4impute2info), intern=TRUE) 
+    for (i in seq_len(length(files))) { 
+        ## impute2infoAllvariants.txt is the temporal file
+         system(paste0("sed 1d ", files[i], "  >> impute2infoAllvariants.txt")) 
+    }  
+     
+    ## only keep SNPs and SNPs with two alleles   
+    arg1 = paste0("grep 'rs' impute2infoAllvariants.txt ")
+    arg2 = paste0("awk '{if(length($4) == 1 && length($5) == 1) print}' ")
+    arg3 = paste0("awk '{print $2, $7}' > impute2infoUpdateTmp.txt")
+    system(paste0(arg1, " | ", arg2, " | ", arg3))
+    system(paste0("mv impute2infoUpdateTmp.txt ", outputInfoFile))
+
+}
+
+
+   impute2info <- read.table(file=outputInfoFile, stringsAsFactors=FALSE)  
+    colnames(impute2info) <- c("rs_id", "info") 
+
+
 .filterImputeData <- function(plink, suffix4impute2info, outputInfoFile, 
                               infoScore=0.6, inputPrefix, outputPrefix){ 
 
@@ -1126,7 +1156,7 @@ phaseImpute <- function(inputPrefix, outputPrefix,
 
     if (imputeTool == "impute2"){ 
               
-        .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, referencePanel, 
+        .imputedByImpute2(impute2=impute, chrs, prefixChunk, phaseDIR, referencePanel, 
                           impRefDIR, imputedDIR, prefix4eachChr, 
                           nCore, effectiveSize)
         ## step 2.5    ## extract only SNPs (without INDELs)
@@ -1147,9 +1177,8 @@ phaseImpute <- function(inputPrefix, outputPrefix,
     } else if (imputeTool == "impute4"){ 
         ## chrX is not available for impute4.    
         if (is.element(23, chrs) == TRUE) { chrs <- setdiff(chrs, 23) }   
-        .imputedByImpute4(impute4, chrs, prefixChunk, phaseDIR, 
-                          referencePanel, impRefDIR, 
-                          imputedDIR, prefix4eachChr,    
+        .imputedByImpute4(impute4=impute, chrs, prefixChunk, phaseDIR, referencePanel,
+                          impRefDIR, imputedDIR, prefix4eachChr,    
                           nCore, effectiveSize)  
         ## step 2.5  ## extract only SNPs (without INDELs)
         #######################################################
