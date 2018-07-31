@@ -4,24 +4,22 @@
 \alias{postImpQC}
 \title{Post imputation quality control}
 \usage{
-postImpQC(inputPrefix, out1, out2, out3, out4, out5, out6, outputInfoFile,
+postImpQC(inputPrefix, out1, out2, out3, out4, outputInfoFile,
   infoScore = 0.6, inputPrefix4aligned2impRef, missCutoff = 20,
   outRemovedSNPfile, outRetainSNPfile, referencePanel)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the final imputed PLINK files.}
 
-\item{out2}{the prefix of the final imputed PLINK files with the index.}
+\item{out1}{the prefix of well imputed PLINK files with the index.}
 
-\item{out3}{the prefix of well imputed PLINK files with the index.}
-
-\item{out4}{the prefix of well imputed PLINK files after removing any 
+\item{out2}{the prefix of well imputed PLINK files after removing any 
 SNPs with the same positions (if any), the index is also appended.}
 
-\item{out5}{the prefix of well imputed PLINK files with the index 
+\item{out3}{the prefix of well imputed PLINK files with the index 
 after adding previously identified monomorphic SNPs if any.}
 
-\item{out6}{the prefix of final well imputed PLINK files with the index.}
+\item{out4}{the prefix of final well imputed PLINK files with the index.}
 
 \item{outputInfoFile}{the output file of impute2 info scores consisting of 
 two columns: all imputed SNPs and their info scores.}

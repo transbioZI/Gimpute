@@ -248,7 +248,7 @@ removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef,
 # imputation main pipeline
  
 inputPrefix <- "4_1_removedMonoSnp"  
-outputPrefix <- "gwasImputed"   
+outputPrefix <- "4_2_imputedDataset"   
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
 tmpImputeDir <- paste0("tmp", referencePanel)
 phaseImpute(inputPrefix, outputPrefix,
@@ -271,21 +271,19 @@ phaseImpute(inputPrefix, outputPrefix,
 t4impute <- proc.time() - t4imputeTmp
 print(t4impute)
 runTimeList$t4impute <- t4impute
-
 t4postImputeTmp <- proc.time()   
 
 
 inputPrefix4aligned2impRef <- "3_4_removedSnpDiffAlleles" 
-inputPrefix <- "gwasImputed"
-out2 <- "4_2_imputedDataset"
-out3 <- "4_3_wellImputeData"
-out4 <- "4_4_removedMonoSnpAfter"
-out5 <- "4_5_addedMonoSnpAfter"
-out6 <- "4_6_removedSnpMissPostImp" 
+inputPrefix <- "4_2_imputedDataset" 
+out1 <- "4_3_wellImputeData"
+out2 <- "4_4_removedMonoSnpAfter"
+out3 <- "4_5_addedMonoSnpAfter"
+out4 <- "4_6_removedSnpMissPostImp" 
 outRemovedSNPfile <- "4_6_snpRemovedMissPostImp.txt"
 outRetainSNPfile <- "4_6_snpRetainMissPostImp.txt"
 
-postImpQC(inputPrefix, out1, out2, out3, out4, out5, out6,
+postImpQC(inputPrefix, out1, out2, out3, out4,
           outputInfoFile, infoScore=0.6, inputPrefix4aligned2impRef, 
           missCutoff=20, outRemovedSNPfile, 
           outRetainSNPfile, referencePanel)
