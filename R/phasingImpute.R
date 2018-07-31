@@ -972,8 +972,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' Phasing and imputation 
 #'
 #' @description
-#' Perform phasing, imputation and conversion from IMPUTE2 format into PLINK 
-#' binary files. 
+#' Perform phasing, imputation and conversion from IMPUTE2 or GEN format into  
+#' PLINK binary files. 
 
 #' @param inputPrefix the prefix of the input PLINK binary files for 
 #' the imputation. 
@@ -983,8 +983,14 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' working directory or somewhere in the command path.
 #' @param shapeit an executable program in either the current 
 #' working directory or somewhere in the command path.
-#' @param impute2 an executable program in either the current 
-#' working directory or somewhere in the command path.
+#' @param imputeTool a string indicating the type of imputation tool is used: 
+#' "impute2" or "impute4".
+#' @param impute an executable program in either the current 
+#' working directory or somewhere in the command path. It can be either 
+#' "impute2" or "impute4".
+#' @param qctool an executable program in either the current working 
+#' directory or somewhere in the command path. This is only used if imputeTool
+#' is "impute4".
 #' @param gtool an executable program in either the current 
 #' working directory or somewhere in the command path. 
 #' @param windowSize  the window size of each chunk. 
@@ -999,7 +1005,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.   
 #' @param referencePanel a string indicating the type of imputation 
-#' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
+#' reference panels is used: "1000Gphase1v3_macGT1" or "1000Gphase3".
 #' @param impRefDIR the directory where the imputation reference files 
 #' are located.  
 #' @param tmpImputeDir the name of the temporary directory used for 
@@ -1007,7 +1013,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' @param keepTmpDir a logical value indicating if the directory 
 #' 'tmpImputeDir' should be kept or not. The default is TRUE.
 
-#' @return 1.) The filtered imputed PLINK binary files; 
+#' @return  Note that chromosome X is not supported for the impute4.
+#' 1.) The filtered imputed PLINK binary files; 
 #' 2.) The final PLINK binary files including bad imputed variants;
 #' 3.) A pure text file contains the info scores of all imputed SNPs with 
 #' two columns: SNP names and the corresponding info scores. 
@@ -1016,7 +1023,7 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' 1.) Phasing the input PLINK data using an existing imputation reference;  
 #' 2.) Imputing the input PLINK data using phased results and an existing 
 #' reference data; 
-#' 3.) Converting IMPUTE2 format data into PLINK format.
+#' 3.) Converting IMPUTE2 or GEN format data into PLINK format.
 #' 4.) Combining all imputed data into whole-genome PLINK binary files.
 #' 5.) Filtering out imputed variants with bad imputation quality. 
 #' Parallel computing in R is supported.
@@ -1033,6 +1040,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #'   \item Howie, B. N., et al. (2009). A flexible and accurate genotype 
 #'         imputation method for the next generation of genome-wide association 
 #'         studies. PLoS Genet 5(6): e1000529.
+#'   \item Bycroft, C., et al. Genome-wide genetic data on~ 500,000 UK Biobank 
+#'         participants. BioRxiv (2017): 166298.
 #' }
 
 #' @examples 
@@ -1049,19 +1058,19 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' ## phaseImpute2(inputPrefix, outputPrefix,
-#' ##             plink, shapeit, impute2, gtool,  
+#' ## phaseImpute(inputPrefix, outputPrefix,
+#' ##             plink, shapeit, imputeTool, impute, qctool, gtool, 
 #' ##             windowSize=3000000, effectiveSize=20000, 
 #' ##             nCore=40, threshold=0.9, outputInfoFile,
 #' ##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
-phaseImpute2 <- function(inputPrefix, outputPrefix,
-                         plink, shapeit, impute2, gtool, 
-                         windowSize=3000000, effectiveSize=20000, 
-                         nCore=40,  threshold=0.9, outputInfoFile,
-                         referencePanel, impRefDIR, 
-                         tmpImputeDir, keepTmpDir=TRUE){
+phaseImpute <- function(inputPrefix, outputPrefix,
+                        plink, shapeit, imputeTool, impute, qctool, gtool, 
+                        windowSize=3000000, effectiveSize=20000, 
+                        nCore=40,  threshold=0.9, outputInfoFile,
+                        referencePanel, impRefDIR, 
+                        tmpImputeDir, keepTmpDir=TRUE){
 
     ## create directories for storing tmp imputation output files 
     ## The name of these directories must be fixed for the sake of 
@@ -1074,7 +1083,6 @@ phaseImpute2 <- function(inputPrefix, outputPrefix,
     system("mkdir 3-phaseResults")
     system("mkdir 4-imputeResults")
     system("mkdir 5-postImpute")
-    system("mkdir 6-finalResults")  
     # define directories
     dataDIR <- "1-dataFiles/"  
     chunkDIR <- "2-chunkFile/"
@@ -1114,25 +1122,58 @@ phaseImpute2 <- function(inputPrefix, outputPrefix,
                          impRefDIR, phaseDIR, nThread=nCore, 
                          effectiveSize, nCore=1)
     ## step 2.4   
-    prefixChunk <- paste0(chunkDIR, chunkPrefix)        
-    .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, referencePanel, 
-                      impRefDIR, imputedDIR, prefix4eachChr, 
-                      nCore, effectiveSize)
-    ## step 2.5   
-    ## extract only SNPs (without INDELs)
-    #######################################################
-    setwd(imputedDIR)  
-    ## extract only SNPs starting with "rs";  .
-    ls <- system("ls gwas*.impute2", intern=TRUE)
-    snpPrefix <- "rs" 
-    biglists <- as.list(ls)
-    mclapply(biglists, function(i){ 
-        arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
-        arg2 <- paste0(i, "noINDEL.impute2")   
-        system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
-    }, mc.cores=nCore) ## by default  
-    setwd("..") 
-    suffix4imputed <- ".impute2noINDEL.impute2"   
+    prefixChunk <- paste0(chunkDIR, chunkPrefix)  
+
+    if (imputeTool == "impute2"){ 
+              
+        .imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, referencePanel, 
+                          impRefDIR, imputedDIR, prefix4eachChr, 
+                          nCore, effectiveSize)
+        ## step 2.5    ## extract only SNPs (without INDELs)
+        #######################################################
+        setwd(imputedDIR)  
+        ## extract only SNPs starting with "rs";  .
+        ls <- system("ls gwas*.impute2", intern=TRUE)
+        snpPrefix <- "rs" 
+        biglists <- as.list(ls)
+        mclapply(biglists, function(i){ 
+            arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
+            arg2 <- paste0(i, "noINDEL.impute2")   
+            system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
+        }, mc.cores=nCore) ## by default  
+        setwd("..") 
+        suffix4imputed <- ".impute2noINDEL.impute2"  
+
+    } else if (imputeTool == "impute4"){ 
+        ## chrX is not available for impute4.    
+        if (is.element(23, chrs) == TRUE) { chrs <- setdiff(chrs, 23) }   
+        .imputedByImpute4(impute4, chrs, prefixChunk, phaseDIR, 
+                          referencePanel, impRefDIR, 
+                          imputedDIR, prefix4eachChr,    
+                          nCore, effectiveSize)  
+        ## step 2.5  ## extract only SNPs (without INDELs)
+        #######################################################
+        setwd(imputedDIR)  
+        ## extract only SNPs starting with "rs";  .
+        ls <- system("ls gwas*.gen", intern=TRUE)
+        snpPrefix <- "rs" 
+        biglists <- as.list(ls)
+        mclapply(biglists, function(i){ 
+            arg1 <- paste0(" awk '{if(length($4) == 1 && length($5) == 1) print}'")
+            arg2 <- paste0(i, "NoINDEL.gen")   
+            system(paste0("grep '", snpPrefix, "' ", i, " | ", arg1, " > ", arg2))
+        }, mc.cores=nCore) ## by default 
+ 
+        suffix4imputed <- ".genNoINDEL.gen"
+        ## compute info score for each chunk, then combine all info scores
+        computeInfoByQctool(qctool, inputSuffix=suffix4imputed, outputInfoFile)
+        
+        setwd("..") 
+          
+    } else { 
+        print("Wrong imputation tool or no imputation tool is provided!")
+    }
+
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                           prefix4eachChr, suffix4imputed, 
                           postImputeDIR, threshold, nCore)
