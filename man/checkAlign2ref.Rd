@@ -57,8 +57,7 @@ the imputation reference.
 \description{
 Perform the alignment against a reference panel by considering the following
 parameters: variant name, genomic position and the allele profile.
-Output files are generated sequentially, so they are determined
-by the previous PLINK files.
+Output files are generated sequentially depending on their previous PLINK data.
 }
 \details{
 The output files are genrated in order. Genomic position includes
