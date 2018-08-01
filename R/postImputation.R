@@ -5,6 +5,8 @@
 #' @description
 #' Perform quality control and data management after imputation. 
 
+#' @param plink an executable program in either the current working 
+#' directory or somewhere in the command path.
 #' @param inputPrefix the prefix of the final imputed PLINK files. 
 #' @param out1 the prefix of well imputed PLINK files with the index. 
 #' @param out2 the prefix of well imputed PLINK files after removing any 
@@ -35,7 +37,7 @@
 #' @author Junfang Chen 
 
 
-postImpQC <- function(inputPrefix, out1, out2, out3, out4,
+postImpQC <- function(plink, inputPrefix, out1, out2, out3, out4,
                       outputInfoFile, infoScore=0.6, 
                       inputPrefix4aligned2impRef, missCutoff=20, 
                       outRemovedSNPfile, outRetainSNPfile, referencePanel){
