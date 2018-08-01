@@ -231,16 +231,16 @@ t4imputeTmp <- proc.time()
 ############################################################
 ## step 1 
 ## Remove monomorphic SNPs from lifted/QC-ed data  
-inputPrefix4aligned2impRef <- "3_4_removedSnpDiffAlleles" 
+prefixAlign2ref <- "3_4_removedSnpDiffAlleles" 
 outputPrefix <- "4_1_removedMonoSnp"
 outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4,5.
 
 ## copy plink files from last step; 
 system(paste0("cp ./3-checkAlign/", 
-       inputPrefix4aligned2impRef, ".* ./4-imputation/"))
+       prefixAlign2ref, ".* ./4-imputation/"))
 ## remove Monomorphic SNPs
 setwd("4-imputation")
-removedMonoSnp(plink, inputPrefix=inputPrefix4aligned2impRef, 
+removedMonoSnp(plink, inputPrefix=prefixAlign2ref, 
                outputPrefix, outputSNPfile=outputMonoSNPfile) 
 # step 2 
 #########################################################################
@@ -252,10 +252,10 @@ outputPrefix <- "4_2_imputedDataset"
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
 tmpImputeDir <- paste0("tmp", referencePanel)
 phaseImpute(inputPrefix, outputPrefix,
-             plink, shapeit, imputeTool, impute, qctool, gtool, 
-             windowSize=3000000, effectiveSize=20000, 
-             nCore=nCores, threshold=0.9, outputInfoFile, 
-             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
+            plink, shapeit, imputeTool, impute, qctool, gtool, 
+            windowSize=3000000, effectiveSize=20000, 
+            nCore=nCores, threshold=0.9, outputInfoFile, 
+            referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
  
 # # ## alternatively
@@ -274,7 +274,7 @@ runTimeList$t4impute <- t4impute
 t4postImputeTmp <- proc.time()   
 
 
-inputPrefix4aligned2impRef <- "3_4_removedSnpDiffAlleles" 
+prefixAlign2ref <- "3_4_removedSnpDiffAlleles" 
 inputPrefix <- "4_2_imputedDataset" 
 out1 <- "4_3_wellImputeData"
 out2 <- "4_4_removedMonoSnpAfter"
@@ -283,13 +283,12 @@ out4 <- "4_6_removedSnpMissPostImp"
 outRemovedSNPfile <- "4_6_snpRemovedMissPostImp.txt"
 outRetainSNPfile <- "4_6_snpRetainMissPostImp.txt"
 
-postImpQC(inputPrefix, out1, out2, out3, out4,
-          outputInfoFile, infoScore=0.6, inputPrefix4aligned2impRef, 
-          missCutoff=20, outRemovedSNPfile, 
+postImpQC(plink, inputPrefix, out1, out2, out3, out4,
+          outputInfoFile, infoScore=0.6, outputMonoSNPfile, 
+          prefixAlign2ref, missCutoff=20, outRemovedSNPfile, 
           outRetainSNPfile, referencePanel)
    
-setwd("..") 
-
+setwd("..")
 
 ############################################################
 ### code chunk number 5: Data subset and expansion 
