@@ -5,7 +5,7 @@
 \title{Post imputation quality control}
 \usage{
 postImpQC(plink, inputPrefix, out1, out2, out3, out4, outputInfoFile,
-  infoScore = 0.6, inputPrefix4aligned2impRef, missCutoff = 20,
+  infoScore = 0.6, outputMonoSNPfile, prefixAlign2ref, missCutoff = 20,
   outRemovedSNPfile, outRetainSNPfile, referencePanel)
 }
 \arguments{
@@ -30,7 +30,10 @@ two columns: all imputed SNPs and their info scores.}
 \item{infoScore}{the cutoff of filtering imputation quality score for 
 each variant. The default value is 0.6.}
 
-\item{inputPrefix4aligned2impRef}{the prefix of the output PLINK binary 
+\item{outputMonoSNPfile}{the output pure text file that stores 
+the removed monomorphic SNPs, one per line, if any.}
+
+\item{prefixAlign2ref}{the prefix of the output PLINK binary 
 files after removing SNPs whose alleles are not in the imputation reference,
 taking their genomic positions into account.}
 

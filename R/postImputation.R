@@ -16,9 +16,11 @@
 #' @param out4 the prefix of final well imputed PLINK files with the index. 
 #' @param infoScore the cutoff of filtering imputation quality score for 
 #' each variant. The default value is 0.6. 
+#' @param outputMonoSNPfile the output pure text file that stores 
+#' the removed monomorphic SNPs, one per line, if any.
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.   
-#' @param inputPrefix4aligned2impRef the prefix of the output PLINK binary 
+#' @param prefixAlign2ref the prefix of the output PLINK binary 
 #' files after removing SNPs whose alleles are not in the imputation reference,
 #' taking their genomic positions into account.
 #' @param missCutoff  the cutoff of the least number of instances for 
@@ -29,6 +31,8 @@
 #' @param referencePanel a string indicating the type of imputation 
 #' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 
+
+
 #' @return All imputed genotype data in PLINK format, well imputed data and 
 #' its variants, as well as a set of pure text files containing removed or 
 #' retained SNPs.
@@ -38,8 +42,8 @@
 
 
 postImpQC <- function(plink, inputPrefix, out1, out2, out3, out4,
-                      outputInfoFile, infoScore=0.6, 
-                      inputPrefix4aligned2impRef, missCutoff=20, 
+                      outputInfoFile, infoScore=0.6, outputMonoSNPfile, 
+                      prefixAlign2ref, missCutoff=20, 
                       outRemovedSNPfile, outRetainSNPfile, referencePanel){
 
     ## step 3
@@ -56,10 +60,10 @@ postImpQC <- function(plink, inputPrefix, out1, out2, out3, out4,
     } else { 
         ## extract PLINK files contain only monomorphic SNPs from 
         ## the original aligned (lifted and QC-ed) data set.
-        system(paste0(plink, " --bfile ", inputPrefix4aligned2impRef, 
+        system(paste0(plink, " --bfile ", prefixAlign2ref, 
                " --extract ", outputMonoSNPfile, " --make-bed --out ", 
-               inputPrefix4aligned2impRef, "Tmp")) 
-        bim1 <- read.table(paste0(inputPrefix4aligned2impRef, "Tmp.bim"), 
+               prefixAlign2ref, "Tmp")) 
+        bim1 <- read.table(paste0(prefixAlign2ref, "Tmp.bim"), 
                            stringsAsFactors=FALSE)
         system(paste0("awk '{print $1, $2, $4}' ", 
                out1, ".bim > tmpFilterImp.txt"))
@@ -81,9 +85,9 @@ postImpQC <- function(plink, inputPrefix, out1, out2, out3, out4,
     } else { 
         ## merge both datasets
         system(paste0(plink, " --bfile ", out2, " --bmerge ", 
-               inputPrefix4aligned2impRef, ".bed ", 
-               inputPrefix4aligned2impRef, ".bim ", 
-               inputPrefix4aligned2impRef, ".fam ", "--make-bed --out ", out3))
+               prefixAlign2ref, ".bed ", 
+               prefixAlign2ref, ".bim ", 
+               prefixAlign2ref, ".fam ", "--make-bed --out ", out3))
     }  
 
     ## step 6
