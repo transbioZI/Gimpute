@@ -4,11 +4,14 @@
 \alias{postImpQC}
 \title{Post imputation quality control}
 \usage{
-postImpQC(inputPrefix, out1, out2, out3, out4, outputInfoFile,
+postImpQC(plink, inputPrefix, out1, out2, out3, out4, outputInfoFile,
   infoScore = 0.6, inputPrefix4aligned2impRef, missCutoff = 20,
   outRemovedSNPfile, outRetainSNPfile, referencePanel)
 }
 \arguments{
+\item{plink}{an executable program in either the current working 
+directory or somewhere in the command path.}
+
 \item{inputPrefix}{the prefix of the final imputed PLINK files.}
 
 \item{out1}{the prefix of well imputed PLINK files with the index.}
