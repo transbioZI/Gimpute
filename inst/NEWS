@@ -3,6 +3,7 @@
 Changes in version 0.99.8
 --------------------------
 
+Added removedMendelErr.R
 Added postImpQC.R 
 Added reductExpand.R  
 Added .getInfoScoreImpute2.R 
