@@ -509,6 +509,58 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 
 
 
+##########################################   
+##########################################
+#' Check Mendel errors for family-based data
+#'
+#' @description
+#' Exclude subjects and/or genetic variants (SNPs) based on Mendel errors in 
+#' the family data (trio/duo). 
+
+#' @param plink an executable program in either the current working directory 
+#' or somewhere in the command path.
+#' @param inputPrefix the prefix of the input PLINK binary files.
+#' @param cutoffSubject the cutoff determines that families (subjects) with 
+#' more than the predefined cutoff of Mendel errors by considering all SNPs 
+#' will be removed. The default is 0.05.
+#' @param cutoffSNP the cutoff indicates that SNPs with more than the 
+#' predefined cutoff of Mendel error rate will be excluded 
+#' (i.e. based on the number of trios/duos). The default is 0.1.
+#' @param outputPrefix the prefix of the output PLINK binary files.
+
+#' @return The output PLINK binary files.
+#' @details Do make sure that all your family relationships are correct 
+#' in your input data before applying this function. The input PLINK data 
+#' should have complete sex and group/outcome information. By default, trios 
+#' and duos are both considered. If no family information is given at all 
+#' (only founders), then this function will not remove any subjects or variants 
+#' but give the warning that no duos or trios are present. 
+
+#' @export  
+#' @author Junfang Chen 
+#' @examples
+#' ## In the current working directory
+#' bedFile <- system.file("extdata", "dataWithFamChr21.bed", package="Gimpute")
+#' bimFile <- system.file("extdata", "dataWithFamChr21.bim", package="Gimpute") 
+#' famFile <- system.file("extdata", "dataWithFamChr21.fam", package="Gimpute")
+#' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
+#' inputPrefix <- "dataWithFamChr21" 
+#' outputPrefix <- "removedMendelErr" 
+#' ## Not run: Requires an executable program PLINK, e.g.
+#' ## plink <- "/home/tools/plink"
+#' ## removedMendelErr(plink, inputPrefix, 
+#' ##                  cutoffSubject, cutoffSNP, outputPrefix)
+
+  
+removedMendelErr <- function(plink, inputPrefix, cutoffSubject=0.05, 
+                             cutoffSNP=0.1, outputPrefix){ 
+
+    system(paste0(plink, " --bfile ", inputPrefix, 
+           " --me ", cutoffSubject, " ", cutoffSNP, 
+           " --mendel-duos --make-bed --out ", outputPrefix)) 
+}
+
+
 
 ##########################################   
 ##########################################  
