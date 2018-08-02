@@ -2,9 +2,7 @@
 # File   : runTests.R
 # Author : Junfang Chen
 # Version0: 28 Jun 2016
-# VersionX: 24 Jul 2018
-   
-
+# VersionX: 02 Aug 2018
 
 library(Gimpute)
 
@@ -56,11 +54,7 @@ library(doParallel)
 ## and the imputation reference files, configuration files.
 
 ############################################################
-
-
-  
-
-
+ 
   
 ############################################################
 ## code chunk number 1: SNP information update  
@@ -250,21 +244,13 @@ removedMonoSnp(plink, inputPrefix=prefixAlign2ref,
 inputPrefix <- "4_1_removedMonoSnp"  
 outputPrefix <- "4_2_imputedDataset"   
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
-tmpImputeDir <- paste0("tmp", referencePanel)
+tmpImputeDir <- paste0(imputeTool, "_", referencePanel)
 phaseImpute(inputPrefix, outputPrefix,
             plink, shapeit, imputeTool, impute, qctool, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore=nCores, threshold=0.9, outputInfoFile, 
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
- 
-# # ## alternatively
-# tmpImputeDir <- paste0("imp4tmp", referencePanel)
-# phaseImpute4(inputPrefix, outputPrefix,
-#              plink, shapeit, impute4, qctool, gtool, 
-#              windowSize=3000000, effectiveSize=20000, 
-#              nCore=nCores, threshold=0.9, outputInfoFile, 
-#              referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
   
 ##################################################### After imputation
 ## runtime
@@ -346,11 +332,9 @@ print(t4postImpute)
 runTimeList$t4postImpute <- t4postImpute 
 
 totallist <- lapply(runTimeList, function(time){time[[3]]})
-print(totallist)  
-
+print(totallist)   
 runTimeList$totalMin <- sum(unlist(totallist))/60
 runTimeList$totalSec <- sum(unlist(totallist))
-
 print(runTimeList)
 
 
@@ -371,13 +355,14 @@ print(runTimeList)
 # impRefDir <- paste0(mainRefGenipe, "imputeReference/1000G_Phase3_2014/")
 # fastaFile <- paste0(mainRefGenipe, "imputeReference/hg19/hg19.fasta")
 
+# imputeTool <- "impute2"
 # ## Impute genotypes using Genipe
 # chrs <- 21
 # inputPrefix <- "dataChr21"
 # thread4impute2 <- 20 ## tune by yourself
 # thread4shapeit <- 30
 # segmentSize <- 3000000
-# # imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute2, 
+# # imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute, 
 # #                plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
 
 # ## merge chunked genomic imputed results
