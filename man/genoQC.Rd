@@ -5,9 +5,10 @@
 \title{Quality control for genotype data}
 \usage{
 genoQC(plink, inputPrefix, snpMissCutOffpre = 0.05, sampleMissCutOff = 0.02,
-  Fhet = 0.2, snpMissCutOffpost = 0.02, snpMissDifCutOff = 0.02,
-  femaleChrXmissCutoff = 0.05, pval4autoCtl = 1e-06,
-  pval4femaleXctl = 1e-06, outputPrefix, keepInterFile = TRUE)
+  Fhet = 0.2, cutoffSubject, cutoffSNP, snpMissCutOffpost = 0.02,
+  snpMissDifCutOff = 0.02, femaleChrXmissCutoff = 0.05,
+  pval4autoCtl = 1e-06, pval4femaleXctl = 1e-06, outputPrefix,
+  keepInterFile = TRUE)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 
@@ -23,6 +24,14 @@ subjects/instances. The default is 0.02.}
 
 \item{Fhet}{the cutoff of the autosomal heterozygosity deviation. 
 The default is 0.2.}
+
+\item{cutoffSubject}{the cutoff determines that families (subjects) with 
+more than the predefined cutoff of Mendel errors by considering all SNPs 
+will be removed. The default is 0.05.}
+
+\item{cutoffSNP}{the cutoff indicates that SNPs with more than the 
+predefined cutoff of Mendel error rate will be excluded 
+(i.e. based on the number of trios/duos). The default is 0.1.}
 
 \item{snpMissCutOffpost}{the cutoff of the missingness for removing SNPs 
 after subject removal. The default is 0.02.}
@@ -83,7 +92,7 @@ outputPrefix <- "2_12_removedSnpHweFemaleX"
 ## genoQC(plink, inputPrefix, 
 ##        snpMissCutOffpre=0.05, 
 ##        sampleMissCutOff=0.02, 
-##        Fhet=0.2, 
+##        Fhet=0.2, cutoffSubject, cutoffSNP,
 ##        snpMissCutOffpost=0.02, 
 ##        snpMissDifCutOff=0.02,
 ##        femaleChrXmissCutoff=0.05, 

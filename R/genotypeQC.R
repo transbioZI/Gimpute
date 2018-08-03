@@ -534,7 +534,7 @@ removedParentIdsMiss <- function(plink, inputPrefix, outputPrefix){
 #' should have complete sex and group/outcome information. By default, trios 
 #' and duos are both considered. If no family information is given at all 
 #' (only founders), then this function will not remove any subjects or variants 
-#' but give the warning that no duos or trios are present. 
+#' but give the warning showing that no duos or trios are present. 
 
 #' @export  
 #' @author Junfang Chen 
@@ -1066,6 +1066,12 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' subjects/instances. The default is 0.02.
 #' @param Fhet the cutoff of the autosomal heterozygosity deviation. 
 #' The default is 0.2.
+#' @param cutoffSubject the cutoff determines that families (subjects) with 
+#' more than the predefined cutoff of Mendel errors by considering all SNPs 
+#' will be removed. The default is 0.05.
+#' @param cutoffSNP the cutoff indicates that SNPs with more than the 
+#' predefined cutoff of Mendel error rate will be excluded 
+#' (i.e. based on the number of trios/duos). The default is 0.1.
 #' @param snpMissCutOffpost the cutoff of the missingness for removing SNPs 
 #' after subject removal. The default is 0.02. 
 #' @param snpMissDifCutOff the cutoff of the difference in missingness between 
@@ -1118,7 +1124,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' ## genoQC(plink, inputPrefix, 
 #' ##        snpMissCutOffpre=0.05, 
 #' ##        sampleMissCutOff=0.02, 
-#' ##        Fhet=0.2, 
+#' ##        Fhet=0.2, cutoffSubject, cutoffSNP,
 #' ##        snpMissCutOffpost=0.02, 
 #' ##        snpMissDifCutOff=0.02,
 #' ##        femaleChrXmissCutoff=0.05, 
@@ -1129,6 +1135,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 
 genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05, 
                    sampleMissCutOff=0.02, Fhet=0.2, 
+                   cutoffSubject, cutoffSNP,
                    snpMissCutOffpost=0.02, snpMissDifCutOff=0.02,
                    femaleChrXmissCutoff=0.05, pval4autoCtl=0.000001, 
                    pval4femaleXctl=0.000001, 
@@ -1159,21 +1166,24 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
                          outputPrefix=outputPrefix7)
     ## step 8  
     outputPrefix8 <- "2_08_removedSnpMissPost" 
+    removedMendelErr(plink, inputPrefix, cutoffSubject, cutoffSNP, outputPrefix)
+    
+    outputPrefix8 <- "2_09_removedSnpMissPost" 
     removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
                    inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
     ## step 9  
-    outputPrefix9 <- "2_09_removedSnpMissDiff" 
+    outputPrefix9 <- "2_10_removedSnpMissDiff" 
     removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
                        snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
     ## step 10
-    outputPrefix10 <- "2_10_removedSnpFemaleChrXmiss" 
+    outputPrefix10 <- "2_11_removedSnpFemaleChrXmiss" 
     removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
                              inputPrefix=outputPrefix9, 
                              outputPrefix=outputPrefix10) 
     ## step 11
-    outputPvalFile <- "2_11_snpHwePvalAuto.txt" 
-    outputSNPfile <-  "2_11_snpRemovedHweAuto.txt" 
-    outputPrefix11 <- "2_11_removedSnpHweAuto" 
+    outputPvalFile <- "2_12_snpHwePvalAuto.txt" 
+    outputSNPfile <-  "2_12_snpRemovedHweAuto.txt" 
+    outputPrefix11 <- "2_12_removedSnpHweAuto" 
     if (groupLabel == "control" | groupLabel == "caseControl"){
         removedSnpHWEauto(groupLabel="control", plink, 
                           inputPrefix=outputPrefix10, 
@@ -1182,8 +1192,8 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     ## HWE test is only performed on control data 
     } else { print("ERROR: HWE test on autosome!") }
     ## step 12 
-    outputPvalFile <- "2_12_snpHwePvalfemaleXct.txt" 
-    outputSNPfile <- "2_12_snpRemovedHweFemaleXct.txt"  
+    outputPvalFile <- "2_13_snpHwePvalfemaleXct.txt" 
+    outputSNPfile <- "2_13_snpRemovedHweFemaleXct.txt"  
     removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
                                    pval=pval4femaleXctl, outputPvalFile,
                                    outputSNPfile, outputPrefix=outputPrefix)
@@ -1209,3 +1219,5 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     ## remove unwanted files
     system(paste0("rm  *.log "))   
 } 
+
+
