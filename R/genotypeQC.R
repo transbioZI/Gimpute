@@ -1099,10 +1099,11 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' 6.) SNP missingness < 0.02 (after sample removal);
 #' 7.) Remove SNPs with difference >= 0.02 of SNP missingness 
 #' between cases and controls;
-#' 8.) Remove chrX SNPs with missingness >= 0.05 in females.
+#' 8.) Remove subjects or SNPs with Mendel errors for family based data.
+#' 9.) Remove chrX SNPs with missingness >= 0.05 in females.
 #' (Optional, if no chrX data);
-#' 9.) Remove autosomal SNPs with HWE p < 10-6 in controls;
-#' 10.) Remove chrX SNPs with HWE p < 10-6 in female controls. 
+#' 10.) Remove autosomal SNPs with HWE p < 10-6 in controls;
+#' 11.) Remove chrX SNPs with HWE p < 10-6 in female controls. 
 #' (Optional, if no chrX data). 
 
 #' @export  
@@ -1118,7 +1119,7 @@ removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff,
 #' famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 #' system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 #' inputPrefix <- "genoUpdatedData" 
-#' outputPrefix <- "2_12_removedSnpHweFemaleX"  
+#' outputPrefix <- "2_13_removedSnpHweFemaleX"  
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
 #' ## genoQC(plink, inputPrefix, 
@@ -1166,36 +1167,38 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
                          outputPrefix=outputPrefix7)
     ## step 8  
     outputPrefix8 <- "2_08_removedMendelErr" 
-    removedMendelErr(plink, inputPrefix, cutoffSubject, cutoffSNP, outputPrefix)
+    removedMendelErr(plink, inputPrefix=outputPrefix7, cutoffSubject, 
+                     cutoffSNP, outputPrefix=outputPrefix8)
     
     ## step 9
     outputPrefix9 <- "2_09_removedSnpMissPost" 
     removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
-                   inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
+                   inputPrefix=outputPrefix8, outputPrefix=outputPrefix9)
     ## step 10  
     outputPrefix10 <- "2_10_removedSnpMissDiff" 
-    removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
-                       snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
+    removedSnpMissDiff(plink, inputPrefix=outputPrefix9, 
+                       snpMissDifCutOff, outputPrefix=outputPrefix10, 
+                       groupLabel) 
     ## step 11
     outputPrefix11 <- "2_11_removedSnpFemaleChrXmiss" 
     removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
-                             inputPrefix=outputPrefix9, 
-                             outputPrefix=outputPrefix10) 
+                             inputPrefix=outputPrefix10, 
+                             outputPrefix=outputPrefix11) 
     ## step 12
     outputPvalFile <- "2_12_snpHwePvalAuto.txt" 
     outputSNPfile <-  "2_12_snpRemovedHweAuto.txt" 
-    outputPrefix11 <- "2_12_removedSnpHweAuto" 
+    outputPrefix12 <- "2_12_removedSnpHweAuto" 
     if (groupLabel == "control" | groupLabel == "caseControl"){
         removedSnpHWEauto(groupLabel="control", plink, 
-                          inputPrefix=outputPrefix10, 
+                          inputPrefix=outputPrefix11, 
                           pval=pval4autoCtl, outputPvalFile, 
-                          outputSNPfile, outputPrefix=outputPrefix11)
+                          outputSNPfile, outputPrefix=outputPrefix12)
     ## HWE test is only performed on control data 
     } else { print("ERROR: HWE test on autosome!") }
     ## step 12 
     outputPvalFile <- "2_13_snpHwePvalfemaleXct.txt" 
     outputSNPfile <- "2_13_snpRemovedHweFemaleXct.txt"  
-    removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix11, 
+    removedSnpFemaleChrXhweControl(plink, inputPrefix=outputPrefix12, 
                                    pval=pval4femaleXctl, outputPvalFile,
                                    outputSNPfile, outputPrefix=outputPrefix)
     if (keepInterFile==FALSE){ 
@@ -1209,6 +1212,7 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
         system(paste0("rm ", outputPrefix9, ".*"))
         system(paste0("rm ", outputPrefix10, ".*"))
         system(paste0("rm ", outputPrefix11, ".*")) 
+        system(paste0("rm ", outputPrefix12, ".*")) 
 
         if (file.exists(outputPvalFile)) {  
             system(paste0("rm ", outputPvalFile))

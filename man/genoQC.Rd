@@ -72,10 +72,11 @@ default steps:
 6.) SNP missingness < 0.02 (after sample removal);
 7.) Remove SNPs with difference >= 0.02 of SNP missingness 
 between cases and controls;
-8.) Remove chrX SNPs with missingness >= 0.05 in females.
+8.) Remove subjects or SNPs with Mendel errors for family based data.
+9.) Remove chrX SNPs with missingness >= 0.05 in females.
 (Optional, if no chrX data);
-9.) Remove autosomal SNPs with HWE p < 10-6 in controls;
-10.) Remove chrX SNPs with HWE p < 10-6 in female controls. 
+10.) Remove autosomal SNPs with HWE p < 10-6 in controls;
+11.) Remove chrX SNPs with HWE p < 10-6 in female controls. 
 (Optional, if no chrX data).
 }
 \examples{
@@ -86,7 +87,7 @@ bimFile <- system.file("extdata", "genoUpdatedData.bim", package="Gimpute")
 famFile <- system.file("extdata", "genoUpdatedData.fam", package="Gimpute")
 system(paste0("scp ", bedFile, bimFile, famFile, " ."))  
 inputPrefix <- "genoUpdatedData" 
-outputPrefix <- "2_12_removedSnpHweFemaleX"  
+outputPrefix <- "2_13_removedSnpHweFemaleX"  
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
 ## genoQC(plink, inputPrefix, 
