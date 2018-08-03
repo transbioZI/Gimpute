@@ -4,7 +4,7 @@
 \alias{removedMaleHetX}
 \title{Remove male subjects with haploid heterozygous SNPs}
 \usage{
-removedMaleHetX(plink, inputPrefix, hhSubjCutOff, outputPrefix,
+removedMaleHetX(plink, inputPrefix, hhSubjCutOff = 15, outputPrefix,
   outputSubjHetFile, outputRetainSubjectFile, outputHetSNPfile)
 }
 \arguments{
@@ -14,7 +14,7 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{hhSubjCutOff}{the cutoff for removing male subjects with haploid 
-heterozygous SNPs on the chromosome X.}
+heterozygous SNPs on the chromosome X. The default is 15.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 

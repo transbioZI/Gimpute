@@ -4,8 +4,9 @@
 \alias{removeOutlierByPCs}
 \title{Remove population outliers}
 \usage{
-removeOutlierByPCs(plink, gcta, inputPrefix, nThread = 20, cutoff, cutoffSign,
-  inputPC4subjFile, outputPC4outlierFile, outputPCplotFile, outputPrefix)
+removeOutlierByPCs(plink, gcta, inputPrefix, nThread = 20, cutoff = NULL,
+  cutoffSign, inputPC4subjFile, outputPC4outlierFile, outputPCplotFile,
+  outputPrefix)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 
@@ -19,9 +20,9 @@ or somewhere in the command path.}
 \item{nThread}{the number of threads used for computation. 
 The default is 20.}
 
-\item{cutoff}{the cutoff that distinguishes the eigenvalues of the outliers
-from ordinary population. If it is null, then there are no outliers or 
-outliers are not required to be removed.}
+\item{cutoff}{the cutoff that distinguishes the outliers from ordinary
+population using PCA. If it is null, then there are no outliers or 
+outliers are not required to be removed. The default is NULL.}
 
 \item{cutoffSign}{the cutoff sign: 'greater' or 'smaller' that determines 
 if the outliers should be greater or smaller than the cutoff value.}

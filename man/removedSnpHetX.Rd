@@ -14,7 +14,7 @@ or somewhere in the command path.}
 \item{inputPrefix}{the prefix of the input PLINK binary files.}
 
 \item{hhCutOff}{the cutoff for removing male haploid heterozygous SNPs 
-on the chromosome X.}
+on the chromosome X. The default is 0.005.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files.}
 
