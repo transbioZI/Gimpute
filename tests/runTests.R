@@ -185,7 +185,7 @@ t4checkAlignTmp <- proc.time()
 ############################################################   
 system("cp ./2-genoQC/2_14_removedOutliers.* ./3-checkAlign/ ")
 setwd("./3-checkAlign/")
-renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
+renamePlinkBFile(inputPrefix="2_14_removedOutliers", 
                  outputPrefix="3_1_QCdata", action="move")
 
 
