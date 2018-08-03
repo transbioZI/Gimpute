@@ -36,7 +36,7 @@
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param hhCutOff the cutoff for removing male haploid heterozygous SNPs 
-#' on the chromosome X.
+#' on the chromosome X. The default is 0.005.
 #' @param outputPrefix the prefix of the output PLINK binary files.
 #' @param outputHetSNPfile the output pure text file that stores 
 #' all heterozygous SNPs with their frequency (the number of males for the 
@@ -153,7 +153,7 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 #' or somewhere in the command path.
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param hhSubjCutOff the cutoff for removing male subjects with haploid 
-#' heterozygous SNPs on the chromosome X.
+#' heterozygous SNPs on the chromosome X. The default is 15.
 #' @param outputPrefix the prefix of the output PLINK binary files.
 #' @param outputSubjHetFile the output pure text file that stores male subjects 
 #' that have heterozygous SNPs with their frequency (if any), i.e. the number 
@@ -198,7 +198,7 @@ removedSnpHetX <- function(plink, inputPrefix, hhCutOff, outputPrefix,
 #' ##                 outputRetainSubjectFile, outputHetSNPfile)
 
 
-removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff, outputPrefix, 
+removedMaleHetX <- function(plink, inputPrefix, hhSubjCutOff=15, outputPrefix, 
                             outputSubjHetFile, outputRetainSubjectFile, 
                             outputHetSNPfile){        
 
@@ -956,9 +956,9 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread=20,
 #' @param inputPrefix the prefix of the input PLINK binary files.
 #' @param nThread the number of threads used for computation. 
 #' The default is 20.
-#' @param cutoff the cutoff that distinguishes the eigenvalues of the outliers  
-#' from ordinary population. If it is null, then there are no outliers or 
-#' outliers are not required to be removed.  
+#' @param cutoff the cutoff that distinguishes the outliers from ordinary  
+#' population using PCA. If it is null, then there are no outliers or 
+#' outliers are not required to be removed. The default is NULL. 
 #' @param cutoffSign the cutoff sign: 'greater' or 'smaller' that determines 
 #' if the outliers should be greater or smaller than the cutoff value.
 #' @param inputPC4subjFile the pure text file that stores all the subject IDs 
@@ -1003,7 +1003,7 @@ plotPCA4plink <- function(gcta, inputPrefix, nThread=20,
 #' ##                    cutoff, cutoffSign, inputPC4subjFile, 
 #' ##                    outputPC4outlierFile, outputPCplotFile, outputPrefix)
 
-removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff, 
+removeOutlierByPCs <- function(plink, gcta, inputPrefix, nThread=20, cutoff=NULL, 
                                cutoffSign, inputPC4subjFile, 
                                outputPC4outlierFile, 
                                outputPCplotFile, outputPrefix){
