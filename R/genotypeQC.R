@@ -1165,22 +1165,23 @@ genoQC <- function(plink, inputPrefix, snpMissCutOffpre=0.05,
     removedParentIdsMiss(plink, inputPrefix=outputPrefix6, 
                          outputPrefix=outputPrefix7)
     ## step 8  
-    outputPrefix8 <- "2_08_removedSnpMissPost" 
+    outputPrefix8 <- "2_08_removedMendelErr" 
     removedMendelErr(plink, inputPrefix, cutoffSubject, cutoffSNP, outputPrefix)
     
-    outputPrefix8 <- "2_09_removedSnpMissPost" 
+    ## step 9
+    outputPrefix9 <- "2_09_removedSnpMissPost" 
     removedSnpMiss(plink, snpMissCutOff=snpMissCutOffpost, 
                    inputPrefix=outputPrefix7, outputPrefix=outputPrefix8)
-    ## step 9  
-    outputPrefix9 <- "2_10_removedSnpMissDiff" 
+    ## step 10  
+    outputPrefix10 <- "2_10_removedSnpMissDiff" 
     removedSnpMissDiff(plink, inputPrefix=outputPrefix8, 
                        snpMissDifCutOff, outputPrefix=outputPrefix9, groupLabel) 
-    ## step 10
-    outputPrefix10 <- "2_11_removedSnpFemaleChrXmiss" 
+    ## step 11
+    outputPrefix11 <- "2_11_removedSnpFemaleChrXmiss" 
     removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, 
                              inputPrefix=outputPrefix9, 
                              outputPrefix=outputPrefix10) 
-    ## step 11
+    ## step 12
     outputPvalFile <- "2_12_snpHwePvalAuto.txt" 
     outputSNPfile <-  "2_12_snpRemovedHweAuto.txt" 
     outputPrefix11 <- "2_12_removedSnpHweAuto" 
