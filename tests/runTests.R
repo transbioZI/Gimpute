@@ -5,6 +5,8 @@
 # VersionX: 02 Aug 2018
 
 library(Gimpute)
+library(lattice)
+library(doParallel)
 
 ## Start an R session in a directory where you'd like to generate the data.
 system("mkdir 1-genoUpdate")
@@ -30,31 +32,20 @@ toolDIR <- "/home/junfang.chen/Gimpute/tools/"
 plink <- paste0(toolDIR, "plink")
 gcta <- paste0(toolDIR, "gcta64") 
 shapeit <- paste0(toolDIR, "shapeit") 
-gtool <- paste0(toolDIR, "gtool")
-## Gimpute has the following dependencies:  
+gtool <- paste0(toolDIR, "gtool") 
 qctool <- paste0(toolDIR, "qctool")
-
 imputeTool <- "impute4"
-if (imputeTool == "impute2"){
-    impute <- paste0(toolDIR, "impute2")
-} else if (imputeTool == "impute4"){
+if (imputeTool == "impute2"){ 
+    impute <- paste0(toolDIR, "impute2") 
+} else if (imputeTool == "impute4"){ 
     impute <- paste0(toolDIR, "impute4.1_r291.2")
-} else {
-    print("Wrong imputeTool or no imputation tool is provided!")
-}
+} 
 
-
-library(lattice)
-library(doParallel)
-  
 
 ############################################################
-
 ## Run the following code, only if you have the above tools 
 ## and the imputation reference files, configuration files.
-
 ############################################################
- 
   
 ############################################################
 ## code chunk number 1: SNP information update  
@@ -162,12 +153,14 @@ plotPCA4plink(gcta, inputPrefix, nThread=nCores,
 
 
 ## remove outliers 
+# cutoff <-  NULL
 cutoff <-  c(-0.4, 0.2)
 cutoffSign <- "greater" ## not used if cutoff == NULL, and with two values 
 inputPC4subjFile <- "2_14_eigenvalAfterQC.txt"
 outputPC4outlierFile <- "2_14_eigenval4outliers.txt"
 outputPCplotFile <- "2_14_removedOutliers.png"
 outputPrefix <- "2_14_removedOutliers" 
+nCores <- detectCores() 
 removeOutlierByPCs(plink, gcta, inputPrefix, nThread=nCores, 
                    cutoff, cutoffSign, inputPC4subjFile, 
                    outputPC4outlierFile, outputPCplotFile, outputPrefix) 
@@ -206,6 +199,7 @@ out3.snp <- "3_3_snpMissPos"
 out4 <- "3_4_removedSnpDiffAlleles"
 out4.snp <- "3_4_snpDiffAlleles"
 out4.snpRetained <- "3_4_snpImpRefAlleles"
+nCores <- detectCores() 
 checkAlign2ref(plink, inputPrefix, referencePanel, bimReferenceFile, 
                out2, out2.snp, out3, out3.snp, 
                out4, out4.snp, out4.snpRetained, nCore=nCores)
@@ -266,7 +260,7 @@ out2 <- "4_4_removedMonoSnpAfter"
 out3 <- "4_5_addedMonoSnpAfter"
 out4 <- "4_6_removedSnpMissPostImp" 
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
-outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4,5.
+outputMonoSNPfile <- "4_1_snpMonoRemoved.txt"  
 prefixAlign2ref <- "3_4_removedSnpDiffAlleles" 
 outRemovedSNPfile <- "4_6_snpRemovedMissPostImp.txt"
 outRetainSNPfile <- "4_6_snpRetainMissPostImp.txt"
