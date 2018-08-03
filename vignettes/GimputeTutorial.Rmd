@@ -80,7 +80,7 @@ Note that, IMPUTE4 can be downloaded only after applying for access. IMPUTE4 and
 ## Installation 
 Development version from Github:
 
-*  Install Gimpute in R
+*  Install Gimpute in R (Recommended)
 ```{r eval=FALSE}
 install.packages("devtools")
 library("devtools")
@@ -97,7 +97,7 @@ Gimpute runs on any 64-bit x86 Linux distribution. Additional dependencies are d
 
 ## Experimental data
 PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. 
-Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown as below. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. However you can either use your own genotyping data or download the data set through dbGaP via [dbGaP authorized access system](https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=login). 
+Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown as below. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. 
 
 ```{r} 
 library(Gimpute)
@@ -112,7 +112,6 @@ The files processed and generated are named in a consistent way across all datas
 
 * filename.# represents a set of the three PLINK files, i.e. the .bed, .fam and .bim file. 
 Binary PLINK files are recommended due to their smaller file size and fast processing.
-
 * filename.txt denotes a file with additional information, such as metadata information, SNP names, in pure text format.
 The names of the output files begin with the number of the step which produces the respective file.
 
@@ -127,24 +126,30 @@ The recommended directories are named as follows:
 * 6-finalResults: Final processed and filtered imputed genotype files are generated in this directory.
  
 ### Required packages and tools
-```{r} 
+```{r eval=FALSE} 
 ## Gimpute has the following dependencies:
 library(lattice)
 library(doParallel)
 ## Define required tools
-plink <- "/home/tools/plink"
-gcta <- "/home/tools/gcta64" 
-shapeit <- "/home/tools/shapeit"
-impute2 <- "/home/tools/impute2"
-gtool <- "/home/tools/gtool"
+toolDIR <- "/home/Gimpute/tools/"
+plink <- paste0(toolDIR, "plink")
+gcta <- paste0(toolDIR, "gcta64") 
+shapeit <- paste0(toolDIR, "shapeit") 
+gtool <- paste0(toolDIR, "gtool") 
+qctool <- paste0(toolDIR, "qctool")
+imputeTool <- "impute4" ## 
+if (imputeTool == "impute2"){ 
+    impute <- paste0(toolDIR, "impute2") 
+} else if (imputeTool == "impute4"){ 
+    impute <- paste0(toolDIR, "impute4.1_r291.2")
+} 
 ```
 
 ### Configuration 
-
-* Self-defined configuration 
+* Self-prepared configuration files
+    + metadataFile: A text file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. 
     + removedSampIDFile: A text file that stores sample IDs, each ID per line, which will be excluded.
     + excludedProbeIdsFile: A text file that stores probe IDs, each ID per line, which will be excluded.
-    + ancestrySymbol: A string symbol for self-identified ancestry (AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian)
 
 * Genotyping chip annotation file: Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 
 This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds. Gimpute requires the chip annotation file that is organized into two different types:  
@@ -152,14 +157,43 @@ This annotation file is particularly important for strand checking and genomic i
     + If the snp name of your study genotype data starts with "SNP_", then the chip type "SNPIDstudy" is used; Usually, Affymetrix chip belongs to this category. The prepared output annotation file must consist of at least the following column names : SNPIDstudy, rs, chr, pos, strand. The column "strand" must only have two kinds of values "-" and "+". Variants with all other values are excluded. 
     + If the snp name of your study genotype data starts with "rs", then the chip type "rsIDstudy" is used; The annotation file should be prepared in advance and must consist of at least the following column names : rsIDstudy, chr, pos, strand. Illumina chip is often specified in this format. The column "strand" must only have two kinds of values "-" and "+". Variants with all other values are excluded.
 
+* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from "1000 Genome Project Phase1v3" are the default panel used in our package. 1000 Genomes Phase 3 is an alternative reference panel. 
+```{r eval=FALSE} 
+## Download imputation reference panels
+## Reference panel 1: 1000Gphase1v3_macGT1
+wget https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz
+tar -zxvf ALL_1000G_phase1integrated_v3_impute_macGT1.tgz
 
-* Imputation reference files: Publicly avaiable reference datasets can be downloaded from [IMPUTE2's reference page](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference). The reference files from [1000 genome project phase1v3](https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute_macGT1.tgz) are the default panel used in our package. 1000 Genomes Phase 3 is an alternative reference panel. A string indicating the type of imputation reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3"). This must be defined before running pipeline. 
-
-```{r} 
-## Define the directory where you place the imputation reference files 
-impRefDIR <- "/home/imputeRef/1000Gphase1/"
-referencePanel <- "1000Gphase1v3_macGT1" ## indicator
+## Reference panel 2: 1000Gphase3
+wget https://mathgen.stats.ox.ac.uk/impute/1000GP_Phase3.tgz
+wget https://mathgen.stats.ox.ac.uk/impute/1000GP_Phase3_chrX.tgz
+tar -zxvf 1000GP_Phase3.tgz
+tar -zxvf 1000GP_Phase3_chrX.tgz
 ```  
+
+A string indicating the type of imputation reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3"). This must be defined before running pipeline. 
+```{r eval=FALSE}  
+## Define the directory where you place the imputation reference files 
+impRefDIR <- "/home/imputeRef/1000Gphase1v3_macGT1/"
+referencePanel <- "1000Gphase1v3_macGT1" 
+## Alternatively,
+impRefDIR <- "/home/imputeRef/1000GP_Phase3/"
+referencePanel <- "1000Gphase3"
+```   
+
+* Global parameters 
+    + ancestrySymbol: A string symbol for self-identified ancestry (AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian, or NULL)
+    + chipType: A string symbol to indicate the type of chip annotation file: c("rsIDstudy", "SNPIDstudy")
+    + hhCutOff (optional): the cutoff for removing male haploid heterozygous SNPs on the chromosome X. The default is 0.005.
+    + hhSubjCutOff (optional): the cutoff for removing male subjects with haploid heterozygous SNPs on the chromosome X. The default is 15.
+    + cutoff (optional): the cutoff that distinguishes the outliers from ordinary population using PCA. The default is NULL meaning that there are no outliers or outliers are not required to be removed.  
+    + referencePanel: A string symbol to indicate the type of input imputation reference panel: c("1000Gphase1v3_macGT1", "1000Gphase3")
+    + imputeTool: A string symbol to indicate the type of used imputation tool: c("impute2", "impute4")
+
+### Gimpute Flowchart
+
+![](Gimpute.png)
+
 
 # Running pipeline 
 ## Genotype information update
@@ -171,16 +205,16 @@ In this subsection, the function `updateGenoInfo()` is mandatory and updates gen
 ### Input files
 
 * Raw genotype data in PLINK format: dataChr21.#
-* Metadata information file about the instances: 1_01_metaData.txt
-* Chip annotation file for genotype information mapping and strand check.
-* The file with the IDs of the excluded instances.
-* The file with the IDs of the excluded probes of the chip.
+* Metadata information file about the instances: metadataFile.
+* Chip annotation file for genotype information mapping and strand check: chipAnnoFile.
+* The file with the IDs of the excluded instances: removedSampIDFile.
+* The file with the IDs of the excluded probes of the chip: excludedProbeIdsFile.
 
 ### Processing example
 
 0. Locate the original PLINK files and other required files either from our package or your side.
 
-```{r} 
+```{r eval=FALSE} 
 ## Not run
 bedFile <- system.file("extdata", "dataChr21.bed", package="Gimpute")
 bimFile <- system.file("extdata", "dataChr21.bim", package="Gimpute") 
@@ -209,11 +243,10 @@ updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
 ### Individual steps
 Note that, the output files of each step are the input of the next step.
 
-1. Use the raw genotype data and metadata information file to generate a file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. In the following example, the metadata file is already preprocessed.
+1. Use the raw genotype data and metadata information file to generate a metadata file. In the following example, the metadata file is already preprocessed.
 + Output file: 1_01_metaData.txt 
 
-```{r eval=FALSE} 
-## Not run
+```{r eval=FALSE}  
 system(paste0("scp ", metadataFile, " ."))  
 ```
 
@@ -334,7 +367,6 @@ genoQC(plink, inputPrefix,
 Alternatively, we elaborate step by step instructions of QC procedure in `genoQC()` for better understanding. 
 Note that, the output files of each step are the input of the next step.
  
-
 1. Determine for each SNP of the chromosome 23 from the genotype data the number of male instances which have the value one as the minor allele count for that SNP. Then, remove all SNPs which number is higher than 0.5 % of the number of male instances. Note that 0.5% is just an example, this should be dataset specific.
 + Primary output files: 2_01_removedSnpHetX.#
 + Output file with the number of instances with heterozygous alleles for each SNP of the chromosome 23 before SNP removal (each line contains a SNP name and the respective number, lines are sorted descending by number): 2_01_snpHHfreqAll.txt
