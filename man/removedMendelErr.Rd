@@ -36,7 +36,7 @@ in your input data before applying this function. The input PLINK data
 should have complete sex and group/outcome information. By default, trios 
 and duos are both considered. If no family information is given at all 
 (only founders), then this function will not remove any subjects or variants 
-but give the warning that no duos or trios are present.
+but give the warning showing that no duos or trios are present.
 }
 \examples{
 ## In the current working directory
