@@ -4,11 +4,15 @@
 \alias{reductExpand}
 \title{Post imputation data extraction and expansion}
 \usage{
-reductExpand(referencePanel, inputPrefix, inputQCprefix, snpRefAlleleFile,
-  snpDiffAlleleFile, snpMissPosFile, snpSameNameDifPosFile, reducedToSpecificfn,
-  specificDiffAllelefn, specificMissPosfn, specificDiffPosfn)
+reductExpand(plink, referencePanel, inputPrefix, inputQCprefix,
+  snpRefAlleleFile, snpDiffAlleleFile, snpMissPosFile, snpSameNameDifPosFile,
+  reducedToSpecificfn, specificDiffAllelefn, specificMissPosfn,
+  specificDiffPosfn)
 }
 \arguments{
+\item{plink}{an executable program in either the current working 
+directory or somewhere in the command path.}
+
 \item{referencePanel}{a string indicating the type of imputation 
 reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").}
 

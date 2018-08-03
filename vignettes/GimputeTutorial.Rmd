@@ -715,7 +715,7 @@ specificDiffAllelefn <- "5_2_specificDiffAllele"
 specificMissPosfn <- "5_3_specificMissPos"
 specificDiffPosfn <- "5_4_specificDiffPos" 
 
-reductExpand(referencePanel, inputPrefix, inputQCprefix, 
+reductExpand(plink, referencePanel, inputPrefix, inputQCprefix, 
              snpRefAlleleFile, snpDiffAlleleFile, 
              snpMissPosFile, snpSameNameDifPosFile, 
              reducedToSpecificfn, specificDiffAllelefn, 

@@ -134,6 +134,8 @@ postImpQC <- function(plink, inputPrefix, out1, out2, out3, out4,
 #' Reduce well imputed dataset to have SNPs before imputation and then added 
 #' genotype data that are different from the imputation reference panel.
  
+#' @param plink an executable program in either the current working 
+#' directory or somewhere in the command path.
 #' @param referencePanel a string indicating the type of imputation 
 #' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param inputPrefix the prefix of final well imputed PLINK files. 
@@ -171,7 +173,7 @@ postImpQC <- function(plink, inputPrefix, out1, out2, out3, out4,
 #' @author Junfang Chen 
 
  
-reductExpand <- function(referencePanel, inputPrefix, inputQCprefix, 
+reductExpand <- function(plink, referencePanel, inputPrefix, inputQCprefix, 
                          snpRefAlleleFile, snpDiffAlleleFile, 
                          snpMissPosFile, snpSameNameDifPosFile,
                          reducedToSpecificfn, specificDiffAllelefn, 
