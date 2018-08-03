@@ -9,12 +9,14 @@ Added reductExpand.R
 Added .getInfoScoreImpute2.R 
 Removed phasingImpute4.R
  
+Improved genoQC.R removedMendelErr.R is now embedded. 
 Improved runTests.R auto detection of the number of CPUs (system-specific) 
 Improved phasingImpute.R impute4 is embedded into phasingImpute.R 
 Improved simplify the variables in phasingImpute.R and phasingImpute4.R 
 Improved update the parameters in phasingImpute.R and phasingImpute4.R
 Improved tutorial: more detailed descriptions of the sections
 Improved tutorial: detailed info about the tool dependencies. 
+Improved tutorial: A flowchart is added.
 
 
 Changes in version 0.99.7
