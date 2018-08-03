@@ -34,7 +34,7 @@ gtool <- paste0(toolDIR, "gtool")
 ## Gimpute has the following dependencies:  
 qctool <- paste0(toolDIR, "qctool")
 
-imputeTool <- "impute2"
+imputeTool <- "impute4"
 if (imputeTool == "impute2"){
     impute <- paste0(toolDIR, "impute2")
 } else if (imputeTool == "impute4"){
@@ -134,22 +134,21 @@ removedMaleHetX(plink, inputPrefix, hhSubjCutOff,
                 outputRetainSubjectFile, outputHetSNPfile) 
 
 inputPrefix <- "2_02_removedInstHetX"
-outputPrefix <- "2_12_removedSnpHweFemaleX" 
+outputPrefix <- "2_13_removedSnpHweFemaleX" 
 genoQC(plink, inputPrefix, 
        snpMissCutOffpre=0.05, 
        sampleMissCutOff=0.02, 
-       Fhet=0.2, 
+       Fhet=0.2, cutoffSubject=0.05, cutoffSNP=0.1,
        snpMissCutOffpost=0.02, 
        snpMissDifCutOff=0.02,
        femaleChrXmissCutoff=0.05, 
        pval4autoCtl=0.000001, 
        pval4femaleXctl=0.000001, outputPrefix, keepInterFile=TRUE)
  
-
 ## step 13 
-inputPrefix <- "2_12_removedSnpHweFemaleX" 
-outputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
-outputPCplotFile <- "2_13_eigenvalAfterQC.png"
+inputPrefix <- "2_13_removedSnpHweFemaleX" 
+outputPC4subjFile <- "2_14_eigenvalAfterQC.txt"
+outputPCplotFile <- "2_14_eigenvalAfterQC.png"
 nCores <- detectCores() 
 plotPCA4plink(gcta, inputPrefix, nThread=nCores, 
               outputPC4subjFile, outputPCplotFile)
@@ -165,10 +164,10 @@ plotPCA4plink(gcta, inputPrefix, nThread=nCores,
 ## remove outliers 
 cutoff <-  c(-0.4, 0.2)
 cutoffSign <- "greater" ## not used if cutoff == NULL, and with two values 
-inputPC4subjFile <- "2_13_eigenvalAfterQC.txt"
-outputPC4outlierFile <- "2_13_eigenval4outliers.txt"
-outputPCplotFile <- "2_13_removedOutliers.png"
-outputPrefix <- "2_13_removedOutliers" 
+inputPC4subjFile <- "2_14_eigenvalAfterQC.txt"
+outputPC4outlierFile <- "2_14_eigenval4outliers.txt"
+outputPCplotFile <- "2_14_removedOutliers.png"
+outputPrefix <- "2_14_removedOutliers" 
 removeOutlierByPCs(plink, gcta, inputPrefix, nThread=nCores, 
                    cutoff, cutoffSign, inputPC4subjFile, 
                    outputPC4outlierFile, outputPCplotFile, outputPrefix) 
@@ -179,13 +178,12 @@ setwd("..")
 t4genoQC <- proc.time() - t4genoQCTmp
 print(t4genoQC)
 runTimeList$t4genoQC <- t4genoQC
-
 t4checkAlignTmp <- proc.time()   
 
 ############################################################
 ### code chunk number 3: check the alignment
 ############################################################   
-system("cp ./2-genoQC/2_13_removedOutliers.* ./3-checkAlign/ ")
+system("cp ./2-genoQC/2_14_removedOutliers.* ./3-checkAlign/ ")
 setwd("./3-checkAlign/")
 renamePlinkBFile(inputPrefix="2_13_removedOutliers", 
                  outputPrefix="3_1_QCdata", action="move")
@@ -245,6 +243,7 @@ inputPrefix <- "4_1_removedMonoSnp"
 outputPrefix <- "4_2_imputedDataset"   
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
 tmpImputeDir <- paste0(imputeTool, "_", referencePanel)
+nCores <- detectCores()
 phaseImpute(inputPrefix, outputPrefix,
             plink, shapeit, imputeTool, impute, qctool, gtool, 
             windowSize=3000000, effectiveSize=20000, 
@@ -260,12 +259,15 @@ runTimeList$t4impute <- t4impute
 t4postImputeTmp <- proc.time()   
 
 
-prefixAlign2ref <- "3_4_removedSnpDiffAlleles" 
+
 inputPrefix <- "4_2_imputedDataset" 
 out1 <- "4_3_wellImputeData"
 out2 <- "4_4_removedMonoSnpAfter"
 out3 <- "4_5_addedMonoSnpAfter"
 out4 <- "4_6_removedSnpMissPostImp" 
+outputInfoFile <- "4_2_snpImputedInfoScore.txt"
+outputMonoSNPfile <- "4_1_snpMonoRemoved.txt" # will be used in step 4,5.
+prefixAlign2ref <- "3_4_removedSnpDiffAlleles" 
 outRemovedSNPfile <- "4_6_snpRemovedMissPostImp.txt"
 outRetainSNPfile <- "4_6_snpRetainMissPostImp.txt"
 
