@@ -190,7 +190,7 @@ referencePanel <- "1000Gphase3"
     + referencePanel: A string symbol to indicate the type of input imputation reference panel: c("1000Gphase1v3_macGT1", "1000Gphase3")
     + imputeTool: A string symbol to indicate the type of used imputation tool: c("impute2", "impute4")
 
-### Gimpute Flowchart
+### Gimpute flowchart
 
 ![](Gimpute.png)
 
@@ -766,7 +766,7 @@ This reference genome is used for the strand check, you can download from [Genip
 1. Prepare additional configuration files.
 ```{r eval=FALSE} 
 ## example
-impRefDIR4genipe <- "../1000G_Phase3_2014/"
+impRefDIR4genipe <- "../1000GP_Phase3/"
 fastaFile <- "../hg19/hg19.fasta"
 ```  
 
@@ -777,7 +777,8 @@ inputPrefix <- "3_4_removedSnpDiffAlleles"
 thread4impute2 <- 20 ## tune by yourself
 thread4shapeit <- 30
 segmentSize <- 3000000
-imputedByGenipe(chrs, impRefDIR4genipe, inputPrefix, shapeit, impute2, plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
+imputeTool <- "impute2" ## only impute2 
+imputedByGenipe(chrs, impRefDIR4genipe, inputPrefix, shapeit, impute, plink, fastaFile, segmentSize, thread4impute2, thread4shapeit) 
 ```
 
 3. Merge chunk-specific region using Genipe.
