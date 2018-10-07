@@ -1,7 +1,8 @@
 # Gimpute
 Gimpute: An efficient genetic data processing and imputation pipeline
 
-**Reference**
+## Reference
+
 Chen, J., Lippold, D., Frank, J., Rayner, W., Meyer-Lindenberg, A., Schwarz, E., & Stegle, O. (2018). Gimpute: An efficient genetic data imputation pipeline. Bioinformatics.
 
 
