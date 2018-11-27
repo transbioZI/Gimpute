@@ -766,7 +766,7 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
         groupStatus <- "filter-cases"
         affection <- "AFF" 
     } else {
-        "ERROR: during HWE test on autosome! Wrong label warning!"
+        print("ERROR: during HWE test on autosome! Wrong label warning!")
     }
 
     outputPrefix.tmp <- paste0(outputPrefix, "tmp")
