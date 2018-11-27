@@ -147,8 +147,8 @@ if (imputeTool == "impute2"){
 
 ### Configuration 
 * Self-prepared configuration files
-    + metadataFile: A text file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. 
-    + removedSampIDFile: A text file that stores sample IDs, each ID per line, which will be excluded.
+    + metadataFile: A text file with at least the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female, 0 = missing), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained. 
+    + removedSampIDFile: A text file that stores sample IDs, each ID per line, which will be excluded. For instance, samples with missing sex information can be included in this file.
     + excludedProbeIdsFile: A text file that stores probe IDs, each ID per line, which will be excluded.
 
 * Genotyping chip annotation file: Most of common chip annotation files can be directly downloaded from [Dr. William Rayner'page](http://www.well.ox.ac.uk/~wrayner/strand/). 

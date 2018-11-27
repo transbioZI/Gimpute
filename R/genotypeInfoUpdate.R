@@ -243,7 +243,7 @@ removeNoGroupId <- function(plink, inputPrefix, outputPrefix){
 #' family ID in the PLINK files (FID), individual ID in the PLINK files (IID), 
 #' ID in the description files (descID), self identified ancestry 
 #' (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, 
-#' EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), 
+#' EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female, 0 = missing), 
 #' age (age), group (group; 0 = control/unaffected, 1 = case/affected). 
 #' All unknown and missing values are represented by the value NA. 
 #' Lines with a missing value for FID or IID are not contained.
