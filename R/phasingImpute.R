@@ -309,14 +309,10 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
         GWASDATA_BIM <- paste0(dataDIR, prefix4eachChr, i, ".bim ")
         GWASDATA_FAM <- paste0(dataDIR, prefix4eachChr, i, ".fam ")
         ## >>> ref panel  
-        GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, 
-                              "_combined_b37.txt ")
-        GENMAP.chrXnonPAR <- paste0(impRefDIR, "genetic_map_chr",
-                              "X_nonPAR_combined_b37.txt ")
-        GENMAP.chrXPAR1 <- paste0(impRefDIR, "genetic_map_chr", 
-                              "X_PAR1_combined_b37.txt ")
-        GENMAP.chrXPAR2 <- paste0(impRefDIR, "genetic_map_chr", 
-                              "X_PAR2_combined_b37.txt ")
+        GENMAP_FILE <- paste0(impRefDIR, "genetic_map_chr", i, "_combined_b37.txt ")
+        GENMAP.chrXnonPAR <- paste0(impRefDIR, "genetic_map_chrX_nonPAR_combined_b37.txt ")
+        GENMAP.chrXPAR1 <- paste0(impRefDIR, "genetic_map_chrX_PAR1_combined_b37.txt ")
+        GENMAP.chrXPAR2 <- paste0(impRefDIR, "genetic_map_chrX_PAR2_combined_b37.txt ")
 
         if (referencePanel == "1000Gphase1v3_macGT1"){  
             ## autosome
@@ -1152,7 +1148,8 @@ phaseImpute <- function(inputPrefix, outputPrefix,
     if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
     ## step 2.2
     chunkPrefix <- "chunks_chr" 
-    chrs <- c(currentChr, par1, par2)    
+    ## replace chr25 by pseudo-autosomal region of X
+    chrs <- setdiff(c(currentChr, par1, par2), 25)
     chunk4eachChr(inputPrefix=prefix4eachChr, 
                   outputPrefix=chunkPrefix, chrs, windowSize) 
 
