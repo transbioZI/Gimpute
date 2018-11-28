@@ -214,7 +214,7 @@ div.tocify {
 <h1 class="title toc-ignore">Gimpute: An efficient genetic data imputation pipeline</h1>
 <p class="author-name">Junfang Chen, Dietmar Lippold and Emanuel Schwarz<span class="affil-mark">1</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>Central Institute of Mental Health, Heidelberg University, Germany</p>
-<h4 class="date"><em>Modified: 03 Aug 2018. Compiled: 03 Aug 2018</em></h4>
+<h4 class="date"><em>Modified: 28 Nov 2018. Compiled: 28 Nov 2018</em></h4>
 
 </div>
 
@@ -356,8 +356,8 @@ if (imputeTool == &quot;impute2&quot;){
 <ul>
 <li>Self-prepared configuration files
 <ul>
-<li>metadataFile: A text file with the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained.</li>
-<li>removedSampIDFile: A text file that stores sample IDs, each ID per line, which will be excluded.</li>
+<li>metadataFile: A text file with at least the following content (column names are in parentheses): family ID in the PLINK files (FID), individual ID in the PLINK files (IID), ID in the description files (descID), self identified ancestry (ance; e.g. AFR: African, AMR: Ad Mixed American, EAS: East Asian, EUR: European, SAS: South Asian), sex (sex; 1 = male, 2 = female, 0 = missing), age (age), group (group; 0 = control/unaffected, 1 = case/affected). All unknown and missing values are represented by the value NA. Lines with a missing value for FID or IID are not contained.</li>
+<li>removedSampIDFile: A text file that stores sample IDs, each ID per line, which will be excluded. For instance, samples with missing sex information can be included in this file.</li>
 <li>excludedProbeIdsFile: A text file that stores probe IDs, each ID per line, which will be excluded.</li>
 </ul></li>
 <li><p>Genotyping chip annotation file: Most of common chip annotation files can be directly downloaded from <a href="http://www.well.ox.ac.uk/~wrayner/strand/">Dr. William Rayner’page</a>. This annotation file is particularly important for strand checking and genomic information of genotypes on a variety of genome builds. Gimpute requires the chip annotation file that is organized into two different types:</p>
@@ -1060,6 +1060,33 @@ format &lt;- 'bed'
 prob &lt;- 0.9
 outputPrefix &lt;- paste0('imputedChr', chr)  
 extractByGenipe(inputImpute2, inputMAP, outputPrefix, format, prob)</code></pre>
+<pre class="r"><code>## sessionInfo()
+
+# R version 3.5.0 (2018-04-23)
+# Platform: x86_64-redhat-linux-gnu (64-bit)
+# Running under: CentOS Linux 7 (Core)
+
+# Matrix products: default
+# BLAS/LAPACK: /usr/lib64/R/lib/libRblas.so
+
+# locale:
+#  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+#  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+#  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+#  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+#  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+# [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+# attached base packages:
+# [1] parallel  stats     graphics  grDevices utils     datasets  methods  
+# [8] base     
+
+# other attached packages:
+# [1] doParallel_1.0.11 iterators_1.0.10  foreach_1.4.4     lattice_0.20-35  
+# [5] Gimpute_0.99.9   
+
+# loaded via a namespace (and not attached):
+# [1] compiler_3.5.0   codetools_0.2-15 grid_3.5.0      </code></pre>
 </div>
 </div>
 </div>
