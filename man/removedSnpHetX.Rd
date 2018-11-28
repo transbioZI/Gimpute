@@ -4,8 +4,8 @@
 \alias{removedSnpHetX}
 \title{Remove heterozygous SNPs in male chromosome X}
 \usage{
-removedSnpHetX(plink, inputPrefix, hhCutOff, outputPrefix, outputHetSNPfile,
-  outputRetainSNPfile)
+removedSnpHetX(plink, inputPrefix, hhCutOff, outputPrefix,
+  outputHetSNPfile, outputRetainSNPfile)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

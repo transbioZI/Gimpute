@@ -4,7 +4,8 @@
 \alias{removedSnpFemaleChrXmiss}
 \title{remove chromosome X SNPs in females}
 \usage{
-removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, inputPrefix, outputPrefix)
+removedSnpFemaleChrXmiss(plink, femaleChrXmissCutoff, inputPrefix,
+  outputPrefix)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

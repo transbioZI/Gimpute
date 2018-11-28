@@ -4,8 +4,8 @@
 \alias{removedMendelErr}
 \title{Check Mendel errors for family-based data}
 \usage{
-removedMendelErr(plink, inputPrefix, cutoffSubject = 0.05, cutoffSNP = 0.1,
-  outputPrefix)
+removedMendelErr(plink, inputPrefix, cutoffSubject = 0.05,
+  cutoffSNP = 0.1, outputPrefix)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

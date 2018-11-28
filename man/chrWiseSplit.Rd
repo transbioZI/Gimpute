@@ -4,7 +4,8 @@
 \alias{chrWiseSplit}
 \title{Split genome-wide genotyping data into chromosome-wide PLINK binary files.}
 \usage{
-chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix, nCore = 25)
+chrWiseSplit(plink, inputPrefix, chrXPAR1suffix, chrXPAR2suffix,
+  nCore = 25)
 }
 \arguments{
 \item{plink}{an executable program in either the current 

@@ -5,9 +5,9 @@
 \title{Phasing and imputation}
 \usage{
 phaseImpute(inputPrefix, outputPrefix, plink, shapeit, imputeTool, impute,
-  qctool, gtool, windowSize = 3e+06, effectiveSize = 20000, nCore = 40,
-  threshold = 0.9, outputInfoFile, referencePanel, impRefDIR, tmpImputeDir,
-  keepTmpDir = TRUE)
+  qctool, gtool, windowSize = 3e+06, effectiveSize = 20000,
+  nCore = 40, threshold = 0.9, outputInfoFile, referencePanel,
+  impRefDIR, tmpImputeDir, keepTmpDir = TRUE)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
