@@ -16,7 +16,7 @@ reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").}
 \item{outputFile}{the pure text file that stores the prepared PLINK BIM
 file alike format data.}
 
-\item{nCore}{the number of cores used for computation.
+\item{ncore}{the number of cores used for computation.
 The default is 20.}
 }
 \value{

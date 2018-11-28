@@ -74,9 +74,6 @@ computeInfoByQctool <- function(qctool, inputSuffix, outputInfoFile){
 #' @param nCore the number of cores used for computation.
 #' @param effectiveSize this parameter controls the effective population size.
 #' Commonly denoted as Ne. A universal -Ne value of 20000 is suggested.
-#' @param XPAR a logical value indicating whether --chrX flag should be 
-#' passed for prephasing using SHAPEIT.
-#' --chrX flag, specifically for chrX imputation'
 #' @return The imputed files for all chunks from given chromosomes, except   
 #' sex chromosomes. 
 

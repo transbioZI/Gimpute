@@ -11,7 +11,7 @@
 #' reference panels is used: c("1000Gphase1v3_macGT1", "1000Gphase3").
 #' @param outputFile the pure text file that stores the prepared PLINK BIM
 #' file alike format data.
-#' @param nCore the number of cores used for computation.
+#' @param ncore the number of cores used for computation.
 #' The default is 20.
 
 #' @return Prepare a bim-like reference file. Note that the column names
