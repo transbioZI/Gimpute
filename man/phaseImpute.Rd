@@ -4,10 +4,10 @@
 \alias{phaseImpute}
 \title{Phasing and imputation}
 \usage{
-phaseImpute(inputPrefix, outputPrefix, plink, shapeit, imputeTool, impute,
-  qctool, gtool, windowSize = 3e+06, effectiveSize = 20000,
-  nCore = 40, threshold = 0.9, outputInfoFile, referencePanel,
-  impRefDIR, tmpImputeDir, keepTmpDir = TRUE)
+phaseImpute(inputPrefix, outputPrefix, autosome = TRUE, plink, shapeit,
+  imputeTool, impute, qctool, gtool, windowSize = 3e+06,
+  effectiveSize = 20000, nCore = 40, threshold = 0.9, outputInfoFile,
+  referencePanel, impRefDIR, tmpImputeDir, keepTmpDir = TRUE)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
@@ -15,6 +15,9 @@ the imputation.}
 
 \item{outputPrefix}{the prefix of the output PLINK binary files
 after imputation.}
+
+\item{autosome}{a logical value indicating if only autosomal chromosomes 
+are imputed.}
 
 \item{plink}{an executable program in either the current 
 working directory or somewhere in the command path.}
@@ -100,7 +103,7 @@ outputInfoFile <- "infoScore.txt"
 tmpImputeDir <- "tmpImpute"
 ## Not run: Requires an executable program PLINK, e.g.
 ## plink <- "/home/tools/plink"
-## phaseImpute(inputPrefix, outputPrefix,
+## phaseImpute(inputPrefix, outputPrefix, autosome=TRUE, 
 ##             plink, shapeit, imputeTool, impute, qctool, gtool, 
 ##             windowSize=3000000, effectiveSize=20000, 
 ##             nCore=40, threshold=0.9, outputInfoFile,

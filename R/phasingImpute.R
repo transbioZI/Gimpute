@@ -1017,6 +1017,8 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' the imputation. 
 #' @param outputPrefix the prefix of the output PLINK binary files  
 #' after imputation.
+#' @param autosome a logical value indicating if only autosomal chromosomes 
+#' are imputed.
 #' @param plink an executable program in either the current 
 #' working directory or somewhere in the command path.
 #' @param shapeit an executable program in either the current 
@@ -1096,14 +1098,14 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' tmpImputeDir <- "tmpImpute"
 #' ## Not run: Requires an executable program PLINK, e.g.
 #' ## plink <- "/home/tools/plink"
-#' ## phaseImpute(inputPrefix, outputPrefix,
+#' ## phaseImpute(inputPrefix, outputPrefix, autosome=TRUE, 
 #' ##             plink, shapeit, imputeTool, impute, qctool, gtool, 
 #' ##             windowSize=3000000, effectiveSize=20000, 
 #' ##             nCore=40, threshold=0.9, outputInfoFile,
 #' ##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
-phaseImpute <- function(inputPrefix, outputPrefix,
+phaseImpute <- function(inputPrefix, outputPrefix, autosome=TRUE, 
                         plink, shapeit, imputeTool, impute, qctool, gtool, 
                         windowSize=3000000, effectiveSize=20000, 
                         nCore=40,  threshold=0.9, outputInfoFile,
@@ -1148,8 +1150,13 @@ phaseImpute <- function(inputPrefix, outputPrefix,
     if (PAR[[2]]) {par2 <- "X_PAR2"} else {par2 <- NULL}
     ## step 2.2
     chunkPrefix <- "chunks_chr" 
-    ## replace chr25 by pseudo-autosomal region of X
-    chrs <- setdiff(c(currentChr, par1, par2), 25)
+    if (autosome == TRUE){ 
+        chrs <- intersect(currentChr, seq_len(22))
+    } else {
+        ## replace chr25 by pseudo-autosomal region of X
+        chrs <- setdiff(c(currentChr, par1, par2), 25)
+    }
+    
     chunk4eachChr(inputPrefix=prefix4eachChr, 
                   outputPrefix=chunkPrefix, chrs, windowSize) 
 
