@@ -1240,7 +1240,9 @@ phaseImpute <- function(inputPrefix, outputPrefix, autosome=TRUE,
     ## fam IDs may be changed: a.) if IDs have 'N'; 
     ## b.) IID, FID may be switched.
     ## >> update this as below 
-    ## the original PLINK files before imputation
+    ## the original PLINK files before imputation 
+    ## >> If nothing has changed (the above two cases not vary), 
+    ## >> then check if the order of IDs has been changed
     setwd("..")
     system(paste0("scp ", dataDIR, prefix4eachChr, ".fam ", postImputeDIR)) 
     setwd(postImputeDIR) 
@@ -1249,15 +1251,37 @@ phaseImpute <- function(inputPrefix, outputPrefix, autosome=TRUE,
                           stringsAsFactors=FALSE) 
     famImpute <- read.table(paste0(prefixMerge,".fam"), 
                             stringsAsFactors=FALSE) 
-    ## changes ID codes for individuals specified in recoded.txt, 
-    ## which should be in the format of 4 cols per row: 
-    ## old FID, old IID, new FID, new IID, e.g.
-    recodMat <- cbind(famImpute[,c("V1", "V2")], famOrig[,c("V1", "V2")]) 
-    write.table(recodMat, file="recoded.txt", quote=FALSE, 
-                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+    FIDequal <- all.equal(famOrig[,"V1"], famImpute[,"V1"])
+    IIDequal <- all.equal(famOrig[,"V2"], famImpute[,"V2"]) 
 
-    system(paste0(plink, " --bfile ", prefixMerge, 
-           " --update-ids recoded.txt --make-bed --out ", outputPrefix)) 
+
+    if (FIDequal == TRUE & IIDequal == TRUE) {
+        message("All sample IDs after imputation are ordered identical!")
+        renamePlinkBFile(prefixMerge, outputPrefix, action="copy") 
+    } else {
+        sumFID <- length(intersect(famOrig[,"V1"], famImpute[,"V1"])) 
+        sumIID <- length(intersect(famOrig[,"V2"], famImpute[,"V2"]))
+        if ( sumFID == nrow(famOrig) & sumIID == nrow(famOrig) ) {
+            message("Sample IDs after imputation in .fam file swapped!") 
+            ID4sort <- famOrig[,c("V1", "V2")]
+            write.table(ID4sort, file="ID4sort.txt", quote=FALSE, 
+                row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")    
+            system(paste0(plink, " --bfile ", prefixMerge, 
+           " --indiv-sort f ID4sort.txt --make-bed --out ", outputPrefix)) 
+        } else {
+            message("Sample IDs have changed!!")
+            ## changes ID codes for individuals specified in recoded.txt, 
+            ## which should be in the format of 4 cols per row: 
+            ## old FID, old IID, new FID, new IID, e.g.  
+            recodMat <- cbind(famImpute[,c("V1", "V2")], famOrig[,c("V1", "V2")]) 
+            write.table(recodMat, file="recoded.txt", quote=FALSE, 
+                        row.names=FALSE, col.names=FALSE, eol="\r\n", sep=" ")  
+
+            system(paste0(plink, " --bfile ", prefixMerge, 
+                   " --update-ids recoded.txt --make-bed --out ", outputPrefix)) 
+        }  
+    }
+
     #######################################################
     setwd("..")
     setwd("..")
