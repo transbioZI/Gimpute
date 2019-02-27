@@ -3,12 +3,12 @@ title: "Gimpute: An efficient genetic data imputation pipeline"
 author:
  - name: Junfang Chen, Dietmar Lippold and Emanuel Schwarz
    affiliation: Central Institute of Mental Health, Heidelberg University, Germany  
-date: "Modified: 28 Nov 2018. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
+date: "Modified: 27 Feb 2019. Compiled: `r format(Sys.Date(), '%d %b %Y')`"
 output: 
   BiocStyle::html_document: 
     toc_float: true
     number_sections: true 
-    href: GimputeTutorial2.html 
+    href: GimputeTutorial.html 
 
 vignette: >
    %\VignetteIndexEntry{GimputeTutorial}
@@ -99,7 +99,7 @@ Gimpute runs on any 64-bit x86 Linux distribution. Additional dependencies are d
 PLINK format files (PED/MAP or BED/BIM/FAM) are required as the input genotyping data for our pipeline. 
 Free datasets are available under ./extdata/ in our package. The way for loading these PLINK binary files is shown as below. Since sharing of genetic genotyping data is strictly prohibited, we did not upload any private genotyping data for this demonstration. 
 
-```{r} 
+```{r eval=FALSE} 
 library(Gimpute)
 bedFile <- system.file("extdata", "dataChr21.bed", package="Gimpute")
 bimFile <- system.file("extdata", "dataChr21.bim", package="Gimpute") 
@@ -614,7 +614,7 @@ outputPrefix <- "4_2_imputedDataset"
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
 tmpImputeDir <- paste0(imputeTool, "_", referencePanel)
 nCores <- detectCores()
-phaseImpute(inputPrefix, outputPrefix,
+phaseImpute(inputPrefix, outputPrefix, autosome=TRUE,
             plink, shapeit, imputeTool, impute, qctool, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore=nCores, threshold=0.9, outputInfoFile, 

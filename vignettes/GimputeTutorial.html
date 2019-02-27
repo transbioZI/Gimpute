@@ -95,6 +95,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -102,14 +105,74 @@ button.code-folding-btn:focus {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -214,7 +277,7 @@ div.tocify {
 <h1 class="title toc-ignore">Gimpute: An efficient genetic data imputation pipeline</h1>
 <p class="author-name">Junfang Chen, Dietmar Lippold and Emanuel Schwarz<span class="affil-mark">1</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>Central Institute of Mental Health, Heidelberg University, Germany</p>
-<h4 class="date"><em>Modified: 28 Nov 2018. Compiled: 28 Nov 2018</em></h4>
+<h4 class="date"><em>Modified: 27 Feb 2019. Compiled: 27 Feb 2019</em></h4>
 
 </div>
 
@@ -864,7 +927,7 @@ outputPrefix &lt;- &quot;4_2_imputedDataset&quot;
 outputInfoFile &lt;- &quot;4_2_snpImputedInfoScore.txt&quot;
 tmpImputeDir &lt;- paste0(imputeTool, &quot;_&quot;, referencePanel)
 nCores &lt;- detectCores()
-phaseImpute(inputPrefix, outputPrefix,
+phaseImpute(inputPrefix, outputPrefix, autosome=TRUE,
             plink, shapeit, imputeTool, impute, qctool, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore=nCores, threshold=0.9, outputInfoFile, 
