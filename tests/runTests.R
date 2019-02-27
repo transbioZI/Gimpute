@@ -2,7 +2,7 @@
 # File   : runTests.R
 # Author : Junfang Chen
 # Version0: 28 Jun 2016
-# VersionX: 02 Aug 2018
+# VersionX: 27 Feb 2019
 
 library(Gimpute)
 library(lattice)
@@ -151,7 +151,7 @@ plotPCA4plink(gcta, inputPrefix, nThread=nCores,
 ## PCA outliers. Otherwise, set cutoff as "NULL"
 ############################################################
 
-
+## This step is optional
 ## remove outliers 
 # cutoff <-  NULL
 cutoff <-  c(-0.4, 0.2)
@@ -238,13 +238,12 @@ outputPrefix <- "4_2_imputedDataset"
 outputInfoFile <- "4_2_snpImputedInfoScore.txt"
 tmpImputeDir <- paste0(imputeTool, "_", referencePanel)
 nCores <- detectCores()
-phaseImpute(inputPrefix, outputPrefix,
+phaseImpute(inputPrefix, outputPrefix, autosome=TRUE,
             plink, shapeit, imputeTool, impute, qctool, gtool, 
             windowSize=3000000, effectiveSize=20000, 
             nCore=nCores, threshold=0.9, outputInfoFile, 
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
-  
 ##################################################### After imputation
 ## runtime
 t4impute <- proc.time() - t4imputeTmp
