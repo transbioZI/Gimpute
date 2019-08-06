@@ -917,8 +917,7 @@ updateGenoInfo <- function(plink, inputPrefix, metaDataFile, removedSampIDFile,
     outputPrefix2 <- "1_02_removedExclInst" 
     removeSampID(plink, removedSampIDFile, inputPrefix, 
                  outputPrefix=outputPrefix2)
-    # step 3 replace group IDs 
-    metaDataFile <- "1_01_metaData.txt" 
+    # step 3 replace group IDs  
     outputPrefix3 <- "1_03_replacedGroupAndSex"
     updateGroupIdAndSex(plink, inputPrefix=outputPrefix2, 
                         metaDataFile, outputPrefix=outputPrefix3)
