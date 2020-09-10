@@ -637,6 +637,9 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 #' will be located.  
 #' @param threshold threshold for merging genotypes from GEN probability. 
 #' Default 0.9. 
+#' @param SNP A logical value indicating if the data is entirely comprised 
+#' single nucleotide polymorphisms then it can be set as TRUE and the genotypes 
+#' are expressed as pairs of A,C,G,T and unknowns are represented as N N.
 #' @param nCore the number of cores used for computation.  
  
 #' @return The converted binary PLINK format files for each chunk from IMPUTE2 
@@ -650,7 +653,7 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
 .convertImpute2ByGtool <- function(gtool, chrs, prefixChunk, 
                                    phaseDIR, imputedDIR, prefix4eachChr, 
                                    suffix4imputed, postImputeDIR, 
-                                   threshold, nCore){
+                                   threshold, SNP = TRUE, nCore){
 
     for (i in chrs){ 
         chunkfn <- paste0(prefixChunk, i, ".txt")
@@ -671,7 +674,8 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
             MAP_FILE <- paste0(postImputeDIR, prefix4eachChr, i, ".pos", 
                                  chunkSTART, "-", chunkEND, ".map") 
             ## converting chunk-wise
-            system( paste0(gtool, " -G ",
+            if (SNP == TRUE){
+                system( paste0(gtool, " -G ",
                             " --g ", GEN_FILE, " \ ", 
                             " --s ", SAM_FILE, " \ ",  
                             "--phenotype plink_pheno \ ", 
@@ -679,7 +683,21 @@ chunk4eachChr <- function(inputPrefix, outputPrefix, chrs, windowSize=3000000){
                             "--ped ", PED_FILE, " \ ", 
                             "--map ", MAP_FILE, " \ ", 
                             "--threshold ", threshold, " \ ", 
-                            "--snp ") )  
+                            "--snp ") )                  
+            } else if (SNP == FALSE) {
+                system( paste0(gtool, " -G ",
+                            " --g ", GEN_FILE, " \ ", 
+                            " --s ", SAM_FILE, " \ ",  
+                            "--phenotype plink_pheno \ ", 
+                            "--chr ", i, " \ ", 
+                            "--ped ", PED_FILE, " \ ", 
+                            "--map ", MAP_FILE, " \ ", 
+                            "--threshold ", threshold, " \ "
+                            ) )    
+            } else {
+                stop("Wrong or no SNP indicator provided!!")
+            }
+
         }, mc.cores=nCore)
     } 
 } 
@@ -1044,6 +1062,9 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' Default 0.9.  
 #' @param outputInfoFile the output file of impute2 info scores consisting of 
 #' two columns: all imputed SNPs and their info scores.   
+#' @param SNP A logical value indicating if the data is entirely comprised 
+#' single nucleotide polymorphisms then it can be set as TRUE and the genotypes 
+#' are expressed as pairs of A,C,G,T and unknowns are represented as N N.
 #' @param referencePanel a string indicating the type of imputation 
 #' reference panels is used: "1000Gphase1v3_macGT1" or "1000Gphase3".
 #' @param impRefDIR the directory where the imputation reference files 
@@ -1101,14 +1122,14 @@ removedSnpMissPostImp <- function(plink, inputPrefix, missCutoff,
 #' ## phaseImpute(inputPrefix, outputPrefix, autosome=TRUE, 
 #' ##             plink, shapeit, imputeTool, impute, qctool, gtool, 
 #' ##             windowSize=3000000, effectiveSize=20000, 
-#' ##             nCore=40, threshold=0.9, outputInfoFile,
+#' ##             nCore=40, threshold=0.9, outputInfoFile, SNP=TRUE,
 #' ##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 
 phaseImpute <- function(inputPrefix, outputPrefix, autosome=TRUE, 
                         plink, shapeit, imputeTool, impute, qctool, gtool, 
                         windowSize=3000000, effectiveSize=20000, 
-                        nCore=40,  threshold=0.9, outputInfoFile,
+                        nCore=40,  threshold=0.9, outputInfoFile, SNP=TRUE,
                         referencePanel, impRefDIR, 
                         tmpImputeDir, keepTmpDir=TRUE){
 
@@ -1223,7 +1244,7 @@ phaseImpute <- function(inputPrefix, outputPrefix, autosome=TRUE,
 
     .convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR, 
                           prefix4eachChr, suffix4imputed, 
-                          postImputeDIR, threshold, nCore)
+                          postImputeDIR, threshold, SNP, nCore)
 
     ## step 2.6  
     ####################################################### 

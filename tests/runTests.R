@@ -241,7 +241,7 @@ nCores <- detectCores()
 phaseImpute(inputPrefix, outputPrefix, autosome=TRUE,
             plink, shapeit, imputeTool, impute, qctool, gtool, 
             windowSize=3000000, effectiveSize=20000, 
-            nCore=nCores, threshold=0.9, outputInfoFile, 
+            nCore=nCores, threshold=0.9, outputInfoFile, SNP=TRUE,
             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 
 ##################################################### After imputation
