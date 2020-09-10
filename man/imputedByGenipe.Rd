@@ -4,8 +4,18 @@
 \alias{imputedByGenipe}
 \title{Impute genotypes using Genipe}
 \usage{
-imputedByGenipe(chrs, impRefDir, inputPrefix, shapeit, impute2, plink,
-  fastaFile, segmentSize, thread4impute2, thread4shapeit)
+imputedByGenipe(
+  chrs,
+  impRefDir,
+  inputPrefix,
+  shapeit,
+  impute2,
+  plink,
+  fastaFile,
+  segmentSize,
+  thread4impute2,
+  thread4shapeit
+)
 }
 \arguments{
 \item{chrs}{specifiy the chromosomes for imputation. There are 

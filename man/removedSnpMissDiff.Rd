@@ -4,8 +4,13 @@
 \alias{removedSnpMissDiff}
 \title{Remove SNPs with difference in SNP missingness between cases and controls.}
 \usage{
-removedSnpMissDiff(plink, inputPrefix, snpMissDifCutOff, outputPrefix,
-  groupLabel)
+removedSnpMissDiff(
+  plink,
+  inputPrefix,
+  snpMissDifCutOff,
+  outputPrefix,
+  groupLabel
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

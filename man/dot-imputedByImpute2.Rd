@@ -4,8 +4,18 @@
 \alias{.imputedByImpute2}
 \title{Impute genotypes using IMPUTE2}
 \usage{
-.imputedByImpute2(impute2, chrs, prefixChunk, phaseDIR, referencePanel,
-  impRefDIR, imputedDIR, prefix4eachChr, nCore, effectiveSize = 20000)
+.imputedByImpute2(
+  impute2,
+  chrs,
+  prefixChunk,
+  phaseDIR,
+  referencePanel,
+  impRefDIR,
+  imputedDIR,
+  prefix4eachChr,
+  nCore,
+  effectiveSize = 20000
+)
 }
 \arguments{
 \item{impute2}{an executable program in either the current 

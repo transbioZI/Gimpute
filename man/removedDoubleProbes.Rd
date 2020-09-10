@@ -4,8 +4,14 @@
 \alias{removedDoubleProbes}
 \title{Remove duplicated SNPs}
 \usage{
-removedDoubleProbes(plink, inputPrefix, chipAnnoFile, chipType,
-  outputSNPdupFile, outputPrefix)
+removedDoubleProbes(
+  plink,
+  inputPrefix,
+  chipAnnoFile,
+  chipType,
+  outputSNPdupFile,
+  outputPrefix
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

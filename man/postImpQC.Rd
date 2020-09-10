@@ -4,9 +4,22 @@
 \alias{postImpQC}
 \title{Post imputation quality control}
 \usage{
-postImpQC(plink, inputPrefix, out1, out2, out3, out4, outputInfoFile,
-  infoScore = 0.6, outputMonoSNPfile, prefixAlign2ref, missCutoff = 20,
-  outRemovedSNPfile, outRetainSNPfile, referencePanel)
+postImpQC(
+  plink,
+  inputPrefix,
+  out1,
+  out2,
+  out3,
+  out4,
+  outputInfoFile,
+  infoScore = 0.6,
+  outputMonoSNPfile,
+  prefixAlign2ref,
+  missCutoff = 20,
+  outRemovedSNPfile,
+  outRetainSNPfile,
+  referencePanel
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working 

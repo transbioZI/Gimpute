@@ -4,8 +4,14 @@
 \alias{removedUnmapProbes}
 \title{Remove SNPs not in the chip annotation file}
 \usage{
-removedUnmapProbes(plink, inputPrefix, chipAnnoFile, chipType,
-  outputPrefix, outputSNPfile)
+removedUnmapProbes(
+  plink,
+  inputPrefix,
+  chipAnnoFile,
+  chipType,
+  outputPrefix,
+  outputSNPfile
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

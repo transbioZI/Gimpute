@@ -4,8 +4,13 @@
 \alias{removedWrongAnceInst}
 \title{Remove samples with incorrect ancestry}
 \usage{
-removedWrongAnceInst(plink, inputPrefix, metaDataFile, ancestrySymbol,
-  outputPrefix)
+removedWrongAnceInst(
+  plink,
+  inputPrefix,
+  metaDataFile,
+  ancestrySymbol,
+  outputPrefix
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

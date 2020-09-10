@@ -4,8 +4,15 @@
 \alias{removedSnpHWEauto}
 \title{Hardy Weinberg Equilibrium test for autosomal SNPs}
 \usage{
-removedSnpHWEauto(groupLabel, plink, inputPrefix, pval = 1e-06,
-  outputPvalFile, outputSNPfile, outputPrefix)
+removedSnpHWEauto(
+  groupLabel,
+  plink,
+  inputPrefix,
+  pval = 1e-06,
+  outputPvalFile,
+  outputSNPfile,
+  outputPrefix
+)
 }
 \arguments{
 \item{groupLabel}{a string value indicating the outcome label: "control",

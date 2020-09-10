@@ -4,8 +4,13 @@
 \alias{plotPCA4plink}
 \title{Population outlier detection}
 \usage{
-plotPCA4plink(gcta, inputPrefix, nThread = 20, outputPC4subjFile,
-  outputPCplotFile)
+plotPCA4plink(
+  gcta,
+  inputPrefix,
+  nThread = 20,
+  outputPC4subjFile,
+  outputPCplotFile
+)
 }
 \arguments{
 \item{gcta}{an executable program in either the current working directory 

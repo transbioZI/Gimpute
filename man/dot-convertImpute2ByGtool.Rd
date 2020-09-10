@@ -4,8 +4,19 @@
 \alias{.convertImpute2ByGtool}
 \title{Convert IMPUTE2 format files into PLINK format}
 \usage{
-.convertImpute2ByGtool(gtool, chrs, prefixChunk, phaseDIR, imputedDIR,
-  prefix4eachChr, suffix4imputed, postImputeDIR, threshold, nCore)
+.convertImpute2ByGtool(
+  gtool,
+  chrs,
+  prefixChunk,
+  phaseDIR,
+  imputedDIR,
+  prefix4eachChr,
+  suffix4imputed,
+  postImputeDIR,
+  threshold,
+  SNP = TRUE,
+  nCore
+)
 }
 \arguments{
 \item{gtool}{an executable program in either the current 
@@ -31,6 +42,10 @@ will be located.}
 
 \item{threshold}{threshold for merging genotypes from GEN probability. 
 Default 0.9.}
+
+\item{SNP}{A logical value indicating if the data is entirely comprised 
+single nucleotide polymorphisms then it can be set as TRUE and the genotypes 
+are expressed as pairs of A,C,G,T and unknowns are represented as N N.}
 
 \item{nCore}{the number of cores used for computation.}
 }

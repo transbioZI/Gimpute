@@ -4,8 +4,13 @@
 \alias{.filterImputeData2}
 \title{Filter genetic variants}
 \usage{
-.filterImputeData2(plink, outputInfoFile, infoScore = 0.6, inputPrefix,
-  outputPrefix)
+.filterImputeData2(
+  plink,
+  outputInfoFile,
+  infoScore = 0.6,
+  inputPrefix,
+  outputPrefix
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working 

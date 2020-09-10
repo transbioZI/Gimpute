@@ -4,10 +4,27 @@
 \alias{phaseImpute}
 \title{Phasing and imputation}
 \usage{
-phaseImpute(inputPrefix, outputPrefix, autosome = TRUE, plink, shapeit,
-  imputeTool, impute, qctool, gtool, windowSize = 3e+06,
-  effectiveSize = 20000, nCore = 40, threshold = 0.9, outputInfoFile,
-  referencePanel, impRefDIR, tmpImputeDir, keepTmpDir = TRUE)
+phaseImpute(
+  inputPrefix,
+  outputPrefix,
+  autosome = TRUE,
+  plink,
+  shapeit,
+  imputeTool,
+  impute,
+  qctool,
+  gtool,
+  windowSize = 3e+06,
+  effectiveSize = 20000,
+  nCore = 40,
+  threshold = 0.9,
+  outputInfoFile,
+  SNP = TRUE,
+  referencePanel,
+  impRefDIR,
+  tmpImputeDir,
+  keepTmpDir = TRUE
+)
 }
 \arguments{
 \item{inputPrefix}{the prefix of the input PLINK binary files for 
@@ -54,6 +71,10 @@ Default 0.9.}
 
 \item{outputInfoFile}{the output file of impute2 info scores consisting of 
 two columns: all imputed SNPs and their info scores.}
+
+\item{SNP}{A logical value indicating if the data is entirely comprised 
+single nucleotide polymorphisms then it can be set as TRUE and the genotypes 
+are expressed as pairs of A,C,G,T and unknowns are represented as N N.}
 
 \item{referencePanel}{a string indicating the type of imputation 
 reference panels is used: "1000Gphase1v3_macGT1" or "1000Gphase3".}
@@ -106,7 +127,7 @@ tmpImputeDir <- "tmpImpute"
 ## phaseImpute(inputPrefix, outputPrefix, autosome=TRUE, 
 ##             plink, shapeit, imputeTool, impute, qctool, gtool, 
 ##             windowSize=3000000, effectiveSize=20000, 
-##             nCore=40, threshold=0.9, outputInfoFile,
+##             nCore=40, threshold=0.9, outputInfoFile, SNP=TRUE,
 ##             referencePanel, impRefDIR, tmpImputeDir, keepTmpDir=TRUE)
 }
 \references{

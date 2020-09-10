@@ -4,9 +4,18 @@
 \alias{.prePhasingByShapeit}
 \title{Prephasing genotypes using SHAPEIT}
 \usage{
-.prePhasingByShapeit(shapeit, chrs, dataDIR, prefix4eachChr,
-  referencePanel, impRefDIR, phaseDIR, nThread = 40,
-  effectiveSize = 20000, nCore = 1)
+.prePhasingByShapeit(
+  shapeit,
+  chrs,
+  dataDIR,
+  prefix4eachChr,
+  referencePanel,
+  impRefDIR,
+  phaseDIR,
+  nThread = 40,
+  effectiveSize = 20000,
+  nCore = 1
+)
 }
 \arguments{
 \item{shapeit}{an executable program in either the 

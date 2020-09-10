@@ -4,8 +4,20 @@
 \alias{checkAlign2ref}
 \title{Check the alignment with the imputation reference panel}
 \usage{
-checkAlign2ref(plink, inputPrefix, referencePanel, bimReferenceFile, out2,
-  out2.snp, out3, out3.snp, out4, out4.snp, out4.snpRetained, nCore = 25)
+checkAlign2ref(
+  plink,
+  inputPrefix,
+  referencePanel,
+  bimReferenceFile,
+  out2,
+  out2.snp,
+  out3,
+  out3.snp,
+  out4,
+  out4.snp,
+  out4.snpRetained,
+  nCore = 25
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory

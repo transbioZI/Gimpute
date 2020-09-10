@@ -4,8 +4,14 @@
 \alias{removedSnpFemaleChrXhweControl}
 \title{Hardy Weinberg Equilibrium test for chromosome X SNPs in female controls.}
 \usage{
-removedSnpFemaleChrXhweControl(plink, inputPrefix, pval = 1e-06,
-  outputPvalFile, outputSNPfile, outputPrefix)
+removedSnpFemaleChrXhweControl(
+  plink,
+  inputPrefix,
+  pval = 1e-06,
+  outputPvalFile,
+  outputSNPfile,
+  outputPrefix
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

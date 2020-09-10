@@ -4,11 +4,22 @@
 \alias{genoQC}
 \title{Quality control for genotype data}
 \usage{
-genoQC(plink, inputPrefix, snpMissCutOffpre = 0.05,
-  sampleMissCutOff = 0.02, Fhet = 0.2, cutoffSubject, cutoffSNP,
-  snpMissCutOffpost = 0.02, snpMissDifCutOff = 0.02,
-  femaleChrXmissCutoff = 0.05, pval4autoCtl = 1e-06,
-  pval4femaleXctl = 1e-06, outputPrefix, keepInterFile = TRUE)
+genoQC(
+  plink,
+  inputPrefix,
+  snpMissCutOffpre = 0.05,
+  sampleMissCutOff = 0.02,
+  Fhet = 0.2,
+  cutoffSubject,
+  cutoffSNP,
+  snpMissCutOffpost = 0.02,
+  snpMissDifCutOff = 0.02,
+  femaleChrXmissCutoff = 0.05,
+  pval4autoCtl = 1e-06,
+  pval4femaleXctl = 1e-06,
+  outputPrefix,
+  keepInterFile = TRUE
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

@@ -4,8 +4,14 @@
 \alias{mergeByGenipe}
 \title{Merge imputed files using Genipe}
 \usage{
-mergeByGenipe(inputImpute2, chr, probability, completionRate, info,
-  outputPrefix)
+mergeByGenipe(
+  inputImpute2,
+  chr,
+  probability,
+  completionRate,
+  info,
+  outputPrefix
+)
 }
 \arguments{
 \item{inputImpute2}{the output from IMPUTE2.}

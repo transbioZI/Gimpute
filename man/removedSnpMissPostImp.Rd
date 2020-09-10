@@ -4,8 +4,14 @@
 \alias{removedSnpMissPostImp}
 \title{Remove SNPs after post imputation}
 \usage{
-removedSnpMissPostImp(plink, inputPrefix, missCutoff, outRemovedSNPfile,
-  outRetainSNPfile, outputPrefix)
+removedSnpMissPostImp(
+  plink,
+  inputPrefix,
+  missCutoff,
+  outRemovedSNPfile,
+  outRetainSNPfile,
+  outputPrefix
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working 

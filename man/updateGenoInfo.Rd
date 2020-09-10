@@ -4,9 +4,18 @@
 \alias{updateGenoInfo}
 \title{Update genotype information}
 \usage{
-updateGenoInfo(plink, inputPrefix, metaDataFile, removedSampIDFile,
-  ancestrySymbol, excludedProbeIdsFile, chipAnnoFile, chipType,
-  outputPrefix, keepInterFile = TRUE)
+updateGenoInfo(
+  plink,
+  inputPrefix,
+  metaDataFile,
+  removedSampIDFile,
+  ancestrySymbol,
+  excludedProbeIdsFile,
+  chipAnnoFile,
+  chipType,
+  outputPrefix,
+  keepInterFile = TRUE
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

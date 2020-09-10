@@ -4,9 +4,18 @@
 \alias{removeOutlierByPCs}
 \title{Remove population outliers}
 \usage{
-removeOutlierByPCs(plink, gcta, inputPrefix, nThread = 20,
-  cutoff = NULL, cutoffSign, inputPC4subjFile, outputPC4outlierFile,
-  outputPCplotFile, outputPrefix)
+removeOutlierByPCs(
+  plink,
+  gcta,
+  inputPrefix,
+  nThread = 20,
+  cutoff = NULL,
+  cutoffSign,
+  inputPC4subjFile,
+  outputPC4outlierFile,
+  outputPCplotFile,
+  outputPrefix
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

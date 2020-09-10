@@ -4,8 +4,15 @@
 \alias{removedMaleHetX}
 \title{Remove male subjects with haploid heterozygous SNPs}
 \usage{
-removedMaleHetX(plink, inputPrefix, hhSubjCutOff = 15, outputPrefix,
-  outputSubjHetFile, outputRetainSubjectFile, outputHetSNPfile)
+removedMaleHetX(
+  plink,
+  inputPrefix,
+  hhSubjCutOff = 15,
+  outputPrefix,
+  outputSubjHetFile,
+  outputRetainSubjectFile,
+  outputHetSNPfile
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working directory 

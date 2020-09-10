@@ -4,10 +4,20 @@
 \alias{reductExpand}
 \title{Post imputation data extraction and expansion}
 \usage{
-reductExpand(plink, referencePanel, inputPrefix, inputQCprefix,
-  snpRefAlleleFile, snpDiffAlleleFile, snpMissPosFile,
-  snpSameNameDifPosFile, reducedToSpecificfn, specificDiffAllelefn,
-  specificMissPosfn, specificDiffPosfn)
+reductExpand(
+  plink,
+  referencePanel,
+  inputPrefix,
+  inputQCprefix,
+  snpRefAlleleFile,
+  snpDiffAlleleFile,
+  snpMissPosFile,
+  snpSameNameDifPosFile,
+  reducedToSpecificfn,
+  specificDiffAllelefn,
+  specificMissPosfn,
+  specificDiffPosfn
+)
 }
 \arguments{
 \item{plink}{an executable program in either the current working 
