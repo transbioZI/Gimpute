@@ -848,7 +848,7 @@ removedSnpFemaleChrXhweControl <- function(plink, inputPrefix, pval=0.000001,
         outputPrefix.tmp <- paste0(outputPrefix, "tmp") 
         system(paste0(plink, " --bfile ", inputPrefix, 
                " --filter-females --filter-controls --chr 23 --hardy ", 
-               " --make-bed --out ", outputPrefix.tmp) )
+               " --allow-no-sex --make-bed --out ", outputPrefix.tmp) )
         ## read p values
         hweCheck <- read.table(file=paste0(outputPrefix.tmp, ".hwe"), 
                                header=TRUE, stringsAsFactors=FALSE) 
