@@ -771,7 +771,7 @@ removedSnpHWEauto <- function(groupLabel, plink, inputPrefix,
 
     outputPrefix.tmp <- paste0(outputPrefix, "tmp")
     system(paste0(plink, " --bfile ", inputPrefix, " --",
-           groupStatus, " --hardy --autosome --make-bed --out ", 
+           groupStatus, " --hardy --autosome --allow-no-sex --make-bed --out ", 
            outputPrefix.tmp))  
 
     ## read HWE p values 
